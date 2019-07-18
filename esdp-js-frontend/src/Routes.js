@@ -4,6 +4,7 @@ import Orders from "./containers/Orders/Orders";
 import Main from "./containers/Main/Main";
 import Register from "./containers/Register/Register";
 import Login from "./containers/Login/Login";
+import NewOrder from "./containers/NewOrder/NewOrder";
 
 const ProtectedRoute = props => {
     return props.isAllowed ? <Route {...props} /> : <Redirect to="/" />
@@ -21,6 +22,7 @@ const Routes = ({user}) => {
             {/*/>*/}
             <Route path="/register" component={Register}/>
             <Route path="/login" component={Login}/>
+            <Route path="/neworder" component={NewOrder}/>
         </Switch>
     )
 };
