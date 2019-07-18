@@ -3,6 +3,7 @@ import {Row} from "reactstrap";
 import {connect} from "react-redux";
 import OrderItem from "../../components/OrderItem/OrderItem";
 import {fetchOrders} from "../../store/actions/actions";
+import './Orders.css';
 
 class Orders extends Component {
     componentDidMount() {
@@ -13,8 +14,8 @@ class Orders extends Component {
         return (
             <Fragment>
                 <div className="d-flex justify-content-between align-items-center">
-                    <h1>
-                        Orders
+                    <h1 className="Orders-h1">
+                        Ваши заказы, {this.props.user.displayName ? this.props.user.displayName : this.props.user.username}
                     </h1>
                 </div>
                 <Row>

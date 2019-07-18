@@ -1,15 +1,16 @@
 import React from 'react';
 import {Card, CardBody, CardTitle, Col} from "reactstrap";
 import PropTypes from 'prop-types';
+import './OrderItem.css';
 
 const OrderItem = props => {
       return (
-          <Col md="4">
+          <Col md="6">
               <Card>
                   <CardBody>
                       <CardTitle>
-                          Заказ № {props.id} от
-                              {props.name} {props.surname}
+                          <h3 className="order-h3">Заказ № {props.id}</h3>
+                           от {props.name} {props.surname}
                       </CardTitle>
                       <p>email: {props.email}</p>
                       <p>Время заказа: {props.date}</p>
