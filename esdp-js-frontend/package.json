@@ -1,11 +1,24 @@
 {
-  "name": "esdp-js-frontend",
+  "name": "front",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1"
+    "axios": "^0.18.0",
+    "bootstrap": "^4.3.1",
+    "connected-react-router": "^6.5.0",
+    "history": "^4.9.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4",
+    "react-facebook-login": "^4.1.1",
+    "react-notifications": "^1.4.3",
+    "react-redux": "^6.0.1",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "^2.1.8",
+    "reactstrap": "^7.1.0",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0"
   },
   "scripts": {
     "start": "react-scripts start",
