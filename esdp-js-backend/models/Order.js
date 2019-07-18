@@ -33,7 +33,16 @@ const OrderSchema = new Schema({
         enum: ['waiting', 'inwork', 'ready', 'sorting', 'delivering', 'delivered'],
         default: 'waiting'
     },
+    numberofpairs: {
+        type: Number,
+        required: true,
+        default: 1
+    },
+    typeofcleaning: {
+        type: String,
+        required: true,
 
+    }
     date: Date,
     description: String
 });
