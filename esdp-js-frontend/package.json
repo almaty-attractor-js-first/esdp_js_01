@@ -8,6 +8,7 @@
     "connected-react-router": "^6.5.0",
     "history": "^4.9.0",
     "lodash": "^4.17.13",
+    "lodash.template": "^4.5.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
