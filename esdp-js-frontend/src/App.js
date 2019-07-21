@@ -1,32 +1,23 @@
-import React, {Component, Fragment} from 'react';
-import Toolbar from "./components/UI/Toolbar/Toolbar";
-import {Container} from "reactstrap";
+import React, {Fragment} from 'react';
 import {withRouter} from "react-router";
 import {connect} from "react-redux";
 import {NotificationContainer} from 'react-notifications';
 import {logoutUser} from "./store/actions/usersActions";
 import Routes from "./Routes";
+import Layout from "./containers/Layout/Layout";
 
-class App extends Component {
-  render() {
-    return (
+const App = props => {
+
+  return (
         <Fragment>
           <NotificationContainer/>
-          <header>
-            <Toolbar
-                user={this.props.user}
-                logout={this.props.logoutUser}
-            />
-          </header>
-          <main>
-            <Container>
-              <Routes user={this.props.user} />
-            </Container>
-          </main>
+          <Layout user={props.user}
+                  logout={props.logoutUser}>
+            <Routes user={props.user}/>
+          </Layout>
         </Fragment>
-    );
-  }
-}
+  );
+};
 
 const mapStateToProps = state => {
   return {

@@ -1,14 +1,20 @@
 import React, {Component} from "react";
-import {Button, Col, Form, FormGroup} from "reactstrap";
+import {Button, Col, Form, FormGroup, Row} from "reactstrap";
 import FormElement from "../UI/FormElement/FormElement";
 
 
 class OrderForm extends Component {
-	cleaningType = [
+	cleaningTypes = [
 		{
-			dry: 500
+			_id: 1,
+			type: "Сухая"
+		},
+		{
+			_id: 2,
+			type: "Мокрая"
 		}
 	];
+
 
 	state = {
 		name: "",
@@ -20,7 +26,8 @@ class OrderForm extends Component {
 		price: 0,
 		deliveryType: "",
 		address: "",
-		deliveryDate: ""
+		deliveryDate: "",
+		count: 0
 	};
 	inputChangeHandler = (event) => {
 		this.setState({[event.target.name]: event.target.value})
@@ -32,7 +39,7 @@ class OrderForm extends Component {
 		return (
 			<Form onSubmit={this.submitFormHandler}>
 				<FormElement
-					title="Name"
+					title="Имя"
 					type="text"
 					required
 					name="name"
@@ -41,7 +48,7 @@ class OrderForm extends Component {
 					onChange={this.inputChangeHandler}
 				/>
 				<FormElement
-					title="Surname"
+					title="Фамилия"
 					type="text"
 					required
 					name="surname"
@@ -50,7 +57,7 @@ class OrderForm extends Component {
 					onChange={this.inputChangeHandler}
 				/>
 				<FormElement
-					title="Patronymic"
+					title="Отчество"
 					type="text"
 					required
 					name="patronymic"
@@ -59,7 +66,7 @@ class OrderForm extends Component {
 					onChange={this.inputChangeHandler}
 				/>
 				<FormElement
-					title="Phone"
+					title="Телефон"
 					type="text"
 					required
 					name="phone"
@@ -68,7 +75,7 @@ class OrderForm extends Component {
 					onChange={this.inputChangeHandler}
 				/>
 				<FormElement
-					title="Quantity"
+					title="Количество"
 					type="text"
 					required
 					name="quantity"
@@ -77,17 +84,17 @@ class OrderForm extends Component {
 					onChange={this.inputChangeHandler}
 				/>
 				<FormElement
-					title="Cleaning Type"
+					title="Тип чистки"
 					type="select"
 					required
-					options={this.props.cleaningType}
+					options={this.cleaningTypes}
 					name="cleaningType"
 					placeholder="Cleaning Type"
-					value={this.state.cleaningType}
+					value={this.state.cleaningTypes}
 					onChange={this.inputChangeHandler}
 				/>
 				<FormElement
-					title="Price"
+					title="Цена"
 					type="text"
 					required
 					name="price"
@@ -96,7 +103,7 @@ class OrderForm extends Component {
 					onChange={this.inputChangeHandler}
 				/>
 				<FormElement
-					title="Delivery Type"
+					title="Тип доставки"
 					type="select"
 					required
 					options={this.props.deliveryType}
@@ -105,9 +112,19 @@ class OrderForm extends Component {
 					value={this.state.deliveryType}
 					onChange={this.inputChangeHandler}
 				/>
-				<FormGroup row>
-					<Col sm={{offset:2, size: 10}}>
-						<Button type="submit" color="primary">Сохранить</Button>
+				<Row>
+					<Col md={{offset:5, size: 10}}>
+						<div>
+							<Button> - </Button>
+							<span> Количество пар: {this.state.count} </span>
+							<Button> + </Button>
+						</div>
+					</Col>
+				</Row>
+
+				<FormGroup className="mt-3 ml-4" row>
+					<Col sm={{offset:5, size: 10}}>
+						<Button type="submit" color="primary">Оформить заказ</Button>
 					</Col>
 				</FormGroup>
 			</Form>
