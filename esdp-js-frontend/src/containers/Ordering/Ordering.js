@@ -12,7 +12,6 @@ import RemoveCircle from '@material-ui/icons/RemoveCircle';
 import Typography from "@material-ui/core/Typography";
 import Radio from "@material-ui/core/Radio";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormLabel from "@material-ui/core/FormLabel";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import MaterialUIPickers from "../../components/UI/DatePicker";
 
@@ -124,7 +123,7 @@ export default function AddressForm() {
 						</Select>
 					</FormControl>
 				</Grid>
-				<Grid container justify="center" alignItems="center" xs={12} sm={6}>
+				<Grid item container justify="center" alignItems="center" xs={12} sm={6}>
 					<Grid item>
 						<IconButton aria-label="plus">
 							<RemoveCircle />
@@ -144,7 +143,7 @@ export default function AddressForm() {
 						Итого:
 					</Typography>
 				</Grid>
-				<Grid container justify="space-around" xs={12}>
+				<Grid item container justify="space-around" xs={12}>
 					<RadioGroup aria-label="position" name="position" value={value} onChange={handleChangeRadio} row>
 						<FormControlLabel
 							value="delivery"

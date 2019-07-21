@@ -1,0 +1,132 @@
+import React from 'react';
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
+import FormElement from "../components/FormElementMaterial/FormElementMaterial";
+import PropTypes from "prop-types";
+import {connect} from "react-redux";
+import {loginUser} from "../store/actions/usersActions";
+import FacebookLogin from "../components/FacebookLogin";
+const styles = theme => ({
+  '@global': {
+    body: {
+      backgroundColor: theme.palette.background.paper,
+      marginTop: theme.spacing(12)
+    },
+  },
+  paper: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.primary.main,
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+});
+
+class SignIn extends React.Component {
+  state = {
+    username: '',
+    password: ''
+  };
+  inputChangeHandler = e => {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  };
+  onSubmitHandler = e => {
+    e.preventDefault();
+    this.props.loginUser(this.state)
+      .then(() => {
+        if (!this.props.error) {
+          return this.props.openSnack(`Hello ${this.props.user.username.toUpperCase()}`, 'success');
+        }
+        this.props.openSnack(this.props.error.message, 'warning')
+      });
+  };
+    render() {
+      const {classes} = this.props;
+      return (
+        <Container component="main" maxWidth="xs">
+          <CssBaseline />
+          <div className={classes.paper}>
+            <Avatar className={classes.avatar}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign in
+            </Typography>
+            <form className={classes.form}
+                  noValidate
+                  onSubmit={this.onSubmitHandler}>
+              <FormElement
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                label="Username"
+                name="username"
+                autoFocus
+                type="text"
+                value={this.state.username}
+                onChange={this.inputChangeHandler}
+              />
+              <FormElement
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                label="Password"
+                name="password"
+                type="password"
+                value={this.state.password}
+                onChange={this.inputChangeHandler}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="outlined"
+                color="primary"
+                className={classes.submit}
+              >
+                Sign In
+              </Button>
+            </form>
+            <FacebookLogin />
+          </div>
+        </Container>
+      );
+    };
+}
+
+SignIn.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+
+const mapStateToProps = state => {
+  return {
+    user: state.users.user,
+    error: state.users.loginError
+  }
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    loginUser: (userData) => dispatch(loginUser(userData)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SignIn));
