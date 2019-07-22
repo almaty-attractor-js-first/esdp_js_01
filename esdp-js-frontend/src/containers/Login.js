@@ -15,7 +15,7 @@ const styles = theme => ({
   '@global': {
     body: {
       backgroundColor: theme.palette.background.paper,
-      marginTop: theme.spacing(12)
+      marginTop: theme.spacing(12),
     },
   },
   paper: {
@@ -35,6 +35,9 @@ const styles = theme => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  text: {
+    color: theme.palette.text.primary,
+  },
 });
 
 class SignIn extends React.Component {
@@ -50,12 +53,6 @@ class SignIn extends React.Component {
   onSubmitHandler = e => {
     e.preventDefault();
     this.props.loginUser(this.state)
-      .then(() => {
-        if (!this.props.error) {
-          return this.props.openSnack(`Hello ${this.props.user.username.toUpperCase()}`, 'success');
-        }
-        this.props.openSnack(this.props.error.message, 'warning')
-      });
   };
     render() {
       const {classes} = this.props;
@@ -66,7 +63,7 @@ class SignIn extends React.Component {
             <Avatar className={classes.avatar}>
               <LockOutlinedIcon />
             </Avatar>
-            <Typography component="h1" variant="h5">
+            <Typography component="h1" variant="h5" className={classes.text}>
               Sign in
             </Typography>
             <form className={classes.form}

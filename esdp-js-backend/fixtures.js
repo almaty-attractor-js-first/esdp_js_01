@@ -16,13 +16,15 @@ db.once('open', async () => {
         console.log("Collections were not present.");
     }
 
-    const [user, admin] = await User.create({
-        username: "User",
-        password: "123",
+    await User.create({
+        username: "user",
+        password: "user",
+        displayName: "User",
         role: "user"
     }, {
         username: "admin",
         password: "admin",
+        displayName: "Admin",
         role: "admin"
     });
 

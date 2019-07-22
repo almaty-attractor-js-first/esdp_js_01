@@ -66,15 +66,14 @@ const Header = (props) => {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={() => {
-        props.logout()
-          .then(() => props.openSnack('Good bye', 'success'));
+        props.logout();
         handleMenuClose();}}>
         Logout
       </MenuItem>
       <MenuItem onClick={handleMenuClose}
                 component={Link}
-                to='/track_history'>
-        Track history
+                to='/orders'>
+        My orders
       </MenuItem>
     </Menu>
   );

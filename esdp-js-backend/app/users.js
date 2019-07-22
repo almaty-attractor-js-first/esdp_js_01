@@ -9,9 +9,9 @@ const createRouter = () => {
     router.post('/', (req, res) => {
         const user = new User({
             username: req.body.username,
-            password: req.body.password
+            password: req.body.password,
+            displayName: req.body.displayName
         });
-
         user.save().then(result => {
             res.send(result);
         }).catch(err => {

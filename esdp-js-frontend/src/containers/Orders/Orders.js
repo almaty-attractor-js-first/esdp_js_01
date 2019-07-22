@@ -6,17 +6,19 @@ import {fetchOrders} from "../../store/actions/actions";
 import './Orders.css';
 
 class Orders extends Component {
-	componentDidMount() {
-		//this.props.onFetchOrders();
-	}
+	// componentDidMount() {
+	// 	this.props.onFetchOrders();
+	// }
 
 	render() {
 		return (
 			<Fragment>
 				<div className="d-flex justify-content-between align-items-center">
-					<h1 className="Orders-h1">
-						Ваши заказы, {this.props.user.displayName ? this.props.user.displayName : this.props.user.username}
-					</h1>
+					{this.props.user ?
+						<h1 className="Orders-h1">
+							Ваши заказы, {this.props.user.displayName ? this.props.user.displayName : this.props.user.username}
+						</h1>
+					: null}
 				</div>
 				<Row>
 					{

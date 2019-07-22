@@ -27,7 +27,7 @@ const OrderItem = props => {
 };
 
 OrderItem.propTypes = {
-    id: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
     price: PropTypes.number.isRequired
 };

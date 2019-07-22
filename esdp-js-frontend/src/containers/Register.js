@@ -38,6 +38,9 @@ const styles = theme => ({
   input: {
     display: 'none',
   },
+  text: {
+    color: theme.palette.text.primary,
+  },
 });
 
 class SignUp extends React.Component {
@@ -59,19 +62,7 @@ class SignUp extends React.Component {
 
   onSubmitHandler = e => {
     e.preventDefault();
-    const formData = new FormData();
-
-    for (let key in this.state) {
-      formData.append(key, this.state[key]);
-    }
-
-    this.props.registerUser(formData)
-      .then(() => {
-        if (!this.props.error) {
-          return this.props.openSnack(`Success`, 'success');
-        }
-        this.props.openSnack(this.props.error.errors.username.message, 'error');
-      });
+    this.props.registerUser(this.state);
   };
   render() {
     const {classes} = this.props;
@@ -82,7 +73,7 @@ class SignUp extends React.Component {
           <Avatar className={classes.avatar}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5">
+          <Typography component="h1" variant="h5" className={classes.text}>
             Sign up
           </Typography>
           <form className={classes.form}
