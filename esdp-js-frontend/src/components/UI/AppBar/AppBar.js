@@ -86,7 +86,7 @@ const Header = (props) => {
                       variant="h6" noWrap
                       component={Link}
                       to='/'>
-            Sneakers cleaning
+            Shoes cleaning service
           </Typography>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
