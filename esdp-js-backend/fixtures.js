@@ -14,27 +14,15 @@ db.once('open', async () => {
         console.log("Collections were not present.");
     }
 
-    await Order.create({
-        name: "Intel Core i7",
-        model: "Core i7 8 Gen",
-        category: cpuCategory._id,
-        price: 700,
-        photo: "cpu.jpg"
-    }, {
-        name: "Seagate 3TB",
-        model: "Barracuda",
-        category: hddCategory._id,
-        price: 200,
-        photo: "hdd.jpg"
-    });
-
     await User.create({
-        username: "User",
-        password: "123",
+        username: "user",
+        password: "user",
+        displayName: "User",
         role: "user"
     }, {
         username: "admin",
         password: "admin",
+        displayName: "Admin",
         role: "admin"
     });
 
