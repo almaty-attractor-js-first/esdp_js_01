@@ -1,19 +1,17 @@
 const mongoose = require('mongoose');
 
-
 const Schema = mongoose.Schema;
 
 const OrderSchema = new Schema({
     client: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        ref: 'User'
     },
     email: {
         type: String,
         required: true
     },
-    telephone: {
+    phone: {
         type: Number,
         required: true
     },
@@ -33,18 +31,24 @@ const OrderSchema = new Schema({
         enum: ['waiting', 'inwork', 'ready', 'sorting', 'delivering', 'delivered'],
         default: 'waiting'
     },
-    numberofpairs: {
+    quantity: {
         type: Number,
         required: true,
         default: 1
     },
-    typeofcleaning: {
+    deliveryType: {
+        type: String,
+        enum: ['self', 'delivery']
+    },
+    cleaningType: {
         type: String,
         required: true,
-
-    }
+    },
     date: Date,
-    description: String
+    description: String,
+    price: Number,
+    address: String,
+    deliveryDate: Date
 });
 
 const Order = mongoose.model('Order', OrderSchema);
