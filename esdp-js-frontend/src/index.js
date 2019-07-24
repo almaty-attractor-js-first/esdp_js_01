@@ -14,6 +14,7 @@ import 'react-notifications/lib/notifications.css';
 import App from './App';
 import ordersReducer from './store/reducers/orders';
 import usersReducer from "./store/reducers/users";
+import newOrderReducer from "./store/reducers/newOrderReducer";
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -22,6 +23,7 @@ const history = createBrowserHistory();
 const rootReducer = combineReducers({
     orders: ordersReducer,
     users: usersReducer,
+    newOrder: newOrderReducer,
     router: connectRouter(history)
 });
 
