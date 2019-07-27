@@ -6,11 +6,11 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import FormElement from "../components/FormElementMaterial/FormElementMaterial";
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
 import {loginUser} from "../store/actions/usersActions";
 import FacebookLogin from "../components/FacebookLogin";
+import {TextField} from "@material-ui/core";
 const styles = theme => ({
   '@global': {
     body: {
@@ -69,7 +69,7 @@ class SignIn extends React.Component {
             <form className={classes.form}
                   noValidate
                   onSubmit={this.onSubmitHandler}>
-              <FormElement
+              <TextField
                 variant="outlined"
                 margin="normal"
                 required
@@ -81,7 +81,7 @@ class SignIn extends React.Component {
                 value={this.state.username}
                 onChange={this.inputChangeHandler}
               />
-              <FormElement
+              <TextField
                 variant="outlined"
                 margin="normal"
                 required
