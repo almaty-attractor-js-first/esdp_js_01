@@ -1,4 +1,5 @@
-import {GET_ALL_CLEANING_FIELDS, UPDATE_CLEANING_TYPES} from "./actionTypes";
+import axios from '../../axios-api'
+import {GET_ALL_CLEANING_FIELDS, UPDATE_CLEANING_TYPES, UPDATE_RPC_DATA} from "./actionTypes";
 
 export const getAllFields = (totalPrice) => {
   return dispatch => {
@@ -12,14 +13,28 @@ export const updateCleaningTypes = order => {
   };
 };
 
-// export const getTotalPrice = (arr) => {
-//     console.log("DISPATCH");
-//     const total = arr.reduce(
-//       (accumulator, currentValue) => accumulator + (currentValue.price * currentValue.qty),
-//       0
-//     );
-//     console.log(total);
-//
-//     setTotalPrice(total);
-// };
+export const testMethod2 = userId => {
+  return dispatch => {
+    axios.post("/", {
+      jsonrpc: '2.0',
+      method: 'getUser',
+      params: userId,
+      id: + new Date()
+    })
+      .then(
+        response => {
+          console.log(response);
+          console.log(response.data.result);
+          dispatch({type: UPDATE_RPC_DATA, response});
+        },
+        error => {
+          if (error.response && error.response.data) {
+            console.log('error')
+          } else {
+            dispatch(console.log("No internet connection"));
+          }
+        }
+      )
+  }
+};
 
