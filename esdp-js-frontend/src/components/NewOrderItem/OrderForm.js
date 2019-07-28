@@ -6,7 +6,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/PlusOne';
-import {getAllFields, updateCleaningTypes} from "../../store/actions/newOrderActions";
+import {getAllFields, getCleaningItems, updateCleaningTypes} from "../../store/actions/newOrderActions";
 import {connect} from "react-redux";
 
 const useStyles = makeStyles(theme => ({
@@ -25,20 +25,6 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const cleaningItems = {
-  'sneakers': "Кроссовки",
-  'boots': "Ботинки",
-  'slingBacks': "Туфли",
-  'highBoots': "Сапоги",
-};
-
-const cleaningPrices = {
-  'sneakers': 1500,
-  'boots': 2600,
-  'slingBacks': 3000,
-  'highBoots': 3800,
-};
-
 function UserForm(props) {
 
   const classes = useStyles();
@@ -47,13 +33,16 @@ function UserForm(props) {
   const handleCleaningTypesChange = event => {
     const _tempCleaningTypes = [...cleaningTypes];
     _tempCleaningTypes[event.target.dataset.id][event.target.name] = event.target.value;
-    _tempCleaningTypes[event.target.dataset.id].price = cleaningPrices[_tempCleaningTypes[event.target.dataset.id].cleaningType];
+    const cleaningTypeItem = props.cleaningItems.find(item => {
+      return item.name === _tempCleaningTypes[event.target.dataset.id].cleaningType
+    });
+    _tempCleaningTypes[event.target.dataset.id].price = cleaningTypeItem.price;
     setCleaningTypes(_tempCleaningTypes);
   };
 
 
   const addNewCleaningType = () => {
-    setCleaningTypes(prevCleaningTypes => [...prevCleaningTypes, { cleaningType: '', qty: 1, price: 0}]);
+    setCleaningTypes(prevCleaningTypes => [...prevCleaningTypes, { cleaningType: '', qty: 1, price: 0 }]);
   };
 
   const removeCleaningType = (i) => {
@@ -65,6 +54,10 @@ function UserForm(props) {
   const getTotal = () => {
     props.getAllCleaningFields(cleaningTypes);
   };
+
+  useEffect(() => {
+    props.getCleaningItems();
+  }, []);
 
   useEffect(() => {
     getTotal();
@@ -106,9 +99,12 @@ function UserForm(props) {
                   <option value="">
                     Не выбран
                   </option>
-                  {Object.keys(cleaningItems).map((key, index) => (
-                    <option key={index} value={key}>{cleaningItems[key]}</option>
-                  ))}
+                  {props.cleaningItems ?
+                    props.cleaningItems.map((item, index) => {
+                      return (
+                        <option key={index} value={item.name}>{item.title}</option>
+                      )
+                  }) : null}
                 </TextField>
               </Grid>
               <Grid item xs={3}>
@@ -151,6 +147,7 @@ function UserForm(props) {
 const mapStateToProps = state => {
   return {
     defaultCleaningTypeFields: state.newOrder.cleaningTypes,
+    cleaningItems: state.newOrder.cleaningItems,
   };
 };
 
@@ -158,6 +155,7 @@ const mapDispatchToProps = dispatch => {
   return {
     getAllCleaningFields: (arr) => dispatch(getAllFields(arr)),
     updateCleaningTypes: (order) => dispatch(updateCleaningTypes(order)),
+    getCleaningItems: () => dispatch(getCleaningItems()),
   };
 };
 

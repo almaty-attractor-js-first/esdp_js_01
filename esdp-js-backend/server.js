@@ -4,14 +4,15 @@ const app = require('express')();
 const bodyParser = require('body-parser');
 const jsonRouter = require('express-json-rpc-router');
 const cors = require('cors');
+const db = require('./db');
+
+const items = db.getSubject('cleaningItems');
+console.log(items);
 
 const controller = {
-    async getUser({ params }) {
-        console.log(params.userId);
-        const url = `https://jsonplaceholder.typicode.com/users/${params.userId}`;
-        const response = await axios.get(url);
-        return response.data
-    },
+    async getCleaningItems() {
+        return await db.getSubject('cleaningItems');
+    }
 };
 
 app.use(cors());
@@ -22,4 +23,4 @@ app.use(jsonRouter({
         console.log('Omg error occurred!', e)
     }
 }));
-app.listen(8001, () => console.log('Example app listening on port 8001'));
+app.listen(8000, () => console.log('Example app listening on port 8000'));

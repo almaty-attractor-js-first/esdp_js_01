@@ -1,4 +1,9 @@
-import {GET_ALL_CLEANING_FIELDS, UPDATE_CLEANING_TYPES, UPDATE_RPC_DATA} from "../actions/actionTypes";
+import {
+  GET_ALL_CLEANING_FIELDS,
+  GET_CLEANING_ITEMS,
+  UPDATE_CLEANING_TYPES,
+  UPDATE_RPC_DATA
+} from "../actions/actionTypes";
 
 const initialState = {
   totalPrice: 0,
@@ -9,7 +14,7 @@ const initialState = {
       price: 0
     },
   ],
-  testRPC: null
+  cleaningItems: [],
 };
 
 const reducer = (state = initialState, action) => {
@@ -23,8 +28,9 @@ const reducer = (state = initialState, action) => {
     case UPDATE_CLEANING_TYPES:
       return {...state, cleaningTypes: action.order};
     case UPDATE_RPC_DATA:
-      console.log(action.response);
       return {...state, testRPC: action.response.data.result};
+    case GET_CLEANING_ITEMS:
+      return {...state, cleaningItems: action.response.data.result};
     default:
       return state;
   }

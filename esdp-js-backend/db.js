@@ -1,9 +1,9 @@
 
-module.exports = {
+db = {
     get: (subject, id, token) => {
-        const user = db[subject].find((element) => {
-            return element.token === token
-        });
+        // const user = db[subject].find((element) => {
+        //     return element.token === token
+        // });
         if (!id) {
             if (subject === 'orders') {
 
@@ -46,46 +46,49 @@ module.exports = {
             }
         }
     },
+    getSubject: (subject) => {
+        return db[subject];
+    },
     post: (subject, data, token) => {
-            if (data) {
-                if (subject === 'orders') {
-                    const user = db[subject].find((element) => {return element.token === token});
-                    if (user.role === 'admin' || user.role === 'user') {
-                        data.date = new Date();
-                        db[subject].push(data);
-                    } else {
-                        return {message: "only user and admin can create orders"}
-                    }
-                } else if (subject === 'users') {
-                    db[subject].push(data);
-                } else if (subject === 'cleaningTypes') {
-                    data.date = new Date();
-                }
-            }
-            },
-    delete: (subject, id, token) => {
-            if (id) {
+        if (data) {
+            if (subject === 'orders') {
                 const user = db[subject].find((element) => {return element.token === token});
-                if (user.role === 'admin') {
-                    const index = db[subject].findIndex( (element) => {return element.id === id});
-                    db[subject].slice(index, 1);
+                if (user.role === 'admin' || user.role === 'user') {
+                    data.date = new Date();
+                    db[subject].push(data);
                 } else {
-                    return {message: "you dont have enough rights to delete this"}
+                    return {message: "only user and admin can create orders"}
                 }
+            } else if (subject === 'users') {
+                db[subject].push(data);
+            } else if (subject === 'cleaningTypes') {
+                data.date = new Date();
             }
-        },
-    getOrdersByStatus: (status, token) => {
+        }
+    },
+    delete: (subject, id, token) => {
+        if (id) {
             const user = db[subject].find((element) => {return element.token === token});
-            if (user.role === 'master' || user.role === 'admin') {
-                return db.orders.find((element) => {return element.status === status});
+            if (user.role === 'admin') {
+                const index = db[subject].findIndex( (element) => {return element.id === id});
+                db[subject].slice(index, 1);
             } else {
-                return {message: "you dont have enough rights to fetch orders by status"}
+                return {message: "you dont have enough rights to delete this"}
             }
+        }
+    },
+    getOrdersByStatus: (status, token) => {
+        const user = db[subject].find((element) => {return element.token === token});
+        if (user.role === 'master' || user.role === 'admin') {
+            return db.orders.find((element) => {return element.status === status});
+        } else {
+            return {message: "you dont have enough rights to fetch orders by status"}
+        }
 
-        },
+    },
     getUsersByRole: (role) => {
-            return db.users.find((user) => { return user.role === role});
-        },
+        return db.users.find((user) => { return user.role === role});
+    },
     users: [
         {
             id: '1',
@@ -152,7 +155,10 @@ module.exports = {
         {name: "slingBacks", title: "Туфли", price: 3000, status: true},
         {name: "highBoots", title: "Сапоги", price: 3800, status: true}
     ]
-}
+};
+
+module.exports = db;
+
 
 
 

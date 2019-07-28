@@ -1,5 +1,5 @@
 import axios from '../../axios-api'
-import {GET_ALL_CLEANING_FIELDS, UPDATE_CLEANING_TYPES, UPDATE_RPC_DATA} from "./actionTypes";
+import {GET_ALL_CLEANING_FIELDS, GET_CLEANING_ITEMS, UPDATE_CLEANING_TYPES, UPDATE_RPC_DATA} from "./actionTypes";
 
 export const getAllFields = (totalPrice) => {
   return dispatch => {
@@ -37,4 +37,29 @@ export const testMethod2 = userId => {
       )
   }
 };
+
+export const getCleaningItems = () => {
+  console.log('getCleaning');
+  return dispatch => {
+    axios.post("/", {
+      jsonrpc: '2.0',
+      method: 'getCleaningItems',
+      id: + new Date()
+    })
+      .then(
+        response => {
+          console.log('dispatchCleaning');
+          dispatch({type: GET_CLEANING_ITEMS, response});
+        },
+        error => {
+          if (error.response && error.response.data) {
+            console.log('error')
+          } else {
+            dispatch(console.log("No internet connection"));
+          }
+        }
+      )
+  }
+};
+
 
