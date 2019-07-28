@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const config = require("./config");
-
 const User = require("./models/User");
 const Order = require("./models/Order");
 

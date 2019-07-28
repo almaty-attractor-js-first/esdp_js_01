@@ -1,28 +1,28 @@
 Arguments: 
-  /usr/bin/node /usr/share/yarn/bin/yarn.js add body-parser express-json-rpc-router
+  /Users/admin/.nvm/versions/node/v10.15.3/bin/node /usr/local/Cellar/yarn/1.15.2/libexec/bin/yarn.js
 
 PATH: 
-  /home/gena/js/ESDP/esdp-js-backend/node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+  /Users/admin/.nvm/versions/node/v10.15.3/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/admin/ESDP/esdp_js_01/esdp-js-backend/node_modules/.bin
 
 Yarn version: 
-  1.17.3
+  1.15.2
 
 Node version: 
-  10.15.2
+  10.15.3
 
 Platform: 
-  linux x64
+  darwin x64
 
 Trace: 
-  SyntaxError: Invalid value type 398:0 in /home/gena/js/ESDP/esdp-js-backend/yarn.lock
-      at Parser.unexpected (/usr/share/yarn/lib/cli.js:64230:11)
-      at Parser.parse (/usr/share/yarn/lib/cli.js:64358:16)
-      at parse (/usr/share/yarn/lib/cli.js:64433:19)
-      at module.exports.exports.default (/usr/share/yarn/lib/cli.js:63997:96)
-      at Function.<anonymous> (/usr/share/yarn/lib/cli.js:3035:63)
+  SyntaxError: Invalid value type 398:0 in /Users/admin/ESDP/esdp_js_01/esdp-js-backend/yarn.lock
+      at Parser.unexpected (/usr/local/Cellar/yarn/1.15.2/libexec/lib/cli.js:63184:11)
+      at Parser.parse (/usr/local/Cellar/yarn/1.15.2/libexec/lib/cli.js:63312:16)
+      at parse (/usr/local/Cellar/yarn/1.15.2/libexec/lib/cli.js:63386:17)
+      at module.exports.exports.default (/usr/local/Cellar/yarn/1.15.2/libexec/lib/cli.js:62955:96)
+      at Function.<anonymous> (/usr/local/Cellar/yarn/1.15.2/libexec/lib/cli.js:3035:63)
       at Generator.next (<anonymous>)
-      at step (/usr/share/yarn/lib/cli.js:304:30)
-      at /usr/share/yarn/lib/cli.js:315:13
+      at step (/usr/local/Cellar/yarn/1.15.2/libexec/lib/cli.js:304:30)
+      at /usr/local/Cellar/yarn/1.15.2/libexec/lib/cli.js:315:13
 
 npm manifest: 
   {

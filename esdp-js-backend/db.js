@@ -20,8 +20,6 @@ db = {
                 }
             }
 
-
-
         } else {
             const item = db[subject].find((element) => {
                 return element.id === id
