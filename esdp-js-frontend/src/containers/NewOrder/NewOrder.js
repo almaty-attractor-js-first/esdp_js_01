@@ -13,6 +13,8 @@ import OrderForm from '../../components/NewOrderItem/OrderForm';
 import {connect} from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import SplitButton from "../../components/UI/SplitButton";
+import Reviews from "../../components/NewOrderItem/Reviews";
+import RadioButtonsGroup from "../../components/NewOrderItem/RadioButtons";
 
 const options = ['наличными', 'онлайн', 'Другой вариант'];
 
@@ -42,7 +44,7 @@ const useStyles = makeStyles(theme => ({
   },
   buttons: {
     display: 'flex',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
   },
   button: {
     marginTop: theme.spacing(3),
@@ -52,9 +54,12 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(3),
     marginRight: theme.spacing(1),
   },
+  buttonsWrapper: {
+    justifyContent: 'center'
+  },
 }));
 
-const steps = ['Детали заказа', 'ФИО и доставка', 'Оплата онлайн'];
+const steps = ['Детали заказа', 'ФИО и доставка', 'Оплата', 'Summary'];
 
 function getStepContent(step) {
   switch (step) {
@@ -64,6 +69,8 @@ function getStepContent(step) {
       return <UserForm />;
     case 2:
       return <PaymentForm />;
+    case 3:
+      return <Reviews />;
     default:
       throw new Error('Unknown step');
   }
@@ -72,13 +79,26 @@ function getStepContent(step) {
 function Checkout(props) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
+  const [paymentMethod, setPaymentMethod] = React.useState('cash');
+
+  const handleChangePaymentMethod = (event) => {
+    setPaymentMethod(event.target.value);
+  };
 
   const handleNext = () => {
-    setActiveStep(activeStep + 1);
+    if (activeStep === 1 && paymentMethod === 'cash') {
+      setActiveStep(activeStep + 2)
+    } else {
+      setActiveStep(activeStep + 1);
+    }
   };
 
   const handleBack = () => {
-    setActiveStep(activeStep - 1);
+    if (activeStep === 3 && paymentMethod === 'cash') {
+      setActiveStep(activeStep - 2)
+    } else {
+      setActiveStep(activeStep - 1);
+    }
   };
 
   return (
@@ -110,33 +130,33 @@ function Checkout(props) {
             ) : (
               <React.Fragment>
                 {getStepContent(activeStep)}
-                <Grid container  spacing={3}>
-                  <Grid item xs={12} sm={8}>
-                    <Typography className={classes.total} component="h6" variant="h6">
-                      Заказ на сумму: {props.totalPrice} тг
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
+                {activeStep === 1 && (
+                  <RadioButtonsGroup paymentMethod={paymentMethod} handleChangePaymentMethod={handleChangePaymentMethod}/>
+                )}
+                <Grid container  spacing={3} className={classes.buttonsWrapper}>
+                  {activeStep !== 3 && (
+                    <Grid item xs={12} sm={8}>
+                      <Typography className={classes.total} component="h6" variant="h6">
+                        Заказ на сумму: {props.totalPrice} тг
+                      </Typography>
+                    </Grid>
+                  )}
+                  <Grid item xs={12} sm={activeStep === 3 ? 12 : 4}>
                     <div className={classes.buttons}>
                       {activeStep !== 0 && (
                         <Button onClick={handleBack} className={classes.button}>
                           Назад
                         </Button>
                       )}
-                      {
-                        activeStep === steps.length - 2 ?
-                          <SplitButton
-                            options={options}
-                          /> :
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleNext}
-                            className={classes.button}
-                          >
-                            Далее
-                          </Button>
-                      }
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleNext}
+                        className={classes.button}
+                        style={{marginLeft: 'auto'}}
+                      >
+                        {activeStep === steps.length - 1 ? 'Оформить' : 'Далее'}
+                      </Button>
                     </div>
                   </Grid>
                 </Grid>

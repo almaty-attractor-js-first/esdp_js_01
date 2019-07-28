@@ -37,6 +37,7 @@ function UserForm(props) {
       return item.name === _tempCleaningTypes[event.target.dataset.id].cleaningType
     });
     _tempCleaningTypes[event.target.dataset.id].price = cleaningTypeItem.price;
+    _tempCleaningTypes[event.target.dataset.id].title = cleaningTypeItem.title;
     setCleaningTypes(_tempCleaningTypes);
   };
 

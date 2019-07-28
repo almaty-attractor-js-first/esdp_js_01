@@ -5,20 +5,13 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
+import {connect} from "react-redux";
 
-const products = [
-  { name: 'Product 1', desc: 'A nice thing', price: '$9.99' },
-  { name: 'Product 2', desc: 'Another thing', price: '$3.45' },
-  { name: 'Product 3', desc: 'Something else', price: '$6.51' },
-  { name: 'Product 4', desc: 'Best thing of all', price: '$14.11' },
-  { name: 'Shipping', desc: '', price: 'Free' },
-];
 const addresses = ['1 Material-UI Drive', 'Reactville', 'Anytown', '99999', 'USA'];
 const payments = [
-  { name: 'Card type', detail: 'Visa' },
-  { name: 'Card holder', detail: 'Mr John Smith' },
-  { name: 'Card number', detail: 'xxxx-xxxx-xxxx-1234' },
-  { name: 'Expiry date', detail: '04/2024' },
+  { name: 'Имя на карте', detail: 'Mr John Smith' },
+  { name: 'Номер карты', detail: 'xxxx-xxxx-xxxx-1234' },
+  { name: 'Дата', detail: '04/2024' },
 ];
 
 const useStyles = makeStyles(theme => ({
@@ -33,39 +26,39 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Review() {
+function Review(props) {
   const classes = useStyles();
 
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
-        Order summary
+        Сводка / Резюме?
       </Typography>
       <List disablePadding>
-        {products.map(product => (
-          <ListItem className={classes.listItem} key={product.name}>
-            <ListItemText primary={product.name} secondary={product.desc} />
-            <Typography variant="body2">{product.price}</Typography>
+        {props.cleaningTypesFields.map(product => (
+          <ListItem className={classes.listItem} key={product.cleaningType}>
+            <ListItemText primary={`${product.title} x ${product.qty}`} secondary={product.cleaningType} />
+            <Typography variant="body2">{product.price * product.qty} ₸</Typography>
           </ListItem>
         ))}
         <ListItem className={classes.listItem}>
-          <ListItemText primary="Total" />
+          <ListItemText primary="Заказ на сумму:" />
           <Typography variant="subtitle1" className={classes.total}>
-            $34.06
+            {props.totalPrice} ₸
           </Typography>
         </ListItem>
       </List>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
           <Typography variant="h6" gutterBottom className={classes.title}>
-            Shipping
+            Доставка
           </Typography>
           <Typography gutterBottom>John Smith</Typography>
           <Typography gutterBottom>{addresses.join(', ')}</Typography>
         </Grid>
         <Grid item container direction="column" xs={12} sm={6}>
           <Typography variant="h6" gutterBottom className={classes.title}>
-            Payment details
+            Детали оплаты
           </Typography>
           <Grid container>
             {payments.map(payment => (
@@ -84,3 +77,14 @@ export default function Review() {
     </React.Fragment>
   );
 }
+
+const mapStateToProps = state => {
+  return {
+    cleaningTypesFields: state.newOrder.cleaningTypes,
+    cleaningItems: state.newOrder.cleaningItems,
+    totalPrice: state.newOrder.totalPrice
+  };
+};
+
+export default connect(mapStateToProps)(Review);
+
