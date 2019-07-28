@@ -9,6 +9,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
+    justifyContent: 'flex-end'
   },
   formControl: {
     margin: theme.spacing(2),

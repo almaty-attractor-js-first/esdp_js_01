@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function UserForm(props) {
+function OrderForm(props) {
 
   const classes = useStyles();
 
@@ -97,7 +97,7 @@ function UserForm(props) {
                   }}
                   helperText="Тип чистки"
                 >
-                  <option value="">
+                  <option value="" disabled>
                     Не выбран
                   </option>
                   {props.cleaningItems ?
@@ -115,7 +115,7 @@ function UserForm(props) {
                   onChange={handleCleaningTypesChange}
                   type="number"
                   inputProps={{
-                    min: "0", max: "10", step: "1",
+                    min: "1", max: "10", step: "1",
                     'data-id': index
                   }}
                   value={item.qty}
@@ -160,4 +160,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserForm);
+export default connect(mapStateToProps, mapDispatchToProps)(OrderForm);

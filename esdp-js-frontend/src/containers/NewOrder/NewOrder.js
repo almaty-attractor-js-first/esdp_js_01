@@ -12,11 +12,8 @@ import PaymentForm from '../../components/NewOrderItem/PaymentForm';
 import OrderForm from '../../components/NewOrderItem/OrderForm';
 import {connect} from "react-redux";
 import Grid from "@material-ui/core/Grid";
-import SplitButton from "../../components/UI/SplitButton";
 import Reviews from "../../components/NewOrderItem/Reviews";
 import RadioButtonsGroup from "../../components/NewOrderItem/RadioButtons";
-
-const options = ['наличными', 'онлайн', 'Другой вариант'];
 
 const useStyles = makeStyles(theme => ({
   layout: {

@@ -1,22 +1,30 @@
-import React, {Fragment, useReducer} from 'react';
+import React, {Fragment, useEffect, useReducer} from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
+import {updateUserData} from "../../store/actions/newOrderActions";
+import {connect} from "react-redux";
 
 function UserForm(props) {
   const [userInput, setUserInput] = useReducer(
     (state, newState) => ({...state, ...newState}),
     {
-      firstName: '',
-      lastName: '',
-      phone: '',
-      email: ''
+      firstName: props.userData.firstName,
+      lastName: props.userData.lastName,
+      phone: props.userData.phone,
+      email: props.userData.email
     }
   );
   const handleChange = e => {
     const { name, value} = e.target;
     setUserInput({[name]: value});
   };
+
+  useEffect(() => {
+    console.log(props.userData);
+    console.log(userInput);
+    props.updateUserData(userInput);
+  }, [userInput]);
 
   return (
     <Fragment>
@@ -73,4 +81,16 @@ function UserForm(props) {
   );
 }
 
-export default UserForm;
+const mapStateToProps = state => {
+  return {
+    userData: state.newOrder.userData,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    updateUserData: (userData) => dispatch(updateUserData(userData)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserForm);

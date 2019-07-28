@@ -1,12 +1,17 @@
 import {
-  GET_ALL_CLEANING_FIELDS,
+  CALCULATE_TOTAL,
   GET_CLEANING_ITEMS,
   UPDATE_CLEANING_TYPES,
-  UPDATE_RPC_DATA
+  UPDATE_USER_DATA
 } from "../actions/actionTypes";
 
 const initialState = {
-  totalPrice: 0,
+  userData: {
+    firstName: '',
+    lastName: '',
+    phone: '',
+    email: ''
+  },
   cleaningTypes: [
     {
       cleaningType: "",
@@ -14,21 +19,22 @@ const initialState = {
       price: 0
     },
   ],
+  totalPrice: 0,
   cleaningItems: [],
 };
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {
-    case GET_ALL_CLEANING_FIELDS:
-      const total = action.totalPrice.reduce(
-        (accumulator, currentValue) => accumulator + (currentValue.price * currentValue.qty),
+    case CALCULATE_TOTAL:
+      const total = action.cleaningFields.reduce(
+        (accumulator, cleaningField) => accumulator + (cleaningField.price * cleaningField.qty),
         0
       );
       return {...state, totalPrice: total};
     case UPDATE_CLEANING_TYPES:
       return {...state, cleaningTypes: action.order};
-    case UPDATE_RPC_DATA:
-      return {...state, testRPC: action.response.data.result};
+    case UPDATE_USER_DATA:
+      return {...state, userData: action.userData};
     case GET_CLEANING_ITEMS:
       return {...state, cleaningItems: action.response.data.result};
     default:

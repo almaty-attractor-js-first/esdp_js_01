@@ -6,9 +6,6 @@ const jsonRouter = require('express-json-rpc-router');
 const cors = require('cors');
 const db = require('./db');
 
-const items = db.getSubject('cleaningItems');
-console.log(items);
-
 const controller = {
     async getCleaningItems() {
         return await db.getSubject('cleaningItems');
