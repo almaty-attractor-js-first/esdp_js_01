@@ -147,7 +147,7 @@ function OrderForm(props) {
 }
 const mapStateToProps = state => {
   return {
-    defaultCleaningTypeFields: state.newOrder.cleaningTypes,
+    defaultCleaningTypeFields: state.newOrder.orderItems,
     cleaningItems: state.newOrder.cleaningItems,
   };
 };
