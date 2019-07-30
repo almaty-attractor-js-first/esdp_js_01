@@ -5,38 +5,48 @@ const Order = require('../models/Order');
 const config = require('../config');
 const nanoid = require('nanoid');
 const axios = require('axios');
-
+const db = require('../db');
 
 
 
 const createRouter = () => {
-    router.post('/', async (req, res) => {
-        const token = req.get("Authorization");
-        if (token) {
-            const user = await User.findOne({token});
-        }
+    // router.post('/', async (req, res) => {
+    //     const token = req.get("Authorization");
+    //     if (token) {
+    //         const user = await User.findOne({token});
+    //     }
+    //
+    //     let orderData = req.body;
+    //
+    //         orderData.date = new Date();
+    //
+    //         client: user,
+    //         status: 'inwork'
+    //
+    //
+    //         description: 'помыть'
+    //         email: 'jamesbond@gmail.com',
+    //
+    //     const order = new Order(orderData);
+    //
+    //     order.save().then(result => {
+    //         res.send(result);
+    //     }).catch(err => {
+    //         res.status(400).send({message: err});
+    //     })
+    // });
 
-        let orderData = req.body;
-
-            orderData.date = new Date();
-
-            client: user,
-            status: 'inwork'
-
-
-            description: 'помыть'
-            email: 'jamesbond@gmail.com',
-
-        const order = new Order(orderData);
-
-        order.save().then(result => {
-            res.send(result);
-        }).catch(err => {
-            res.status(400).send({message: err});
-        })
-    });
-
-    router.post('/sessions', async (req, res) => {
+    // router.post('/sessions', async (req, res) => {
+    //     const user = await User.findOne({username: req.body.username});
+    //     if (!user) return res.status(400).send({message: 'User not found'});
+    //     const isMatch = await user.checkPassword(req.body.password);
+    //     if(!isMatch) return res.status(400).send({message: "Wrong password"});
+    //     user.token = nanoid();
+    //     user.save().then((result) => {
+    //         res.send(result);
+    //     });
+    // });
+    router.post('/orders', async (req, res) => {
         const user = await User.findOne({username: req.body.username});
         if (!user) return res.status(400).send({message: 'User not found'});
         const isMatch = await user.checkPassword(req.body.password);
@@ -46,17 +56,23 @@ const createRouter = () => {
             res.send(result);
         });
     });
+    router.get('/orders' , async (req , res) => {
 
-    router.delete('/sessions', async (req, res) => {
-        const token = req.get("Authorization");
-        const success = {message: "Logged out!"};
-        if(!token) return res.send(success);
-        const user = await User.findOne({token});
-        if(!user) return res.send(success);
-        user.token = nanoid();
-        await user.save();
-        res.send(success);
+        const result = await db.getSubject('cleaningItems');
+        console.log(result)
+        res.send(result);
+
     });
+    // router.delete('/sessions', async (req, res) => {
+    //     const token = req.get("Authorization");
+    //     const success = {message: "Logged out!"};
+    //     if(!token) return res.send(success);
+    //     const user = await User.findOne({token});
+    //     if(!user) return res.send(success);
+    //     user.token = nanoid();
+    //     await user.save();
+    //     res.send(success);
+    // });
 
     router.post('/facebookLogin', async (req, res) => {
         const inputToken = req.body.accessToken;

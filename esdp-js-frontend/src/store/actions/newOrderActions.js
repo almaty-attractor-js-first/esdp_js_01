@@ -7,6 +7,11 @@ export const getAllFields = (cleaningFields) => {
   };
 };
 
+export const getCleaningItemsFromServer = (array) => {
+  return dispatch => {
+    dispatch({type: GET_CLEANING_ITEMS, array});
+  }
+}
 export const updateOrderItems = order => {
   return dispatch => {
     dispatch({type: UPDATE_ORDER_ITEMS, order});
@@ -21,22 +26,15 @@ export const updateUserData = userData => {
 
 export const getCleaningItems = () => {
   return dispatch => {
-    axios.post("/", {
-      jsonrpc: '2.0',
-      method: 'getCleaningItems',
-      id: + new Date()
+    axios.get("/orders").then(response => {
+      let data = response.data;
+      dispatch(getCleaningItemsFromServer(data));
+    },error => {
+      if (error.response && error.response.data) {
+      } else {
+        dispatch(console.log("No internet connection"));
+      }
     })
-      .then(
-        response => {
-          dispatch({type: GET_CLEANING_ITEMS, response});
-        },
-        error => {
-          if (error.response && error.response.data) {
-          } else {
-            dispatch(console.log("No internet connection"));
-          }
-        }
-      )
   }
 };
 

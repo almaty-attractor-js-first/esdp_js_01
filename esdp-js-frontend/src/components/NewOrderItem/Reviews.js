@@ -80,7 +80,7 @@ function Review(props) {
 
 const mapStateToProps = state => {
   return {
-    cleaningTypesFields: state.newOrder.cleaningTypes,
+    cleaningTypesFields: state.newOrder.orderItems,
     cleaningItems: state.newOrder.cleaningItems,
     totalPrice: state.newOrder.totalPrice
   };

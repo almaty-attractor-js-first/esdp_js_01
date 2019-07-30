@@ -37,7 +37,7 @@ const reducer = (state = initialState, action) => {
     case UPDATE_USER_DATA:
       return {...state, userData: action.userData};
     case GET_CLEANING_ITEMS:
-      return {...state, cleaningItems: action.response.data.result};
+      return {...state, cleaningItems: action.array};
     default:
       return state;
   }

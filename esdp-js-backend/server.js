@@ -5,6 +5,10 @@ const bcrypt = require('bcrypt');
 const SALT_WORK_FACTOR = 10;
 const bodyParser = require('body-parser');
 const jsonRouter = require('express-json-rpc-router');
+const cors = require('cors');
+const db = require('./db');
+const orders = require('./app/orders');
+const express = require('express');
 
 const controller = {
     async getOrders({params}) {
@@ -24,7 +28,20 @@ const controller = {
     }
 };
 
+app.use(express.json());
+app.use(express.static('public'));
+app.use(cors());
 app.use(bodyParser.json());
+app.use('/' , orders());
+// app.use(jsonRouter({
+//     methods: controller,
+//     onError(e) {
+//         console.log('Omg error occurred!', e)
+//     }
+// }));
+
+
+app.listen(8000, () => console.log('Example app listening on port 8000'));
 app.use(jsonRouter({ methods: controller }));
 app.listen(8001, () => console.log('Example app listening on port 8001'));
 
