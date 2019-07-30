@@ -10,9 +10,10 @@ const initialState = {
     firstName: '',
     lastName: '',
     phone: '',
-    email: ''
+    email: '',
+    address: ''
   },
-  cleaningTypes: [
+  orderItems: [
     {
       cleaningType: "",
       qty: 0,
