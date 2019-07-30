@@ -6,7 +6,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/PlusOne';
-import {getAllFields, getCleaningItems, updateCleaningTypes} from "../../store/actions/newOrderActions";
+import {getAllFields, getCleaningItems, updateOrderItems} from "../../store/actions/newOrderActions";
 import {connect} from "react-redux";
 
 const useStyles = makeStyles(theme => ({
@@ -29,31 +29,31 @@ function OrderForm(props) {
 
   const classes = useStyles();
 
-  const [cleaningTypes, setCleaningTypes] = useState(props.defaultCleaningTypeFields);
-  const handleCleaningTypesChange = event => {
-    const _tempCleaningTypes = [...cleaningTypes];
-    _tempCleaningTypes[event.target.dataset.id][event.target.name] = event.target.value;
-    const cleaningTypeItem = props.cleaningItems.find(item => {
-      return item.name === _tempCleaningTypes[event.target.dataset.id].cleaningType
+  const [orderItems, setOrderItems] = useState(props.defaultOrderItemFields);
+  const handleOrderItemsChange = event => {
+    const _tempOrderItems= [...orderItems];
+    _tempOrderItems[event.target.dataset.id][event.target.name] = event.target.value;
+    const orderItem = props.cleaningItems.find(item => {
+      return item.name === _tempOrderItems[event.target.dataset.id].cleaningType
     });
-    _tempCleaningTypes[event.target.dataset.id].price = cleaningTypeItem.price;
-    _tempCleaningTypes[event.target.dataset.id].title = cleaningTypeItem.title;
-    setCleaningTypes(_tempCleaningTypes);
+    _tempOrderItems[event.target.dataset.id].price = orderItem.price;
+    _tempOrderItems[event.target.dataset.id].title = orderItem.title;
+    setOrderItems(_tempOrderItems);
   };
 
 
-  const addNewCleaningType = () => {
-    setCleaningTypes(prevCleaningTypes => [...prevCleaningTypes, { cleaningType: '', qty: 1, price: 0 }]);
+  const addNewOrderItem= () => {
+    setOrderItems(prevOrderItems => [...prevOrderItems, { cleaningType: '', qty: 1, price: 0 }]);
   };
 
-  const removeCleaningType = (i) => {
-    const _tempCleaningTypes = [...cleaningTypes];
-    _tempCleaningTypes.splice(i, 1);
-    setCleaningTypes(_tempCleaningTypes);
+  const removeOrderItem = (i) => {
+    const _tempOrderItems = [...orderItems];
+    _tempOrderItems.splice(i, 1);
+    setOrderItems(_tempOrderItems);
   };
 
   const getTotal = () => {
-    props.getAllCleaningFields(cleaningTypes);
+    props.getAllCleaningFields(orderItems);
   };
 
   useEffect(() => {
@@ -65,8 +65,8 @@ function OrderForm(props) {
   });
 
   useEffect(() => {
-    props.updateCleaningTypes(cleaningTypes);
-  }, [cleaningTypes]);
+    props.updateOrderItems(orderItems);
+  }, [orderItems]);
 
 
 
@@ -77,7 +77,7 @@ function OrderForm(props) {
       </Typography>
       <Grid container spacing={3}>
         <Fragment>
-          {cleaningTypes.map((item, index) => (
+          {orderItems.map((item, index) => (
             <Fragment key={index}>
               <Grid item xs={6} sm={7}>
                 <TextField
@@ -86,7 +86,7 @@ function OrderForm(props) {
                   data-id={index}
                   fullWidth
                   value={item.cleaningType}
-                  onChange={handleCleaningTypesChange}
+                  onChange={handleOrderItemsChange}
                   inputProps={{
                     name: 'cleaningType',
                     id: 'cleaningType',
@@ -112,7 +112,7 @@ function OrderForm(props) {
                 <TextField
                   className={classes.select}
                   data-id={index}
-                  onChange={handleCleaningTypesChange}
+                  onChange={handleOrderItemsChange}
                   type="number"
                   inputProps={{
                     min: "1", max: "10", step: "1",
@@ -128,13 +128,13 @@ function OrderForm(props) {
               </Grid>
               <Grid item xs={1}>
                 {index ?
-                  <IconButton size="small" className={classes.bottomIcon} color="secondary" onClick={() => removeCleaningType(index)}>
+                  <IconButton size="small" className={classes.bottomIcon} color="secondary" onClick={() => removeOrderItem(index)}>
                     <DeleteIcon fontSize="small"/>
                   </IconButton>
                 : null}
               </Grid>
               <Grid item xs={1}>
-                <IconButton size="small" className={classes.bottomIcon} color="primary"  onClick={addNewCleaningType}>
+                <IconButton size="small" className={classes.bottomIcon} color="primary"  onClick={addNewOrderItem}>
                   <AddIcon fontSize="small"/>
                 </IconButton>
               </Grid>
@@ -147,7 +147,7 @@ function OrderForm(props) {
 }
 const mapStateToProps = state => {
   return {
-    defaultCleaningTypeFields: state.newOrder.orderItems,
+    defaultOrderItemFields: state.newOrder.orderItems,
     cleaningItems: state.newOrder.cleaningItems,
   };
 };
@@ -155,7 +155,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     getAllCleaningFields: (arr) => dispatch(getAllFields(arr)),
-    updateCleaningTypes: (order) => dispatch(updateCleaningTypes(order)),
+    updateOrderItems: (order) => dispatch(updateOrderItems(order)),
     getCleaningItems: () => dispatch(getCleaningItems()),
   };
 };

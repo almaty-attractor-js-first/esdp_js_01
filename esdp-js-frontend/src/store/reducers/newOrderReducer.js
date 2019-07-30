@@ -1,7 +1,7 @@
 import {
   CALCULATE_TOTAL,
   GET_CLEANING_ITEMS,
-  UPDATE_CLEANING_TYPES,
+  UPDATE_ORDER_ITEMS,
   UPDATE_USER_DATA
 } from "../actions/actionTypes";
 
@@ -32,8 +32,8 @@ const reducer = (state = initialState, action) => {
         0
       );
       return {...state, totalPrice: total};
-    case UPDATE_CLEANING_TYPES:
-      return {...state, cleaningTypes: action.order};
+    case UPDATE_ORDER_ITEMS:
+      return {...state, orderItems: action.order};
     case UPDATE_USER_DATA:
       return {...state, userData: action.userData};
     case GET_CLEANING_ITEMS:

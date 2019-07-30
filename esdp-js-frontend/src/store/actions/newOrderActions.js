@@ -1,5 +1,5 @@
 import axios from '../../axios-api'
-import {CALCULATE_TOTAL, GET_CLEANING_ITEMS, UPDATE_CLEANING_TYPES, UPDATE_USER_DATA} from "./actionTypes";
+import {CALCULATE_TOTAL, GET_CLEANING_ITEMS, UPDATE_ORDER_ITEMS, UPDATE_USER_DATA} from "./actionTypes";
 
 export const getAllFields = (cleaningFields) => {
   return dispatch => {
@@ -7,9 +7,9 @@ export const getAllFields = (cleaningFields) => {
   };
 };
 
-export const updateCleaningTypes = order => {
+export const updateOrderItems = order => {
   return dispatch => {
-    dispatch({type: UPDATE_CLEANING_TYPES, order});
+    dispatch({type: UPDATE_ORDER_ITEMS, order});
   };
 };
 
@@ -20,7 +20,6 @@ export const updateUserData = userData => {
 };
 
 export const getCleaningItems = () => {
-  console.log('getCleaning');
   return dispatch => {
     axios.post("/", {
       jsonrpc: '2.0',
@@ -29,12 +28,10 @@ export const getCleaningItems = () => {
     })
       .then(
         response => {
-          console.log('dispatchCleaning');
           dispatch({type: GET_CLEANING_ITEMS, response});
         },
         error => {
           if (error.response && error.response.data) {
-            console.log('error')
           } else {
             dispatch(console.log("No internet connection"));
           }
