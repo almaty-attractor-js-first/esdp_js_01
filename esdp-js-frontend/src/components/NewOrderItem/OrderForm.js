@@ -31,7 +31,7 @@ function OrderForm(props) {
 
   const [orderItems, setOrderItems] = useState(props.defaultOrderItemFields);
   const handleOrderItemsChange = event => {
-    const _tempOrderItems= [...orderItems];
+    const _tempOrderItems = [...orderItems];
     _tempOrderItems[event.target.dataset.id][event.target.name] = event.target.value;
     const orderItem = props.cleaningItems.find(item => {
       return item.name === _tempOrderItems[event.target.dataset.id].cleaningType
@@ -73,7 +73,7 @@ function OrderForm(props) {
   return (
     <Fragment>
       <Typography variant="h6" gutterBottom>
-        Информация о заказе
+        Выберите тип чистки
       </Typography>
       <Grid container spacing={3}>
         <Fragment>

@@ -4,6 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import {updateUserData} from "../../store/actions/newOrderActions";
 import {connect} from "react-redux";
+import TimePicker from "../UI/DatePicker";
 
 function UserForm(props) {
   const [userInput, setUserInput] = useReducer(
@@ -12,24 +13,23 @@ function UserForm(props) {
       firstName: props.userData.firstName,
       lastName: props.userData.lastName,
       phone: props.userData.phone,
-      email: props.userData.email
+      email: props.userData.email,
+      address: props.userData.address
     }
   );
   const handleChange = e => {
-    const { name, value} = e.target;
+    const {name, value} = e.target;
     setUserInput({[name]: value});
   };
 
   useEffect(() => {
-    console.log(props.userData);
-    console.log(userInput);
     props.updateUserData(userInput);
   }, [userInput]);
 
   return (
     <Fragment>
       <Typography variant="h6" gutterBottom>
-        Информация о клиенте
+        Введите ФИО, выберите способ доставки и оплаты
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12}>
@@ -75,6 +75,23 @@ function UserForm(props) {
             fullWidth
             onChange={handleChange}
           />
+        </Grid>
+        <Grid item xs={props.deliveryType === 'delivery' ? 9 : 12}>
+          {props.deliveryType === 'delivery' ?
+            <TextField
+              value={userInput.address}
+              required
+              id="address"
+              name="address"
+              label="Адрес"
+              fullWidth
+              onChange={handleChange}
+            />
+          : <Typography align='center'>КАРТА</Typography>}
+
+        </Grid>
+        <Grid container item justify='flex-end' xs={props.deliveryType === 'delivery' ? 3 : 12}>
+          <TimePicker />
         </Grid>
       </Grid>
     </Fragment>

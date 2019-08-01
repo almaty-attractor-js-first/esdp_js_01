@@ -28,27 +28,28 @@ export default function RadioButtonsGroup(props) {
   return (
     <div className={classes.root}>
       <FormControl component="fieldset" className={classes.formControl}>
-        <FormLabel component="legend">Способ оплаты</FormLabel>
+        <FormLabel component="legend">{props.legend}</FormLabel>
         <RadioGroup
           aria-label="gender"
           name="gender2"
           className={classes.group}
-          value={props.paymentMethod}
-          onChange={props.handleChangePaymentMethod}
+          value={props.value}
+          onChange={props.handleChange}
         >
           <FormControlLabel
             className={classes.label}
-            value="cash"
-            control={<Radio color="primary" />}
-            label="Наличными"
-            labelPlacement="start"
+            value={props.valueFirst}
+            control={<Radio color="primary" style={{'paddingLeft': 0}}/>}
+            label={props.labelFirst}
+            labelPlacement={props.labelPlacement}
+
           />
           <FormControlLabel
             className={classes.label}
-            value="epay"
-            control={<Radio color="primary" />}
-            label="Онлайн"
-            labelPlacement="start"
+            value={props.valueSecond}
+            control={<Radio color="primary"  style={{'paddingLeft': 0}}/>}
+            label={props.labelSecond}
+            labelPlacement={props.labelPlacement}
           />
         </RadioGroup>
       </FormControl>

@@ -8,10 +8,10 @@ import Main from "./containers/Main/Main";
 const Routes = ({user}) => {
     return (
         <Switch>
-            <Route path="/" component={Main}/>
-            <Route path="/register" component={Register}/>
-            <Route path="/login" component={Login}/>
-            <Route path="/new-order" component={NewOrder}/>
+            <Route exact path="/" component={Main}/>
+            <Route exact path="/register" component={Register}/>
+            <Route exact path="/login" component={Login}/>
+            <Route exact path="/new-order" component={NewOrder}/>
         </Switch>
     )
 };

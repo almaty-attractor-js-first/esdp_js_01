@@ -8,12 +8,12 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import UserForm from '../../components/NewOrderItem/UserForm';
-import PaymentForm from '../../components/NewOrderItem/PaymentForm';
 import OrderForm from '../../components/NewOrderItem/OrderForm';
 import {connect} from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import Reviews from "../../components/NewOrderItem/Reviews";
 import RadioButtonsGroup from "../../components/NewOrderItem/RadioButtons";
+import {updateOrderItems, updateUserData} from "../../store/actions/newOrderActions";
 
 const useStyles = makeStyles(theme => ({
   layout: {
@@ -38,10 +38,16 @@ const useStyles = makeStyles(theme => ({
   },
   stepper: {
     padding: theme.spacing(3, 0, 5),
+    [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
+      padding: theme.spacing(3, 0),
+    },
   },
   buttons: {
     display: 'flex',
     justifyContent: 'space-between',
+    [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
+      justifyContent: 'flex-end',
+    },
   },
   button: {
     marginTop: theme.spacing(3),
@@ -52,49 +58,70 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1),
   },
   buttonsWrapper: {
-    justifyContent: 'center'
+    justifyContent: 'space-between'
+  },
+  radioButtons: {
+    justifyContent: 'space-between'
   },
 }));
 
-const steps = ['Детали заказа', 'ФИО и доставка', 'Оплата', 'Summary'];
-
-function getStepContent(step) {
-  switch (step) {
-    case 0:
-      return <OrderForm />;
-    case 1:
-      return <UserForm />;
-    case 2:
-      return <PaymentForm />;
-    case 3:
-      return <Reviews />;
-    default:
-      throw new Error('Unknown step');
-  }
-}
-
+const steps = ['Детали заказа', 'ФИО и доставка', 'Summary'];
 function Checkout(props) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const [paymentMethod, setPaymentMethod] = React.useState('cash');
+  const [deliveryType, setDeliveryType] = React.useState('delivery');
+  const lastStep = activeStep === steps.length - 1;
+  const isCash = paymentMethod === 'cash';
 
   const handleChangePaymentMethod = (event) => {
     setPaymentMethod(event.target.value);
   };
+  const handleChangeDeliveryType = (event) => {
+    setDeliveryType(event.target.value);
+  };
 
   const handleNext = () => {
-    if (activeStep === 1 && paymentMethod === 'cash') {
-      setActiveStep(activeStep + 2)
-    } else {
-      setActiveStep(activeStep + 1);
-    }
+    setActiveStep(activeStep + 1);
   };
 
   const handleBack = () => {
-    if (activeStep === 3 && paymentMethod === 'cash') {
-      setActiveStep(activeStep - 2)
-    } else {
-      setActiveStep(activeStep - 1);
+    setActiveStep(activeStep - 1);
+  };
+
+  const handleSendOrder = () => {
+    const order = {
+      userData : props.userData,
+      orderItems : props.orderItems,
+      paymentMethod : paymentMethod,
+      deliveryType : deliveryType
+    };
+    console.log(order);
+    props.updateOrderItems([{
+      cleaningType: "",
+      qty: 0,
+      price: 0
+    },]);
+    props.updateUserData({
+      firstName: '',
+      lastName: '',
+      phone: '',
+      email: '',
+      address: ''
+    });
+  };
+
+
+  const getStepContent = (step) => {
+    switch (step) {
+      case 0:
+        return <OrderForm />;
+      case 1:
+        return <UserForm deliveryType={deliveryType}/>;
+      case 2:
+        return <Reviews deliveryType={deliveryType} paymentMethod={paymentMethod}/>;
+      default:
+        throw new Error('Unknown step');
     }
   };
 
@@ -128,31 +155,49 @@ function Checkout(props) {
               <React.Fragment>
                 {getStepContent(activeStep)}
                 {activeStep === 1 && (
-                  <RadioButtonsGroup paymentMethod={paymentMethod} handleChangePaymentMethod={handleChangePaymentMethod}/>
+                  <Grid container className={classes.radioButtons}>
+                      <RadioButtonsGroup value={deliveryType}
+                                         handleChange={handleChangeDeliveryType}
+                                         legend='Способ доставки'
+                                         valueFirst='delivery'
+                                         labelFirst='Доставка'
+                                         valueSecond='self'
+                                         labelSecond='Самовывоз'
+                                         labelPlacement='end'
+                      />
+                      <RadioButtonsGroup value={paymentMethod}
+                                         handleChange={handleChangePaymentMethod}
+                                         legend='Способ оплаты'
+                                         valueFirst='cash'
+                                         labelFirst='Наличными'
+                                         valueSecond='epay'
+                                         labelSecond='Онлайн'
+                                         labelPlacement='end'
+                      />
+                  </Grid>
                 )}
-                <Grid container  spacing={3} className={classes.buttonsWrapper}>
+                <Grid container  spacing={2} className={classes.buttonsWrapper}>
                   {activeStep !== 3 && (
-                    <Grid item xs={12} sm={8}>
+                    <Grid item xs={12} sm={7}>
                       <Typography className={classes.total} component="h6" variant="h6">
-                        Заказ на сумму: {props.totalPrice} тг
+                        Заказ на сумму: {props.totalPrice} ₸
                       </Typography>
                     </Grid>
                   )}
-                  <Grid item xs={12} sm={activeStep === 3 ? 12 : 4}>
+                  <Grid item xs={12} sm={5}>
                     <div className={classes.buttons}>
                       {activeStep !== 0 && (
-                        <Button onClick={handleBack} className={classes.button}>
+                        <Button onClick={handleBack} className={classes.button} color="default" >
                           Назад
                         </Button>
                       )}
                       <Button
                         variant="contained"
                         color="primary"
-                        onClick={handleNext}
+                        onClick={isCash && lastStep ? handleSendOrder : handleNext}
                         className={classes.button}
-                        style={{marginLeft: 'auto'}}
                       >
-                        {activeStep === steps.length - 1 ? 'Оформить' : 'Далее'}
+                        {lastStep ? 'Оформить' : 'Далее'}
                       </Button>
                     </div>
                   </Grid>
@@ -168,8 +213,17 @@ function Checkout(props) {
 
 const mapStateToProps = state => {
   return {
-    totalPrice: state.newOrder.totalPrice
+    totalPrice: state.newOrder.totalPrice,
+    userData: state.newOrder.userData,
+    orderItems: state.newOrder.orderItems
   };
 };
 
-export default connect(mapStateToProps)(Checkout)
+const mapDispatchToProps = dispatch => {
+  return {
+    updateOrderItems: (order) => dispatch(updateOrderItems(order)),
+    updateUserData: (userData) => dispatch(updateUserData(userData)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Checkout)
