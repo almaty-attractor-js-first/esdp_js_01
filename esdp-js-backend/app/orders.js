@@ -47,23 +47,11 @@ const createRouter = () => {
     //     });
     // });
     router.post('/orders', async (req, res) => {
-        const user = await User.findOne({username: req.body.username});
-        if (!user) return res.status(400).send({message: 'User not found'});
-        const isMatch = await user.checkPassword(req.body.password);
-        if(!isMatch) return res.status(400).send({message: "Wrong password"});
-        user.token = nanoid();
-        user.save().then((result) => {
-            res.send(result);
-        });
+        let orderData = req.body;
+        db.addOrder(orderData);
+        res.send(orderData);
     });
-    router.get('/orders' , async (req , res) => {
-
-        const result = await db.getSubject('cleaningItems');
-        console.log(result)
-        res.send(result);
-
-    });
-    // router.delete('/sessions', async (req, res) => {
+       // router.delete('/sessions', async (req, res) => {
     //     const token = req.get("Authorization");
     //     const success = {message: "Logged out!"};
     //     if(!token) return res.send(success);

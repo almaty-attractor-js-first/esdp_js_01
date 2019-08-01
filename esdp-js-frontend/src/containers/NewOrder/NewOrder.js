@@ -13,7 +13,7 @@ import {connect} from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import Reviews from "../../components/NewOrderItem/Reviews";
 import RadioButtonsGroup from "../../components/NewOrderItem/RadioButtons";
-import {updateOrderItems, updateUserData} from "../../store/actions/newOrderActions";
+import {addOrder, updateOrderItems, updateUserData} from "../../store/actions/newOrderActions";
 
 const useStyles = makeStyles(theme => ({
   layout: {
@@ -97,6 +97,7 @@ function Checkout(props) {
       deliveryType : deliveryType
     };
     console.log(order);
+    props.addOrder(order);
     props.updateOrderItems([{
       cleaningType: "",
       qty: 0,
@@ -223,6 +224,7 @@ const mapDispatchToProps = dispatch => {
   return {
     updateOrderItems: (order) => dispatch(updateOrderItems(order)),
     updateUserData: (userData) => dispatch(updateUserData(userData)),
+    addOrder: (order) => dispatch(addOrder(order))
   };
 };
 

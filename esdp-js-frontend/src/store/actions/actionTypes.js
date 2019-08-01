@@ -12,3 +12,4 @@ export const LOGIN_USER_ERROR = "LOGIN_USER_ERROR";
 export const LOGOUT_USER = "LOGOUT_USER";
 
 export const FETCH_ORDERS_SUCCESS = "FETCH_ORDERS_SUCCESS";
+export const ADD_ORDER = "ADD_ORDER";

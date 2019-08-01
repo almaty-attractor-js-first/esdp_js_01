@@ -1,5 +1,6 @@
 import axios from '../../axios-api'
 import {CALCULATE_TOTAL, GET_CLEANING_ITEMS, UPDATE_ORDER_ITEMS, UPDATE_USER_DATA} from "./actionTypes";
+import {push} from "connected-react-router";
 
 export const getAllFields = (cleaningFields) => {
   return dispatch => {
@@ -26,7 +27,7 @@ export const updateUserData = userData => {
 
 export const getCleaningItems = () => {
   return dispatch => {
-    axios.get("/orders").then(response => {
+    axios.get("/cleaning-items").then(response => {
       let data = response.data;
       dispatch(getCleaningItemsFromServer(data));
     },error => {
@@ -39,3 +40,10 @@ export const getCleaningItems = () => {
 };
 
 
+export const addOrder = (order) => {
+  return dispatch => {
+  axios.post('/orders' , order).then(() => {
+    dispatch(push("/"));
+  })
+  }
+};

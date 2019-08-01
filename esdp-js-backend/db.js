@@ -1,7 +1,17 @@
-
+let array = [];
 db = {
+    data: "123",
+    addOrder(order, userId) {
+        if (userId) {
+            order.client = userId;
+        }
+        order.status = 'inwork';
+        this.orders.push(order);
+        console.log(this.orders)
+        // console.log(this.orders[this.orders.length - 1].orderItems);
+    },
     get: (subject, id, token) => {
-        // const user = db[subject].find((element) => {
+        // const user = db[suxbject].find((element) => {
         //     return element.token === token
         // });
         if (!id) {
@@ -151,10 +161,11 @@ db = {
         {name: "sneakers", title: "Кроссовки", price: 1500, status: true},
         {name: "boots", title: "Ботинки", price: 2600, status: true},
         {name: "slingBacks", title: "Туфли", price: 3000, status: true},
-        {name: "highBoots", title: "Сапоги", price: 3800, status: true}
+        {name: "highBoots", title: "Сапоги", price: 3800, status: true},
+        {name: "highshoes", title: "Тапочек", price: 3800, status: true}
+
     ]
 };
-
 module.exports = db;
 
 
