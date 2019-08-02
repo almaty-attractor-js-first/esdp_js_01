@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import {DatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
+import MomentUtils from '@date-io/moment';
+
+import "moment/locale/ru";
+
+const locale = 'ru';
 
 function TimePicker() {
 	const d = new Date();
 	const [selectedDate, handleDateChange] = useState(d.setDate(d.getDate() + 5));
 
 	return (
-		<MuiPickersUtilsProvider utils={DateFnsUtils}>
+		<MuiPickersUtilsProvider utils={MomentUtils} locale={locale}>
 			<DatePicker
 				autoOk
 				disablePast={true}

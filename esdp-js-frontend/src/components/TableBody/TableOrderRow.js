@@ -1,6 +1,6 @@
 import {TableBody, TableCell, TableRow} from "@material-ui/core";
 import React from "react";
-import dateFns from "@date-io/date-fns";
+import moment from 'moment';
 
 
 
@@ -17,8 +17,7 @@ const TableOrderRow = (props) => {
 						<TableCell>{order.masterName}</TableCell>
 						<TableCell>{order.customer.firstName} {order.customer.lastName}</TableCell>
 						<TableCell>
-							{/*{moment(order.createdAt).format('DD/MM/YYYY')}*/}
-							{/*{dateFns.format(new Date(order.createdAt), 'MM/DD/YYYY')}*/}
+							{moment(order.createdAt).utc().format('DD.MM.YYYY HH:mm')}
 						</TableCell>
 						<TableCell>{order.deliveryType}</TableCell>
 						<TableCell>{order.paymentState}</TableCell>
