@@ -5,6 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import {updateUserData} from "../../store/actions/newOrderActions";
 import {connect} from "react-redux";
 import TimePicker from "../UI/DatePicker";
+import ReactMapGl from "../UI/ReactMap/ReactMapGl";
 
 function UserForm(props) {
   const [userInput, setUserInput] = useReducer(
@@ -87,7 +88,9 @@ function UserForm(props) {
               fullWidth
               onChange={handleChange}
             />
-          : <Typography align='center'>КАРТА</Typography>}
+          :
+          <ReactMapGl />
+          }
 
         </Grid>
         <Grid container item justify='flex-end' xs={props.deliveryType === 'delivery' ? 3 : 12}>
