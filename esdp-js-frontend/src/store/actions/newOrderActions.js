@@ -3,9 +3,9 @@ import {CALCULATE_TOTAL, GET_CLEANING_ITEMS, UPDATE_ORDER_ITEMS, UPDATE_USER_DAT
 import {push} from "connected-react-router";
 
 export const getAllFields = (cleaningFields) => {
-  return dispatch => {
-    dispatch({type: CALCULATE_TOTAL, cleaningFields});
-  };
+    return dispatch => {
+        dispatch({type: CALCULATE_TOTAL, cleaningFields});
+    };
 };
 
 export const getCleaningItemsFromServer = (array) => {
@@ -20,9 +20,9 @@ export const updateOrderItems = order => {
 };
 
 export const updateUserData = userData => {
-  return dispatch => {
-    dispatch({type: UPDATE_USER_DATA, userData});
-  };
+    return dispatch => {
+        dispatch({type: UPDATE_USER_DATA, userData});
+    };
 };
 
 export const getCleaningItems = () => {

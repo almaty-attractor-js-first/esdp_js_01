@@ -18,7 +18,6 @@ const createRouter = () => {
             res.status(400).send({message: err});
         })
     });
-
     router.post('/sessions', async (req, res) => {
         const user = await User.findOne({username: req.body.username});
         if (!user) return res.status(400).send({message: 'User not found'});
