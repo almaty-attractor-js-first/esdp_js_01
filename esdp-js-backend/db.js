@@ -1,20 +1,22 @@
 let array = [];
 db = {
-	data: "123",
+    data: "123",
     addOrder(order, userId) {
         if (userId) {
             order.client = userId;
         }
         order.status = 'inwork';
         this.orders.push(order);
-        console.log(this.orders)
-        // console.log(this.orders[this.orders.length - 1].orderItems);
-    },get: (subject, id, token) => {
-		// const user = db[suxbject].find((element) => {
-		//     return element.token === token
-		// });
-		if (!id) {
-			if (subject === 'orders') {
+
+        this.insertClients(order.userData);
+
+    },
+    get: (subject, id, token) => {
+        // const user = db[suxbject].find((element) => {
+        //     return element.token === token
+        // });
+        if (!id) {
+            if (subject === 'orders') {
 
 				if (user.role === 'admin' || user.role === 'master') {
 					return db[subject];
@@ -165,7 +167,23 @@ db = {
 		{name: "highBoots", title: "Сапоги", price: 3800, status: true},
 	{name: "highshoes", title: "Тапочек", price: 3800, status: true}
 
-    ]
+    ],
+    clients: [{
+        address: "Test street",
+        email: "test@mail.com",
+        firstName: "John",
+        lastName: "Doe",
+        phone: "111"
+    }],
+    insertClients(newClient) {
+        const obj = this.clients.find((client) => {return client.phone === newClient.phone});
+        const index = this.clients.indexOf(obj);
+        if(index !== -1){
+            this.clients.splice(index , 1 , newClient);
+        } else {
+            this.clients.push(newClient);
+        }
+    }
 };
 module.exports = db;
 
