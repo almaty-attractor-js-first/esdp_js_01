@@ -3,6 +3,7 @@ import {Route, Switch} from "react-router";
 import Register from "./containers/Register";
 import Login from "./containers/Login";
 import NewOrder from "./containers/NewOrder/NewOrder";
+import OrderItems from "./containers/OrderItems";
 import Main from "./containers/Main/Main";
 
 const Routes = ({user}) => {
@@ -12,6 +13,7 @@ const Routes = ({user}) => {
             <Route exact path="/register" component={Register}/>
             <Route exact path="/login" component={Login}/>
             <Route exact path="/new-order" component={NewOrder}/>
+            <Route path="/order-items" component={OrderItems}/>
         </Switch>
     )
 };
