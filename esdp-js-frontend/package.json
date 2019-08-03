@@ -10,6 +10,7 @@
     "@types/date-fns": "^2.6.0",
     "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
+    "clsx": "^1.0.4",
     "connected-react-router": "^6.5.0",
     "history": "^4.9.0",
     "lodash": "^4.17.13",
@@ -29,7 +30,8 @@
     "react-virtualized": "^9.21.1",
     "reactstrap": "^7.1.0",
     "redux": "^4.0.1",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "uuid": "^3.3.2"
   },
   "scripts": {
     "start": "react-scripts start",

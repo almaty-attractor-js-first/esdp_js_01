@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import { Link as RouterLink } from 'react-router-dom';
 import {
 	Card,
 	CardActions,
@@ -11,7 +12,6 @@ import {
 	Button,
 	Divider,
 	Table,
-	TableBody,
 	TableCell,
 	TableHead,
 	TableRow,
@@ -23,6 +23,7 @@ import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import mockData from './data';
 import TableOrderRow from "../components/TableBody/TableOrderRow";
 
+
 const useStyles = makeStyles(theme => ({
 	root: {},
 	content: {
@@ -33,7 +34,8 @@ const useStyles = makeStyles(theme => ({
 	},
 	statusContainer: {
 		display: 'flex',
-		alignItems: 'center'
+		alignItems: 'center',
+		minWidth: "90px"
 	},
 	status: {
 		marginRight: theme.spacing(1)
@@ -43,8 +45,8 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-const LatestOrders = props => {
-	const { className, ...rest } = props;
+const LatestOrders = (props) => {
+	const { className, staticContext, ...rest } = props;
 
 	const classes = useStyles();
 
@@ -57,12 +59,8 @@ const LatestOrders = props => {
 		>
 			<CardHeader
 				action={
-					<Button
-						color="primary"
-						size="small"
-						variant="outlined"
-					>
-						New entry
+					<Button component={RouterLink} to="/new-order" color="primary" size="small" variant="outlined">
+						Добавить заказ
 					</Button>
 				}
 				title="Список заказов"
@@ -93,7 +91,6 @@ const LatestOrders = props => {
 									<TableCell>Тип доставки</TableCell>
 									<TableCell>Статус оплаты</TableCell>
 									<TableCell>Взять в работу</TableCell>
-									<TableCell>Status</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableOrderRow
@@ -106,12 +103,9 @@ const LatestOrders = props => {
 			</CardContent>
 			<Divider />
 			<CardActions className={classes.actions}>
-				<Button
-					color="primary"
-					size="small"
-					variant="text"
-				>
-					View all <ArrowRightIcon />
+				<Button color="primary" size="small" variant="text">
+					Показать все
+					<ArrowRightIcon />
 				</Button>
 			</CardActions>
 		</Card>

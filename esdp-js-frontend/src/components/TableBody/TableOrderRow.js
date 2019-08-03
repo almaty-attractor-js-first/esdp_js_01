@@ -1,6 +1,6 @@
-import {TableBody, TableCell, TableRow} from "@material-ui/core";
+import {Button, TableBody, TableCell, TableRow} from "@material-ui/core";
 import React from "react";
-import moment from 'moment';
+import moment from "moment";
 
 
 
@@ -21,12 +21,10 @@ const TableOrderRow = (props) => {
 						</TableCell>
 						<TableCell>{order.deliveryType}</TableCell>
 						<TableCell>{order.paymentState}</TableCell>
-						<TableCell>{order.takeToWork}</TableCell>
 						<TableCell>
-							<div className={props.statusContainer}>
-
-								{order.statusJob}
-							</div>
+							<Button size="small" variant="outlined" color="primary">
+								{order.takeToWork}
+							</Button>
 						</TableCell>
 					</TableRow>
 				))

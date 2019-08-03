@@ -11,7 +11,7 @@ export default [
     },
     deliveryType: "Доставка",
     paymentState: 'Не оплачена',
-    takeToWork: "Take",
+    takeToWork: "в работу",
     statusJob: "в работе",
     createdAt: '2020-10-05T14:48:00.000Z'
   },
@@ -25,8 +25,8 @@ export default [
     },
     deliveryType: "Самовывоз",
     paymentState: 'Оплачена',
-    takeToWork: "Take",
-    statusJob: "в ожидание",
+    takeToWork: "в работу",
+    statusJob: "в ожидании",
     createdAt: '2020-08-05T14:48:00.000Z'
   },
   {
@@ -39,8 +39,8 @@ export default [
     },
     deliveryType: "Самовывоз",
     paymentState: 'Оплачена',
-    takeToWork: "Take",
-    statusJob: "в ожидание",
+    takeToWork: "в работу",
+    statusJob: "в ожидании",
     createdAt: '2018-09-05T10:48:00.000Z'
   },
   {
@@ -53,8 +53,8 @@ export default [
     },
     deliveryType: "Самовывоз",
     paymentState: 'Оплачена',
-    takeToWork: "Take",
-    statusJob: "в ожидание",
+    takeToWork: "в работу",
+    statusJob: "в ожидании",
     createdAt: '2020-11-05T14:48:00.000Z'
   },
 ];
