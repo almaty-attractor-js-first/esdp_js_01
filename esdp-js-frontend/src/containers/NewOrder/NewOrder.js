@@ -103,18 +103,18 @@ function Checkout(props) {
     };
     console.log(order);
     props.addOrder(order);
-    props.updateOrderItems([{
-      cleaningType: "",
-      qty: 0,
-      price: 0
-    },]);
-    props.updateUserData({
-      firstName: '',
-      lastName: '',
-      phone: '',
-      email: '',
-      address: ''
-    });
+    // props.updateOrderItems([{
+    //   cleaningType: "",
+    //   qty: 0,
+    //   price: 0
+    // },]);
+    // props.updateUserData({
+    //   firstName: '',
+    //   lastName: '',
+    //   phone: '',
+    //   email: '',
+    //   address: ''
+    // });
   };
 
 
@@ -220,6 +220,7 @@ function Checkout(props) {
 const mapStateToProps = state => {
   return {
     totalPrice: state.newOrder.totalPrice,
+    completedDate: state.newOrder.completedDate,
     userData: state.newOrder.userData,
     orderItems: state.newOrder.orderItems
   };

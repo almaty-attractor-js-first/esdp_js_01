@@ -1,5 +1,11 @@
 import axios from '../../axios-api'
-import {CALCULATE_TOTAL, GET_CLEANING_ITEMS, UPDATE_ORDER_ITEMS, UPDATE_USER_DATA} from "./actionTypes";
+import {
+  CALCULATE_TOTAL,
+  GET_CLEANING_ITEMS,
+  UPDATE_COMPLETED_DATE,
+  UPDATE_ORDER_ITEMS,
+  UPDATE_USER_DATA
+} from "./actionTypes";
 import {push} from "connected-react-router";
 
 export const getAllFields = (cleaningFields) => {
@@ -23,6 +29,12 @@ export const updateUserData = userData => {
     return dispatch => {
         dispatch({type: UPDATE_USER_DATA, userData});
     };
+};
+
+export const updateCompletedDate = completedDate => {
+  return dispatch => {
+    dispatch({type: UPDATE_COMPLETED_DATE, completedDate});
+  };
 };
 
 export const getCleaningItems = () => {
