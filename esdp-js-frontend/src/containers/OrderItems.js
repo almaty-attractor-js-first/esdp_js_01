@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import clsx from 'clsx';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
@@ -22,7 +22,6 @@ import {
 } from '@material-ui/core';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 
-import mockData from './data';
 import TableOrderRow from "../components/TableBody/TableOrderRow";
 
 
@@ -47,16 +46,13 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-	const { className, staticContext, ...rest } = props;
-const OrderItems = props => {
 
+const OrderItems = props => {
 	useEffect(() => {
 		props.getOrders();
 	}, []);
-
-
+	const { className, staticContext, ...rest } = props;
 	const classes = useStyles();
-
 	const orders = props.orders;
 
 	return (

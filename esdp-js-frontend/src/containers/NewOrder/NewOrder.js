@@ -91,7 +91,12 @@ function Checkout(props) {
 
   const handleSendOrder = () => {
     const order = {
-      userData : props.userData,
+      firstName: props.userData.firstName,
+      lastName: props.userData.lastName,
+      email: props.userData.email,
+      phone: props.userData.phone,
+      address: props.userData.address,
+      completedDate: props.completedDate,
       orderItems : props.orderItems,
       paymentMethod : paymentMethod,
       deliveryType : deliveryType

@@ -15,15 +15,15 @@ const TableOrderRow = (props) => {
 					>
 						<TableCell>{order.id}</TableCell>
 						<TableCell>{order.masterId}</TableCell>
-						<TableCell>{order.firstname} {order.lastname}</TableCell>
+						<TableCell>{order.firstName} {order.lastName}</TableCell>
 						<TableCell>
 							{moment(order.createdAt).format('DD.MM.YYYY HH:mm')}
 						</TableCell>
 						<TableCell>{order.deliveryType}</TableCell>
-						<TableCell>{order.paymentState}</TableCell>
+						<TableCell>{order.paymentStatus}</TableCell>
 						<TableCell>
 							<Button size="small" variant="outlined" color="primary">
-								{order.takeToWork}
+								Взять в работу
 							</Button>
 						</TableCell>
 					</TableRow>
