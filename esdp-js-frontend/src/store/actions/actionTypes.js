@@ -13,4 +13,4 @@ export const LOGOUT_USER = "LOGOUT_USER";
 
 export const FETCH_ORDERS_SUCCESS = "FETCH_ORDERS_SUCCESS";
 export const ADD_ORDER = "ADD_ORDER";
-
+export const UPDATE_ORDERS = "UPDATE_ORDERS";

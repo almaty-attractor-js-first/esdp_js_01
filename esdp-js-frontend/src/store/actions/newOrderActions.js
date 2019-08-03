@@ -38,12 +38,10 @@ export const getCleaningItems = () => {
     })
   }
 };
-
-
 export const addOrder = (order) => {
-  return dispatch => {
-  axios.post('/orders' , order).then(() => {
-    dispatch(push("/"));
-  })
-  }
+    return dispatch => {
+        axios.post('/orders', order).then(() => {
+            dispatch(push("/"));
+        })
+    }
 };

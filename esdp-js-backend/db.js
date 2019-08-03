@@ -1,6 +1,4 @@
-let array = [];
 db = {
-    data: "123",
     addOrder(order, userId) {
         if (userId) {
             order.client = userId;
@@ -16,6 +14,9 @@ db = {
 	getOrdersById(orderId) {
 		console.log('getOrdersById');
 		return this.orders.find((order) => {return order.id === orderId});
+	},
+	getCleaningItems() {
+    	return this.cleaningItems;
 	},
 	post: (subject, data, token) => {
 		if (data) {
@@ -85,38 +86,24 @@ db = {
 		{
 			id: '4',
 			clientId: '1',
+			masterId: '1',
 			email: 'greenmassa@gmail.com',
 			phone: '7476396538',
-			name: 'James',
-			surname: 'Bond',
-			middlename: '',
+			firstName: 'James',
+			lastName: 'Bond',
 			status: 'inwork',
-			quantity: 1,
-			cleaningType: 'dry',
-			date: '2019-08-02T15:17:48.831Z',
+			orderItems: [
+				{cleaningType: 'slingBacks', qty: 1},
+				{cleaningType: 'sneakers', qty: 1}
+			],
+			createdAt: '2019-08-02T15:17:48.831Z',
 			description: 'помыть',
-			price: '1200',
+			paymentStatus: false,
+			paymentMethod: 'cash',
+			totalPrice: '1200',
 			address: 'Абая Саина 54',
 			deliveryType: 'self',
-			deliveryDate: '2019-08-02T15:17:48.831Z'
-		},
-		{
-			id: '5',
-			clientId: '2',
-			email: 'aidos@gmail.com',
-			phone: '7476313132',
-			name: 'Aidos',
-			surname: 'Omurzakov',
-			middlename: '',
-			status: 'waiting',
-			quantity: 1,
-			cleaningType: 'dry',
-			date: '2019-08-02T15:17:48.831Z',
-			description: 'помыть',
-			price: '1200',
-			address: 'Абая Саина 54',
-			deliveryType: 'self',
-			deliveryDate: '2019-08-02T15:17:48.831Z'
+			completedDate: '2019-08-02T15:17:48.831Z'
 		}
 	],
 	cleaningItems : [
@@ -125,7 +112,6 @@ db = {
 		{name: "slingBacks", title: "Туфли", price: 3000, status: true},
 		{name: "highBoots", title: "Сапоги", price: 3800, status: true},
 	{name: "highshoes", title: "Тапочек", price: 3800, status: true}
-
     ],
     clients: [{
         address: "Test street",

@@ -11,7 +11,7 @@ const db = require('../db');
 
 const createRouter = () => {
     router.get('/cleaning-items' , async (req , res) => {
-        const result = await db.getSubject('cleaningItems');
+        const result = await db.getCleaningItems();
         res.send(result);
     });
 

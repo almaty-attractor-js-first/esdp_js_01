@@ -13,11 +13,11 @@ const TableOrderRow = (props) => {
 						hover
 						key={order.id}
 					>
-						<TableCell>{order.ref}</TableCell>
-						<TableCell>{order.masterName}</TableCell>
-						<TableCell>{order.customer.firstName} {order.customer.lastName}</TableCell>
+						<TableCell>{order.id}</TableCell>
+						<TableCell>{order.masterId}</TableCell>
+						<TableCell>{order.firstname} {order.lastname}</TableCell>
 						<TableCell>
-							{moment(order.createdAt).utc().format('DD.MM.YYYY HH:mm')}
+							{moment(order.createdAt).format('DD.MM.YYYY HH:mm')}
 						</TableCell>
 						<TableCell>{order.deliveryType}</TableCell>
 						<TableCell>{order.paymentState}</TableCell>

@@ -13,7 +13,7 @@ const Routes = ({user}) => {
             <Route exact path="/register" component={Register}/>
             <Route exact path="/login" component={Login}/>
             <Route exact path="/new-order" component={NewOrder}/>
-            <Route path="/order-items" component={OrderItems}/>
+            <Route exact path="/order-items" component={OrderItems}/>
         </Switch>
     )
 };

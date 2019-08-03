@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import clsx from 'clsx';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
+import {connect} from "react-redux";
+import {getOrders} from "../store/actions/ordersActions";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Link as RouterLink } from 'react-router-dom';
 import {
@@ -45,12 +47,17 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-const LatestOrders = (props) => {
 	const { className, staticContext, ...rest } = props;
+const OrderItems = props => {
+
+	useEffect(() => {
+		props.getOrders();
+	}, []);
+
 
 	const classes = useStyles();
 
-	const [orders] = useState(mockData);
+	const orders = props.orders;
 
 	return (
 		<Card
@@ -112,8 +119,20 @@ const LatestOrders = (props) => {
 	);
 };
 
-LatestOrders.propTypes = {
+OrderItems.propTypes = {
 	className: PropTypes.string
 };
 
-export default LatestOrders;
+const mapStateToProps = state => {
+	return {
+		orders: state.orders.orders
+	};
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		getOrders: () => dispatch(getOrders())
+	};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrderItems);

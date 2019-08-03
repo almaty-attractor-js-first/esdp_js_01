@@ -24,12 +24,12 @@ export default function AnonimousMenu() {
   const classes = useStyles();
   return (
     <Fragment>
-      <Button color="secondary"
+      <Button color="primary"
               variant={"text"}
               component={Link}
-              to='/login'
+              to='/order-items'
               className={classes.link}>
-        Sign in
+        Orders
       </Button>
       <Button color="secondary"
               variant={"text"}
