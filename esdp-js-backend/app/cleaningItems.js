@@ -13,7 +13,6 @@ const createRouter = () => {
     router.get('/cleaning-items' , async (req , res) => {
         const result = await db.getSubject('cleaningItems');
         res.send(result);
-
     });
 
 

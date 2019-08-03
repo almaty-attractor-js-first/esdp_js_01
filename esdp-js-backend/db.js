@@ -7,58 +7,15 @@ db = {
         }
         order.status = 'inwork';
         this.orders.push(order);
-
-        this.insertClients(order.userData);
-
+        console.log(this.orders)
+        // console.log(this.orders[this.orders.length - 1].orderItems);
     },
-    get: (subject, id, token) => {
-        // const user = db[suxbject].find((element) => {
-        //     return element.token === token
-        // });
-        if (!id) {
-            if (subject === 'orders') {
-
-				if (user.role === 'admin' || user.role === 'master') {
-					return db[subject];
-				} else {
-					return {message: "only master and admin can fetch orders"}
-				}
-			} else if (subject === 'users') {
-				if (user.role === 'admin') {
-					return db[subject];
-				} else {
-					return {message: "only admin can fetch users"}
-				}
-			}
-
-
-
-		} else {
-			const item = db[subject].find((element) => {
-				return element.id === id
-			});
-			const user = db[subject].find((element) => {
-				return element.token === token
-			});
-			if (subject === 'orders') {
-				if (user.role === 'admin' || user.role === 'master') {
-					return item;
-				} else if (user.role === 'user' && user.id === item.client) {
-					return item;
-				} else {
-					return {message: "this is not your order"};
-				}
-			} else if (subject === 'users') {
-				if (user.role === 'admin' || user.role === 'courier') {
-					return item;
-				} else {
-					return {message: "only admin can fetch users"}
-				}
-			}
-		}
+	getOrders() {
+		return this.orders;
 	},
-	getSubject: (subject) => {
-		return db[subject];
+	getOrdersById(orderId) {
+		console.log('getOrdersById');
+		return this.orders.find((order) => {return order.id === orderId});
 	},
 	post: (subject, data, token) => {
 		if (data) {
@@ -126,6 +83,7 @@ db = {
 	],
 	orders :[
 		{
+			id: '4',
 			clientId: '1',
 			email: 'greenmassa@gmail.com',
 			phone: '7476396538',
@@ -135,14 +93,15 @@ db = {
 			status: 'inwork',
 			quantity: 1,
 			cleaningType: 'dry',
-			date: new Date(),
+			date: '2019-08-02T15:17:48.831Z',
 			description: 'помыть',
 			price: '1200',
 			address: 'Абая Саина 54',
 			deliveryType: 'self',
-			deliveryDate: new Date()
+			deliveryDate: '2019-08-02T15:17:48.831Z'
 		},
 		{
+			id: '5',
 			clientId: '2',
 			email: 'aidos@gmail.com',
 			phone: '7476313132',
@@ -152,12 +111,12 @@ db = {
 			status: 'waiting',
 			quantity: 1,
 			cleaningType: 'dry',
-			date: new Date(),
+			date: '2019-08-02T15:17:48.831Z',
 			description: 'помыть',
 			price: '1200',
 			address: 'Абая Саина 54',
 			deliveryType: 'self',
-			deliveryDate: new Date()
+			deliveryDate: '2019-08-02T15:17:48.831Z'
 		}
 	],
 	cleaningItems : [
@@ -186,7 +145,6 @@ db = {
     }
 };
 module.exports = db;
-
 
 
 

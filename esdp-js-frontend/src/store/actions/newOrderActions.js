@@ -12,7 +12,7 @@ export const getCleaningItemsFromServer = (array) => {
   return dispatch => {
     dispatch({type: GET_CLEANING_ITEMS, array});
   }
-}
+};
 export const updateOrderItems = order => {
   return dispatch => {
     dispatch({type: UPDATE_ORDER_ITEMS, order});
