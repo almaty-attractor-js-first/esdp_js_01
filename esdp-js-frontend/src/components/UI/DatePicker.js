@@ -12,6 +12,9 @@ function TimePicker(props) {
 
 	const [selectedDate, handleDateChange] = useState(props.completedDate);
 
+	const date = new Date();
+	const minDate = date.setDate(date.getDate() + 5);
+
 	useEffect(() => {
 		const date = new Date(selectedDate).toISOString();
 		props.updateCompletedDate(date);
@@ -23,10 +26,10 @@ function TimePicker(props) {
 				autoOk
 				disablePast={true}
 				ampm={false}
-				minDate={props.completedDate}
+				minDate={minDate}
 				value={selectedDate}
 				onChange={handleDateChange}
-				label="Когда забирать"
+				label="Дата выполнения"
 				inputProps={{ style: {textAlign: 'center'} }}
 				format="DD.MM.YYYY"
 			/>
