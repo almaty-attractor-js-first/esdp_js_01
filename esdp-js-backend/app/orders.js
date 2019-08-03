@@ -19,10 +19,14 @@ const createRouter = () => {
         res.send(order);
     });
     router.post('/orders', async (req, res) => {
+        if(req.query.phone){
+            const result = await db.findClient(req.query.phone);
+            res.send(result);
+        }
         let orderData = req.body;
         db.addOrder(orderData);
         res.send(orderData);
-        console.log('router order: ', orderData);
+        // console.log('router order: ', orderData);
     });
     return router;
 };

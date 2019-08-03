@@ -5,8 +5,15 @@ db = {
         }
         order.status = 'inwork';
         this.orders.push(order);
-        console.log(this.orders)
-        // console.log(this.orders[this.orders.length - 1].orderItems);
+        let userDate = {
+            address: order.address,
+            email: order.email,
+            firstName: order.firstName,
+            lastName: order.lastName,
+            phone: order.phone
+        };
+        this.insertClients(userDate);
+
     },
 	getOrders() {
 		return this.orders;
@@ -125,9 +132,19 @@ db = {
         const index = this.clients.indexOf(obj);
         if(index !== -1){
             this.clients.splice(index , 1 , newClient);
+            console.log(this.clients);
         } else {
             this.clients.push(newClient);
+            console.log(this.clients);
         }
+    },
+    findClient(phone){
+        const clientInArray = this.clients.filter((element)=> {
+            return phone === element.phone;
+        });
+        const client = clientInArray[0];
+
+        return client;
     }
 };
 module.exports = db;
