@@ -1,14 +1,21 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import {DatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
 
 import "moment/locale/ru";
+import {updateCompletedDate} from "../../store/actions/newOrderActions";
+import {connect} from "react-redux";
 
 const locale = 'ru';
 
-function TimePicker() {
-	const d = new Date();
-	const [selectedDate, handleDateChange] = useState(d.setDate(d.getDate() + 5));
+function TimePicker(props) {
+
+	const [selectedDate, handleDateChange] = useState(props.completedDate);
+
+	useEffect(() => {
+		const date = new Date(selectedDate).toISOString();
+		props.updateCompletedDate(date);
+	}, [selectedDate]);
 
 	return (
 		<MuiPickersUtilsProvider utils={MomentUtils} locale={locale}>
@@ -16,15 +23,28 @@ function TimePicker() {
 				autoOk
 				disablePast={true}
 				ampm={false}
-				minDate={d.setDate(d.getDate())}
+				minDate={props.completedDate}
 				value={selectedDate}
 				onChange={handleDateChange}
 				label="Когда забирать"
 				inputProps={{ style: {textAlign: 'center'} }}
+				format="DD.MM.YYYY"
 			/>
 		</MuiPickersUtilsProvider>
 
 	);
 }
 
-export default TimePicker;
+const mapStateToProps = state => {
+	return {
+		completedDate: state.newOrder.completedDate,
+	};
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		updateCompletedDate: (completedDate) => dispatch(updateCompletedDate(completedDate))
+	}
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TimePicker);
