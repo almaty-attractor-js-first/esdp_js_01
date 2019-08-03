@@ -35,22 +35,22 @@ function UserForm(props) {
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <TextField
-            value={userInput.email}
+            value={userInput.phone}
             required
-            id="email"
-            name="email"
-            label="Email"
+            id="phone"
+            name="phone"
+            label="Телефон"
             fullWidth
             onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
-            value={userInput.phone}
+            value={userInput.email}
             required
-            id="phone"
-            name="phone"
-            label="Телефон"
+            id="email"
+            name="email"
+            label="Email"
             fullWidth
             onChange={handleChange}
           />

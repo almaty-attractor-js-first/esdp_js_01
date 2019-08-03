@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-const LatestOrders = (props) => {
+const LatestOrders = props => {
 	const { className, staticContext, ...rest } = props;
 
 	const classes = useStyles();
