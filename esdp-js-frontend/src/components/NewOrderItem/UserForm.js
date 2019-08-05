@@ -1,13 +1,22 @@
-import React, {Fragment, useEffect, useReducer} from 'react';
+import React, {Fragment, useEffect, useReducer, useRef} from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import {updateUserData} from "../../store/actions/newOrderActions";
+import {getUserByPhoneNumber, updateUserData} from "../../store/actions/newOrderActions";
 import {connect} from "react-redux";
 import TimePicker from "../UI/DatePicker";
 import ReactMapGl from "../UI/ReactMap/ReactMapGl";
 
-function UserForm(props) {
+const usePrevious = (value) => {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+};
+
+const UserForm = props => {
+  const { userData } = props;
   const [userInput, setUserInput] = useReducer(
     (state, newState) => ({...state, ...newState}),
     {
@@ -18,13 +27,33 @@ function UserForm(props) {
       address: props.userData.address
     }
   );
+
+  const prevAmount = usePrevious({ userData, userInput });
+
   const handleChange = e => {
     const {name, value} = e.target;
     setUserInput({[name]: value});
   };
 
+  const autocompleteUserFields = e => {
+    const phoneField = e.target.value;
+    const inputName = e.target.name;
+    if (phoneField.length === 10 && inputName === 'phone') {
+      props.getUserByPhoneNumber(phoneField).then(response => {
+        if (response) {
+          setUserInput(response.data)
+        }
+      });
+    }
+  };
+
   useEffect(() => {
-    props.updateUserData(userInput);
+    if (prevAmount) {
+      if (prevAmount.userInput !== userInput) {
+        console.log('prev',);
+        props.updateUserData(userInput);
+      }
+    }
   }, [userInput]);
 
   return (
@@ -36,12 +65,18 @@ function UserForm(props) {
         <Grid item xs={12}>
           <TextField
             value={userInput.phone}
+            helperText="123 456 7890"
             required
             id="phone"
             name="phone"
             label="Телефон"
             fullWidth
-            onChange={handleChange}
+            onChange={(e) => {autocompleteUserFields(e); handleChange(e); }}
+            inputProps={{
+              type: "tel",
+              pattern: "[0-9]{3}-[0-9]{3}-[0-9]{4}",
+              maxLength: 10
+            }}
           />
         </Grid>
         <Grid item xs={12}>
@@ -99,16 +134,18 @@ function UserForm(props) {
       </Grid>
     </Fragment>
   );
-}
+};
 
 const mapStateToProps = state => {
   return {
     userData: state.newOrder.userData,
+    autocomplete: state.newOrder.autocomplete,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
+    getUserByPhoneNumber: (phoneNumber) => dispatch(getUserByPhoneNumber(phoneNumber)),
     updateUserData: (userData) => dispatch(updateUserData(userData)),
   };
 };

@@ -8,10 +8,10 @@ const TableOrderRow = (props) => {
 	return (
 		<TableBody>
 			{
-				props.orders.map(order => (
+				props.orders.map((order, index) => (
 					<TableRow
 						hover
-						key={order.id}
+						key={index}
 					>
 						<TableCell>{order.id}</TableCell>
 						<TableCell>{order.masterId}</TableCell>

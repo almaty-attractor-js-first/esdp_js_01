@@ -121,11 +121,11 @@ db = {
 	{name: "highshoes", title: "Тапочек", price: 3800, status: true}
     ],
     clients: [{
-        address: "Test street",
-        email: "test@mail.com",
-        firstName: "John",
-        lastName: "Doe",
-        phone: "111"
+			firstName: "John",
+			lastName: "Doe",
+			phone: "111",
+			email: "test@mail.com",
+			address: "Test street"
     }],
     insertClients(newClient) {
         const obj = this.clients.find((client) => {return client.phone === newClient.phone});

@@ -13,7 +13,6 @@ export const getAllFields = (cleaningFields) => {
         dispatch({type: CALCULATE_TOTAL, cleaningFields});
     };
 };
-
 export const getCleaningItemsFromServer = (array) => {
   return dispatch => {
     dispatch({type: GET_CLEANING_ITEMS, array});
@@ -24,13 +23,11 @@ export const updateOrderItems = order => {
     dispatch({type: UPDATE_ORDER_ITEMS, order});
   };
 };
-
 export const updateUserData = userData => {
     return dispatch => {
         dispatch({type: UPDATE_USER_DATA, userData});
     };
 };
-
 export const updateCompletedDate = completedDate => {
   return dispatch => {
     dispatch({type: UPDATE_COMPLETED_DATE, completedDate});
@@ -50,10 +47,23 @@ export const getCleaningItems = () => {
     })
   }
 };
+
 export const addOrder = (order) => {
-    return dispatch => {
-        axios.post('/orders', order).then(() => {
-            dispatch(push("/"));
-        })
-    }
+  return dispatch => {
+    axios.post('/orders', order).then(() => {
+      dispatch(push("/"));
+    })
+  }
 };
+
+export const getUserByPhoneNumber = (phoneNumber) => {
+  return dispatch => {
+    return axios.post(`/orders?phone=${phoneNumber}`).then(response => {
+      if (response.data) {
+        console.log(response.data);
+        return response;
+      }
+    })}
+};
+
+

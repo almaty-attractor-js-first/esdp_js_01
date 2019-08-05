@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
@@ -103,19 +103,24 @@ function Checkout(props) {
     };
     console.log(order);
     props.addOrder(order);
-    // props.updateOrderItems([{
-    //   cleaningType: "",
-    //   qty: 0,
-    //   price: 0
-    // },]);
-    // props.updateUserData({
-    //   firstName: '',
-    //   lastName: '',
-    //   phone: '',
-    //   email: '',
-    //   address: ''
-    // });
   };
+
+  useEffect(() => {
+    return () => {
+      props.updateOrderItems([{
+        cleaningType: "",
+        qty: 0,
+        price: 0
+      },]);
+      props.updateUserData({
+        firstName: '',
+        lastName: '',
+        phone: '',
+        email: '',
+        address: ''
+      });
+    };
+  }, []);
 
 
   const getStepContent = (step) => {
@@ -228,9 +233,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    addOrder: (order) => dispatch(addOrder(order)),
     updateOrderItems: (order) => dispatch(updateOrderItems(order)),
     updateUserData: (userData) => dispatch(updateUserData(userData)),
-    addOrder: (order) => dispatch(addOrder(order))
   };
 };
 

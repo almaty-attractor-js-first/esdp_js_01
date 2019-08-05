@@ -51,7 +51,7 @@ const OrderItems = props => {
 	useEffect(() => {
 		props.getOrders();
 	}, []);
-	const { className, staticContext, ...rest } = props;
+	const { className, getOrders, staticContext, ...rest } = props;
 	const classes = useStyles();
 	const orders = props.orders;
 

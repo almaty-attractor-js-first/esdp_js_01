@@ -29,7 +29,7 @@ function TimePicker(props) {
 				minDate={minDate}
 				value={selectedDate}
 				onChange={handleDateChange}
-				label="Дата выполнения"
+				label="Дата"
 				inputProps={{ style: {textAlign: 'center'} }}
 				format="DD.MM.YYYY"
 			/>

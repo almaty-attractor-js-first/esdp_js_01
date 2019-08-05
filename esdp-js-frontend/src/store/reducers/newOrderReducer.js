@@ -22,7 +22,7 @@ const initialState = {
   ],
   totalPrice: 0,
   completedDate: d.setDate(d.getDate() + 5),
-  cleaningItems: [],
+  cleaningItems: []
 };
 
 const reducer = (state = initialState, action) => {

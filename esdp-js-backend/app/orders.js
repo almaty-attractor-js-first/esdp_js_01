@@ -21,7 +21,7 @@ const createRouter = () => {
     router.post('/orders', async (req, res) => {
         if(req.query.phone){
             const result = await db.findClient(req.query.phone);
-            res.send(result);
+            return res.send(result);
         }
         let orderData = req.body;
         db.addOrder(orderData);
