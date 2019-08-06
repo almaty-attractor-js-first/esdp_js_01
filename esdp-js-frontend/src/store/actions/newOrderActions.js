@@ -58,7 +58,8 @@ export const addOrder = (order) => {
 
 export const getUserByPhoneNumber = (phoneNumber) => {
   return dispatch => {
-    return axios.post(`/orders?phone=${phoneNumber}`).then(response => {
+    const queryWithPlus = phoneNumber.replace("+", "%2B");
+    return axios.post(`/orders?phone=${queryWithPlus}`).then(response => {
       if (response.data) {
         console.log(response.data);
         return response;

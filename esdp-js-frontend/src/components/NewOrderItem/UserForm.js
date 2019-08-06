@@ -6,6 +6,7 @@ import {getUserByPhoneNumber, updateUserData} from "../../store/actions/newOrder
 import {connect} from "react-redux";
 import TimePicker from "../UI/DatePicker";
 import ReactMapGl from "../UI/ReactMap/ReactMapGl";
+import InputMask from "react-input-mask";
 
 const usePrevious = (value) => {
   const ref = useRef();
@@ -38,10 +39,13 @@ const UserForm = props => {
   const autocompleteUserFields = e => {
     const phoneField = e.target.value;
     const inputName = e.target.name;
-    if (phoneField.length === 10 && inputName === 'phone') {
+    console.log(phoneField.length);
+    console.log(phoneField);
+    if (phoneField.length === 15 && inputName === 'phone') {
       props.getUserByPhoneNumber(phoneField).then(response => {
         if (response) {
-          setUserInput(response.data)
+          console.log(response);
+          setUserInput(response.data);
         }
       });
     }
@@ -50,7 +54,6 @@ const UserForm = props => {
   useEffect(() => {
     if (prevAmount) {
       if (prevAmount.userInput !== userInput) {
-        console.log('prev',);
         props.updateUserData(userInput);
       }
     }
@@ -63,21 +66,20 @@ const UserForm = props => {
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <TextField
-            value={userInput.phone}
-            helperText="123 456 7890"
-            required
-            id="phone"
-            name="phone"
-            label="Телефон"
-            fullWidth
-            onChange={(e) => {autocompleteUserFields(e); handleChange(e); }}
-            inputProps={{
-              type: "tel",
-              pattern: "[0-9]{3}-[0-9]{3}-[0-9]{4}",
-              maxLength: 10
-            }}
-          />
+          <InputMask value={userInput.phone}
+                     helperText="123 456 7890"
+                     mask="+7 999 999 9999"
+                     maskChar={null}
+                     required
+                     id="phone"
+                     name="phone"
+                     label="Телефон"
+                     fullWidth
+                     onChange={(e) => {autocompleteUserFields(e); handleChange(e); }}>
+            {(inputProps) => <TextField {...inputProps}
+                                        type="tel" value={userInput.phone}/>}
+          </InputMask>
+
         </Grid>
         <Grid item xs={12}>
           <TextField
