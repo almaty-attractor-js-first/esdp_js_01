@@ -108,24 +108,27 @@ function OrderForm(props) {
                   }) : null}
                 </TextField>
               </Grid>
-              <Grid item xs={3}>
-                <TextField
-                  className={classes.select}
-                  data-id={index}
-                  onChange={handleOrderItemsChange}
-                  type="number"
-                  inputProps={{
-                    min: "1", max: "10", step: "1",
-                    'data-id': index
-                  }}
-                  value={item.qty}
-                  required
-                  id="qty"
-                  name="qty"
-                  helperText="Сколько пар?"
-                  fullWidth
-                />
-              </Grid>
+                <Grid item xs={3}>
+                  {orderItems[index].cleaningType ?
+                    <TextField
+                    className={classes.select}
+                    data-id={index}
+                    onChange={handleOrderItemsChange}
+                    type="number"
+                    inputProps={{
+                      min: "1", max: "10", step: "1",
+                      'data-id': index
+                    }}
+                    value={item.qty}
+                    required
+                    id="qty"
+                    name="qty"
+                    helperText="Сколько пар?"
+                    fullWidth
+                  />
+                  : null}
+                </Grid>
+
               <Grid item xs={1}>
                 {index ?
                   <IconButton size="small" className={classes.bottomIcon} color="secondary" onClick={() => removeOrderItem(index)}>

@@ -16,7 +16,7 @@ const initialState = {
   orderItems: [
     {
       cleaningType: "",
-      qty: 0,
+      qty: 1,
       price: 0
     },
   ],
