@@ -26,6 +26,7 @@ const createRouter = () => {
         let orderData = req.body;
         db.addOrder(orderData);
         res.send(orderData);
+        console.log(orderData)
         // console.log('router order: ', orderData);
     });
     return router;

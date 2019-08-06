@@ -132,10 +132,8 @@ db = {
         const index = this.clients.indexOf(obj);
         if(index !== -1){
             this.clients.splice(index , 1 , newClient);
-            console.log(this.clients);
         } else {
             this.clients.push(newClient);
-            console.log(this.clients);
         }
     },
     findClient(phone){
