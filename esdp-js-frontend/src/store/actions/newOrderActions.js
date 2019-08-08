@@ -51,7 +51,7 @@ export const getCleaningItems = () => {
 export const addOrder = (order) => {
   return dispatch => {
     axios.post('/orders', order).then(() => {
-      dispatch(push("/"));
+      dispatch(push("/order-items"));
     })
   }
 };

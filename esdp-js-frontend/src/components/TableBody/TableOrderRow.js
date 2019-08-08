@@ -1,6 +1,7 @@
 import {Button, TableBody, TableCell, TableRow} from "@material-ui/core";
 import React from "react";
 import moment from "moment";
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 
 
@@ -13,11 +14,14 @@ const TableOrderRow = (props) => {
 						hover
 						key={index}
 					>
-						<TableCell>{order.id}</TableCell>
+						<TableCell>
+              {order.id}
+              <FormHelperText>{moment(order.createdAt).format('DD.MM.YYYY HH:mm')}</FormHelperText>
+						</TableCell>
 						<TableCell>{order.masterId}</TableCell>
 						<TableCell>{order.firstName} {order.lastName}</TableCell>
 						<TableCell>
-							{moment(order.createdAt).format('DD.MM.YYYY HH:mm')}
+
 						</TableCell>
 						<TableCell>{order.deliveryType}</TableCell>
 						<TableCell>{order.paymentStatus}</TableCell>
