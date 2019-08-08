@@ -35,7 +35,6 @@ const initialState = {
 const reducer = (state = initialState, action) => {
     switch(action.type) {
         case UPDATE_ORDERS:
-            console.log(action.orders)
             return {...state, orders: action.orders};
         default:
             return state;

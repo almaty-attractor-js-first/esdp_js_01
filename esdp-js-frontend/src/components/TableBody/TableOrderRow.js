@@ -7,12 +7,13 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 
 const TableOrderRow = (props) => {
 	return (
-		<TableBody>
+		<TableBody >
 			{
 				props.orders.map((order, index) => (
 					<TableRow
 						hover
 						key={index}
+						onClick={() => props.click(order.id)}
 					>
 						<TableCell>
               {order.id}

@@ -46,7 +46,6 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-
 const OrderItems = props => {
 	useEffect(() => {
 		props.getOrders();
@@ -54,6 +53,9 @@ const OrderItems = props => {
 	const { className, getOrders, staticContext, ...rest } = props;
 	const classes = useStyles();
 	const orders = props.orders;
+	const goToPage = (orderID) => {
+		props.history.push(`order/${orderID}`);
+	};
 
 	return (
 		<Card
@@ -68,6 +70,9 @@ const OrderItems = props => {
 				}
 				title="Список заказов"
 			/>
+            {
+                console.log(props.orders)
+            }
 			<Divider />
 			<CardContent className={classes.content}>
 				<PerfectScrollbar>
@@ -99,6 +104,7 @@ const OrderItems = props => {
 							<TableOrderRow
 								orders={orders}
 								statusContainer={classes.statusContainer}
+								click={(orderID) => goToPage(orderID)}
 							/>
 						</Table>
 					</div>
