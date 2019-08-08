@@ -1,9 +1,12 @@
+const nanoid = require('nanoid');
+
 db = {
     addOrder(order, userId) {
         if (userId) {
             order.client = userId;
         }
-        order.status = 'inwork';
+        order.status = 'pending';
+        order.id = nanoid();
         this.orders.push(order);
         let userDate = {
             address: order.address,
@@ -13,14 +16,16 @@ db = {
             phone: order.phone
         };
         this.insertClients(userDate);
-
     },
 	getOrders() {
 		return this.orders;
 	},
 	getOrdersById(orderId) {
-		console.log('getOrdersById');
 		return this.orders.find((order) => {return order.id === orderId});
+	},
+	updateOrdersById(orderId, data) {
+		const index = this.orders.findIndex((order) => {return order.id === orderId});
+		this.orders.splice(index , 1 , data);
 	},
 	getCleaningItems() {
     	return this.cleaningItems;
@@ -89,7 +94,7 @@ db = {
 			displayName: 'Aidos11'
 		}
 	],
-	orders :[
+	orders: [
 		{
 			id: '4',
 			clientId: '1',
@@ -98,7 +103,7 @@ db = {
 			phone: '7476396538',
 			firstName: 'James',
 			lastName: 'Bond',
-			status: 'inwork',
+			status: 'pending',
 			orderItems: [
 				{cleaningType: 'slingBacks', qty: 1},
 				{cleaningType: 'sneakers', qty: 1}
@@ -113,37 +118,57 @@ db = {
 			completedDate: '2019-08-02T15:17:48.831Z'
 		}
 	],
-	cleaningItems : [
+	cleaningItems: [
 		{name: "sneakers", title: "Кроссовки", price: 1500, status: true},
 		{name: "boots", title: "Ботинки", price: 2600, status: true},
 		{name: "slingBacks", title: "Туфли", price: 3000, status: true},
 		{name: "highBoots", title: "Сапоги", price: 3800, status: true},
-	{name: "highshoes", title: "Тапочек", price: 3800, status: true}
+		{name: "highShoes", title: "Тапочек", price: 3800, status: true}
     ],
-    clients: [{
-			firstName: "John",
-			lastName: "Doe",
-			phone: "111",
-			email: "test@mail.com",
-			address: "Test street"
-    }],
-    insertClients(newClient) {
-        const obj = this.clients.find((client) => {return client.phone === newClient.phone});
-        const index = this.clients.indexOf(obj);
-        if(index !== -1){
-            this.clients.splice(index , 1 , newClient);
-        } else {
-            this.clients.push(newClient);
-        }
-    },
-    findClient(phone){
-        const clientInArray = this.clients.filter((element)=> {
-            return phone === element.phone;
-        });
-        const client = clientInArray[0];
+	statuses: [
+		{name: "pending", title: "В обработке", color: 'orange', status: true},
+		{name: "inWork", title: "В работе", color: 'indigo', status: true},
+		{name: "completed", title: "Завершён", color: 'green', status: true},
+		{name: "rejected", title: "Отклонён", color: 'red', status: true},
+		{name: "canceled", title: "Отменён", color: 'grey', status: true}
+    ],
+	masters: [
+		{name: "John Doe", birthDate: "05.05.1940", workingFrom: '06.06.1950', workingTo: 'today', working: true, completedOrders: 25},
+		{name: "Jane Doe", birthDate: "04.04.1930", workingFrom: '06.06.1950', workingTo: 'today', working: true, completedOrders: 25},
+		{name: "Bat Man", birthDate: "03.03.1920", workingFrom: '06.06.1950', workingTo: 'today', working: true, completedOrders: 25},
+		{name: "Cpt. Price", birthDate: "02.02.1910", workingFrom: '07.07.1950', workingTo: '06.06.1950', working: false, completedOrders: 999},
+		{name: "Mr. Martian", birthDate: "01.01.1900", workingFrom: '06.06.1950', workingTo: 'today', working: true, completedOrders: 25}
+    ],
+	clients: [{
+		firstName: "John",
+		lastName: "Doe",
+		phone: "+7 777 888 9900",
+		email: "test@mail.com",
+		address: "Test street",
+		orders: [{
+			orderId: 'JICL32VLz6C_ej49TT63M',
+			date: '01.01.2020',
+			amount: '15000',
+			status: 'inWork'
+		}]
+	}],
+	insertClients(newClient) {
+			const index = this.clients.findIndex((client) => {return client.phone === newClient.phone});
+			if(index !== -1){
+					this.clients.splice(index , 1 , newClient);
+					console.log(newClient);
+			} else {
+					this.clients.push(newClient);
+			}
+	},
+	findClient(phone){
+			const clientInArray = this.clients.filter((element)=> {
+					return phone === element.phone;
+			});
+			const client = clientInArray[0];
 
-        return client;
-    }
+			return client;
+	}
 };
 module.exports = db;
 
