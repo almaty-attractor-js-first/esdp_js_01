@@ -39,8 +39,6 @@ const UserForm = props => {
   const autocompleteUserFields = e => {
     const phoneField = e.target.value;
     const inputName = e.target.name;
-    console.log(phoneField.length);
-    console.log(phoneField);
     if (phoneField.length === 15 && inputName === 'phone') {
       props.getUserByPhoneNumber(phoneField).then(response => {
         if (response) {
@@ -114,8 +112,9 @@ const UserForm = props => {
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={props.deliveryType === 'delivery' ? 9 : 12}>
-          {props.deliveryType === 'delivery' ?
+        {props.deliveryType === 'delivery' ?
+        <Fragment>
+          <Grid item xs={props.deliveryType === 'delivery' ? 9 : 12}>
             <TextField
               value={userInput.address}
               required
@@ -125,14 +124,15 @@ const UserForm = props => {
               fullWidth
               onChange={handleChange}
             />
-          :
+          </Grid>
+          <Grid container item justify='flex-end' xs={3}>
+            <TimePicker />
+          </Grid>
+        </Fragment>
+        :
           <ReactMapGl />
-          }
-
-        </Grid>
-        <Grid container item justify='flex-end' xs={props.deliveryType === 'delivery' ? 3 : 12}>
-          <TimePicker />
-        </Grid>
+          // Добавить маркер на карту с адресом и временем работы точки
+        }
       </Grid>
     </Fragment>
   );
