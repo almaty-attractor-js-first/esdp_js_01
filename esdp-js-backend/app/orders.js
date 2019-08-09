@@ -22,6 +22,7 @@ const createRouter = () => {
         }
         let orderData = req.body;
         db.addOrder(orderData);
+        db.insertClients(orderData);
         res.send(orderData);
     });
 
