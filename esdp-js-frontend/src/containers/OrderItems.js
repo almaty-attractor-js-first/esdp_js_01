@@ -70,9 +70,6 @@ const OrderItems = props => {
 				}
 				title="Список заказов"
 			/>
-            {
-                console.log(props.orders)
-            }
 			<Divider />
 			<CardContent className={classes.content}>
 				<PerfectScrollbar>

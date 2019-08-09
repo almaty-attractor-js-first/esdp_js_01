@@ -1,7 +1,5 @@
 import React, {useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import moment from "moment";
@@ -18,6 +16,8 @@ import {
 import TableBody from "@material-ui/core/TableBody";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
+import {getCleaningItems} from "../../store/actions/newOrderActions";
+import {connect} from "react-redux";
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -73,6 +73,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
+
 const order = {
     address: "Абая Саина 54",
     clientId: "1",
@@ -108,7 +109,8 @@ const order = {
 
 const OrderItems = props => {
     useEffect(() => {
-        console.log("yes")
+        console.log(this.props.match.params.id)
+        // findOrder(this.props.match.params.id)
     }, []);
 
 
@@ -120,21 +122,15 @@ const OrderItems = props => {
         {name: "rejected", title: "Отклонён", color: 'red', status: true},
         {name: "canceled", title: "Отменён", color: 'grey', status: true}
     ];
-    const [values, setValues] = React.useState({
-        name: 'Cat in the Hat',
-        age: '',
-        multiline: 'Controlled',
-        currency: 'EUR',
-    });
+    const [values, setStatus] = React.useState({});
+    const findOrder =(id) => {
+        console.log(id);
+    };
     const handleChange = name => event => {
-        setValues({ ...values, [name]: event.target.value });
+        setStatus({ ...values, [name]: event.target.value });
     };
     return (
         <div>
-            <Typography variant="subtitle1" gutterBottom>
-                Material-UI Grid:
-            </Typography>
-
             <Grid container spacing={3}>
                 <Grid item xs={4}>
                   <Card>
@@ -213,7 +209,7 @@ const OrderItems = props => {
                             <Table>
                                 <TableBody>
                                     <TableRow>
-                                        <TableCell align="left">Тип чистки</TableCell>
+                                        <TableCell align="left">Тип  чистки</TableCell>
                                         <TableCell align="left">Количество</TableCell>
                                         <TableCell align="left">Стоимость заказа</TableCell>
                                     </TableRow>
@@ -246,9 +242,18 @@ const OrderItems = props => {
                 </Grid>
             </Grid>
             <Divider className={classes.divider} />
-
         </div>
     );
 };
+const mapStateToProps = state => {
+    return {
+        defaultOrderItemFields: state.newOrder.orderItems,
+    };
+};
 
-export default OrderItems;
+const mapDispatchToProps = dispatch => {
+    return {
+        getCleaningItems: () => dispatch(getCleaningItems()),
+    };
+};
+export default connect(mapStateToProps , mapDispatchToProps)(OrderItems);

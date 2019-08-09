@@ -27,7 +27,13 @@ const TableOrderRow = (props) => {
 						<TableCell>{order.deliveryType}</TableCell>
 						<TableCell>{order.paymentStatus}</TableCell>
 						<TableCell>
-							<Button size="small" variant="outlined" color="primary">
+							<Button
+                                onClick={(e) => {
+                                e.stopPropagation()
+                            }}
+                                size="small"
+                                variant="outlined"
+                                color="primary">
 								Взять в работу
 							</Button>
 						</TableCell>
