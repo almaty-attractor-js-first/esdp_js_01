@@ -85,7 +85,20 @@ const order = {
     id: "4",
     lastName: "Bond",
     masterId: "1",
-    orderItems: [],
+    orderItems: [
+        {
+            cleaningType: "sneakers",
+            qty: "1",
+            price: 1500,
+            title: "Кроссовки"
+        },
+        {
+            cleaningType: "boots",
+            qty: 1,
+            price: 2600,
+            title: "Ботинки"
+        }
+    ],
     paymentMethod: "cash",
     paymentStatus: false,
     phone: "7476396538",
@@ -125,7 +138,7 @@ const OrderItems = props => {
             <Grid container spacing={3}>
                 <Grid item xs={4}>
                   <Card>
-                      <CardHeader title="Order info"/>
+                      <CardHeader title="Информация о заказе"/>
                       <Divider className={classes.divider} />
                       <CardContent>
                           <Table>
@@ -193,7 +206,43 @@ const OrderItems = props => {
                   </Card>
                 </Grid>
                 <Grid item xs={8}>
-                    <Paper className={classes.paper}>Left</Paper>
+                    <Card>
+                        <CardHeader title="Лоты заказа"/>
+                        <Divider className={classes.divider} />
+                        <CardContent>
+                            <Table>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell align="left">Тип чистки</TableCell>
+                                        <TableCell align="left">Количество</TableCell>
+                                        <TableCell align="left">Стоимость заказа</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell align="left">
+                                            {order.orderItems[0].title}
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            {order.orderItems[0].qty}
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            {order.orderItems[0].price}
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell align="left">
+                                            {order.orderItems[1].title}
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            {order.orderItems[1].qty}
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            {order.orderItems[1].price}
+                                        </TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
                 </Grid>
             </Grid>
             <Divider className={classes.divider} />
