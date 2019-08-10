@@ -1,5 +1,6 @@
 const nanoid = require('nanoid');
 
+
 db = {
   users: [
     {
@@ -83,7 +84,6 @@ db = {
       order.client = userId;
     }
     order.status = 'pending';
-    order.id = nanoid(6);
     this.orders.push(order);
   },
   getOrders() {
