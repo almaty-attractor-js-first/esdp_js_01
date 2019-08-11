@@ -1,11 +1,12 @@
-import {Button, TableBody, TableCell, TableRow} from "@material-ui/core";
+import {Button, TableBody, TableCell} from "@material-ui/core";
+import TableRow from '@material-ui/core/TableRow';
 import React from "react";
 import moment from "moment";
 import FormHelperText from '@material-ui/core/FormHelperText';
-
-
+import {withRouter} from "react-router";
 
 const TableOrderRow = (props) => {
+	const { history } = props;
 	return (
 		<TableBody >
 			{
@@ -13,7 +14,7 @@ const TableOrderRow = (props) => {
 					<TableRow
 						hover
 						key={index}
-						onClick={() => props.click(order.id)}
+						onClick={() => history.push(`order/${order.id}`)}
 					>
 						<TableCell>
               {order.id}
@@ -22,10 +23,10 @@ const TableOrderRow = (props) => {
 						<TableCell>{order.masterId}</TableCell>
 						<TableCell>{order.firstName} {order.lastName}</TableCell>
 						<TableCell>
-
+							{moment(order.createdAt).format('DD.MM.YYYY HH:mm')}
 						</TableCell>
-						<TableCell>{order.deliveryType}</TableCell>
-						<TableCell>{order.paymentStatus}</TableCell>
+						<TableCell>{order.deliveryType === 'self' ? 'Самовывоз' : 'Доставка'}</TableCell>
+						<TableCell>{order.paymentStatus ? 'Оплачен' : 'Не оплачен'}</TableCell>
 						<TableCell>
 							<Button
                                 onClick={(e) => {
@@ -44,5 +45,5 @@ const TableOrderRow = (props) => {
 	);
 };
 
-export default TableOrderRow;
+export default withRouter(TableOrderRow);
 

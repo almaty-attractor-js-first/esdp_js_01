@@ -31,7 +31,7 @@ export default function RadioButtonsGroup(props) {
         <FormLabel component="legend">{props.legend}</FormLabel>
         <RadioGroup
           aria-label="gender"
-          name="gender2"
+          name={props.name}
           className={classes.group}
           value={props.value}
           onChange={props.handleChange}

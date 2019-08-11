@@ -109,7 +109,6 @@ const order = {
 
 const OrderItems = props => {
     useEffect(() => {
-        console.log(this.props.match.params.id)
         // findOrder(this.props.match.params.id)
     }, []);
 
@@ -132,7 +131,7 @@ const OrderItems = props => {
     return (
         <div>
             <Grid container spacing={3}>
-                <Grid item xs={4}>
+                <Grid item xs={12} md={4}>
                   <Card>
                       <CardHeader title="Информация о заказе"/>
                       <Divider className={classes.divider} />
@@ -178,7 +177,7 @@ const OrderItems = props => {
                               <TextField
                                   id="outlined-select-currency-native"
                                   select
-                                  label="Изменить статус"
+                                  helperText="Изменить статус"
                                   className={classes.textField}
                                   value={values.currency}
                                   onChange={handleChange('currency')}
@@ -189,7 +188,6 @@ const OrderItems = props => {
                                       },
                                   }}
                                   margin="normal"
-                                  variant="outlined"
                               >
                                   {statuses.map(option => (
                                       <option key={option.name} value={option.name}>
@@ -201,7 +199,7 @@ const OrderItems = props => {
                       </CardContent>
                   </Card>
                 </Grid>
-                <Grid item xs={8}>
+                <Grid item xs={12} md={8}>
                     <Card>
                         <CardHeader title="Лоты заказа"/>
                         <Divider className={classes.divider} />

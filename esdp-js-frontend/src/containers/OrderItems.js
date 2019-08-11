@@ -16,12 +16,11 @@ import {
 	Table,
 	TableCell,
 	TableHead,
-	TableRow,
 	Tooltip,
 	TableSortLabel
 } from '@material-ui/core';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
-
+import TableRow from "@material-ui/core/TableRow";
 import TableOrderRow from "../components/TableBody/TableOrderRow";
 
 
@@ -53,9 +52,6 @@ const OrderItems = props => {
 	const { className, getOrders, staticContext, ...rest } = props;
 	const classes = useStyles();
 	const orders = props.orders;
-	const goToPage = (orderID) => {
-		props.history.push(`order/${orderID}`);
-	};
 
 	return (
 		<Card
@@ -95,13 +91,12 @@ const OrderItems = props => {
 									</TableCell>
 									<TableCell>Тип доставки</TableCell>
 									<TableCell>Статус оплаты</TableCell>
-									<TableCell>Взять в работу</TableCell>
+									<TableCell>Статус заказа</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableOrderRow
 								orders={orders}
 								statusContainer={classes.statusContainer}
-								click={(orderID) => goToPage(orderID)}
 							/>
 						</Table>
 					</div>

@@ -29,14 +29,14 @@ export default function AnonimousMenu() {
               component={Link}
               to='/order-items'
               className={classes.link}>
-        Orders
+        заказы
       </Button>
       <Button color="secondary"
               variant={"text"}
               component={Link}
               to='/register'
               className={classes.link}>
-        Sign up
+        регистрация
       </Button>
     </Fragment>
     )
