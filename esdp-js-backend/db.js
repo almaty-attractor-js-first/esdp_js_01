@@ -79,11 +79,13 @@ db = {
     address: "Test street",
     orders: []
   }],
+  ordersCount: 1,
   addOrder(order, userId) {
     if (userId) {
       order.client = userId;
     }
     order.status = 'pending';
+    this.ordersCount ++;
     this.orders.push(order);
   },
   getOrders() {
@@ -94,10 +96,17 @@ db = {
   },
   updateOrdersById(orderId, data) {
     const index = this.orders.findIndex((order) => {return order.id === orderId});
-    this.orders.splice(index , 1 , data);
+    this.orders[index] = {...this.orders[index], ...data};
+  },
+  updateOrderStatusById(orderId, status) {
+    const index = this.orders.findIndex((order) => {return order.id === orderId});
+    this.orders[index] = {...this.orders[index], status};
   },
   getCleaningItems() {
     return this.cleaningItems;
+  },
+  getStatuses() {
+    return this.statuses;
   },
   post: (subject, data, token) => {
     if (data) {
@@ -151,7 +160,6 @@ db = {
       };
       currentClient.orders.push(newOrder.id);
       this.clients[index] = currentClient;
-      console.log(this.clients);
     } else {
       const newClient = {
         firstName: newOrder.firstName,

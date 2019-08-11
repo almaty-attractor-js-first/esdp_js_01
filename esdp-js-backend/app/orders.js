@@ -8,6 +8,14 @@ const db = require('../db');
 const nodemailer = require("nodemailer");
 
 const createRouter = () => {
+    router.get('/cleaning-items' , async (req , res) => {
+        const result = await db.getCleaningItems();
+        res.send(result);
+    });
+    router.get('/statuses' , async (req , res) => {
+        const result = await db.getStatuses();
+        res.send(result);
+    });
     router.get('/orders', async (req, res) => {
         let orders = db.getOrders();
         res.send(orders);
@@ -68,11 +76,16 @@ const createRouter = () => {
         db.insertClients(orderData);
         res.send(orderData);
     });
-
     router.put('/orders/:id', async (req, res) => {
         const orderId = req.params.id;
         let data = req.body;
         db.updateOrdersById(orderId, data);
+        res.send({message: 'OK'});
+    });
+    router.put('/orders/:id/status', async (req, res) => {
+        const orderId = req.params.id;
+        let status = req.body;
+        db.updateOrderStatusById(orderId, status);
         res.send({message: 'OK'});
     });
     return router;
