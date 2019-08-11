@@ -109,7 +109,7 @@ function Checkout(props) {
     return () => {
       props.updateOrderItems([{
         cleaningType: "",
-        qty: 0,
+        qty: 1,
         price: 0
       },]);
       props.updateUserData({
@@ -175,6 +175,7 @@ function Checkout(props) {
                                          valueSecond='self'
                                          labelSecond='Самовывоз'
                                          labelPlacement='end'
+                                         name='deliveryType'
                       />
                       <RadioButtonsGroup value={paymentMethod}
                                          handleChange={handleChangePaymentMethod}
@@ -184,6 +185,7 @@ function Checkout(props) {
                                          valueSecond='epay'
                                          labelSecond='Онлайн'
                                          labelPlacement='end'
+                                         name='paymentMethod'
                       />
                   </Grid>
                 )}
