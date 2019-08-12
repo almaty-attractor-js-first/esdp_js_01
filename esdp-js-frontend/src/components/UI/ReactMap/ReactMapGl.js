@@ -32,16 +32,8 @@ class ReactMapGl extends Component {
         preventStyleDiffing={false}
         mapboxApiAccessToken={MAPBOX_TOKEN}
       >
-        <Marker latitude={43.23} longitude={76.88} offsetLeft={-20} offsetTop={-10}>
-          <div style={{color: 'gray'}}>Адрес 1</div>
-          <Pin size={20} />
-        </Marker>
-        <Marker latitude={43.25} longitude={76.91} offsetLeft={-20} offsetTop={-10}>
-          <div style={{color: 'gray'}}>Адрес 2</div>
-          <Pin size={20} />
-        </Marker>
-        <Marker latitude={43.25} longitude={76.85} offsetLeft={-20} offsetTop={-10}>
-          <div style={{color: 'gray'}}>Адрес 3</div>
+        <Marker latitude={43.238949} longitude={76.889709} offsetLeft={-20} offsetTop={-10}>
+          <div style={{color: 'gray'}}>Улица, Дом, График работы</div>
           <Pin size={20} />
         </Marker>
       </MapGL>

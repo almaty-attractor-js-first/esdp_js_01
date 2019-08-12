@@ -1,257 +1,234 @@
 import React, {useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import {updateCurrentOrder, getStatuses} from "../../store/actions/ordersActions";
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import moment from "moment";
-
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    Table,
-    TableCell,
-    TableRow
-} from "@material-ui/core";
-
 import TableBody from "@material-ui/core/TableBody";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
-import {getCleaningItems} from "../../store/actions/newOrderActions";
 import {connect} from "react-redux";
+import Typography from "@material-ui/core/Typography";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Table,
+  TableCell,
+  TableRow
+} from "@material-ui/core";
+import { Link as RouterLink } from 'react-router-dom';
+import Link from '@material-ui/core/Link';
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 const useStyles = makeStyles(theme => ({
-    container: {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)',
-        gridGap: theme.spacing(3),
+  container: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(12, 1fr)',
+    gridGap: theme.spacing(3),
+  },
+  paper: {
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+    whiteSpace: 'nowrap',
+    marginBottom: theme.spacing(1),
+    [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
+      marginTop: theme.spacing(6),
+      marginBottom: theme.spacing(6),
+      padding: theme.spacing(3),
     },
-    paper: {
-        padding: theme.spacing(1),
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-        whiteSpace: 'nowrap',
-        marginBottom: theme.spacing(1),
-    },
-    divider: {
-        margin: theme.spacing(2, 0),
-    },
-    root: {
-        width: '100%',
-        marginTop: theme.spacing(3),
-        overflowX: 'auto',
-    },
-    table: {
-        minWidth: 650,
-    },
-    content: {
-        padding: 0
-    },
-    inner: {
-        minWidth: 800
-    },
-    statusContainer: {
-        display: 'flex',
-        alignItems: 'center',
-        minWidth: "90px"
-    },
-    status: {
-        marginRight: theme.spacing(1)
-    },
-    actions: {
-        justifyContent: 'flex-end'
-    },
-    textField: {
-        marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1),
-    },
-    menu: {
-        width: 200,
-    },
-    formControl: {
-        margin: theme.spacing(1),
-        minWidth: 120,
-    }
+  },
+  divider: {
+    margin: theme.spacing(2, 0),
+  },
+  root: {
+    width: '100%',
+    marginTop: theme.spacing(3),
+    overflowX: 'auto',
+  },
+  table: {
+    minWidth: 650,
+  },
+  content: {
+    padding: theme.spacing(3)
+  },
+  inner: {
+    minWidth: 550
+  },
+  statusContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    minWidth: "90px"
+  },
+  status: {
+    marginRight: theme.spacing(1)
+  },
+  actions: {
+    justifyContent: 'flex-end'
+  },
+  textField: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  }
 }));
 
-
-const order = {
-    address: "Абая Саина 54",
-    clientId: "1",
-    completedDate: "2019-08-02T15:17:48.831Z",
-    createdAt: "2019-08-02T15:17:48.831Z",
-    deliveryType: "self",
-    description: "помыть",
-    email: "greenmassa@gmail.com",
-    firstName: "James",
-    id: "4",
-    lastName: "Bond",
-    masterId: "1",
-    orderItems: [
-        {
-            cleaningType: "sneakers",
-            qty: "1",
-            price: 1500,
-            title: "Кроссовки"
-        },
-        {
-            cleaningType: "boots",
-            qty: 1,
-            price: 2600,
-            title: "Ботинки"
-        }
-    ],
-    paymentMethod: "cash",
-    paymentStatus: false,
-    phone: "7476396538",
-    status: "inwork",
-    totalPrice: "1200",
-};
-
 const OrderItems = props => {
-    useEffect(() => {
-        // findOrder(this.props.match.params.id)
-    }, []);
+  const classes = useStyles();
+  const [currentOrder, setCurrentOrder] = React.useState(props.currentOrder);
 
+  useEffect(() => {
+    props.updateCurrentOrder(props.match.params.id);
+  }, []);
 
-    const classes = useStyles();
-    const statuses = [
-        {name: "pending", title: "В обработке", color: 'orange', status: true},
-        {name: "inWork", title: "В работе", color: 'indigo', status: true},
-        {name: "completed", title: "Завершён", color: 'green', status: true},
-        {name: "rejected", title: "Отклонён", color: 'red', status: true},
-        {name: "canceled", title: "Отменён", color: 'grey', status: true}
-    ];
-    const [values, setStatus] = React.useState({});
-    const findOrder =(id) => {
-        console.log(id);
-    };
-    const handleChange = name => event => {
-        setStatus({ ...values, [name]: event.target.value });
-    };
-    return (
-        <div>
-            <Grid container spacing={3}>
-                <Grid item xs={12} md={4}>
-                  <Card>
-                      <CardHeader title="Информация о заказе"/>
-                      <Divider className={classes.divider} />
-                      <CardContent>
-                          <Table>
-                              <TableBody>
-                                  <TableRow>
-                                      <TableCell align="left">ID заказа</TableCell>
-                                      <TableCell align="center">
-                                          {order.id}
-                                      </TableCell>
-                                  </TableRow>
-                                  <TableRow>
-                                      <TableCell align="left">Customer</TableCell>
-                                      <TableCell align="center">
-                                         <span>{order.firstName}</span>
-                                          <span>{order.address}</span>
-                                      </TableCell>
-                                  </TableRow>
-                                  <TableRow>
-                                      <TableCell align="left">Master</TableCell>
-                                      <TableCell align="center">
-                                         Олежка
-                                      </TableCell>
-                                  </TableRow>
-                                  <TableRow>
-                                      <TableCell align="left">Дата заказа</TableCell>
-                                      <TableCell align="center">
-                                          {
-                                              moment(order.createdAt).format('DD.MM.YYYY HH:mm')
-                                          }
-                                      </TableCell>
-                                  </TableRow>
-                                  <TableRow>
-                                      <TableCell align="left">Сумма заказа</TableCell>
-                                      <TableCell align="center">
-                                          {order.totalPrice}
-                                      </TableCell>
-                                  </TableRow>
-                              </TableBody>
-                          </Table>
-                          <FormControl>
-                              <TextField
-                                  id="outlined-select-currency-native"
-                                  select
-                                  helperText="Изменить статус"
-                                  className={classes.textField}
-                                  value={values.currency}
-                                  onChange={handleChange('currency')}
-                                  SelectProps={{
-                                      native: true,
-                                      MenuProps: {
-                                          className: classes.menu,
-                                      },
-                                  }}
-                                  margin="normal"
-                              >
-                                  {statuses.map(option => (
-                                      <option key={option.name} value={option.name}>
-                                          {option.title}
-                                      </option>
-                                  ))}
-                              </TextField>
-                          </FormControl>
-                      </CardContent>
-                  </Card>
-                </Grid>
-                <Grid item xs={12} md={8}>
-                    <Card>
-                        <CardHeader title="Лоты заказа"/>
-                        <Divider className={classes.divider} />
-                        <CardContent>
-                            <Table>
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell align="left">Тип  чистки</TableCell>
-                                        <TableCell align="left">Количество</TableCell>
-                                        <TableCell align="left">Стоимость заказа</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell align="left">
-                                            {order.orderItems[0].title}
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            {order.orderItems[0].qty}
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            {order.orderItems[0].price}
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell align="left">
-                                            {order.orderItems[1].title}
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            {order.orderItems[1].qty}
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            {order.orderItems[1].price}
-                                        </TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
-                        </CardContent>
-                    </Card>
-                </Grid>
-            </Grid>
-            <Divider className={classes.divider} />
-        </div>
-    );
+  useEffect(() => {
+    setCurrentOrder(props.currentOrder);
+  }, [props.currentOrder]);
+
+  useEffect(() => {
+    props.getStatuses();
+  }, []);
+
+  return (
+    <div>
+      {currentOrder ?
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={5}>
+            <Card>
+              <CardHeader title="Информация о заказе"/>
+              <Divider className={classes.divider} />
+              <CardContent className={classes.content}>
+                <PerfectScrollbar>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell align="left">ID заказа</TableCell>
+                      <TableCell align="left">
+                        {currentOrder.id}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell align="left">Клиент</TableCell>
+                      <TableCell align="left">
+                        <div>
+                          <Link component={RouterLink} to={`/order/${props.match.params.id}`}>
+                            {`${currentOrder.firstName} ${currentOrder.lastName}` || 'Информация отсутствует'}
+                          </Link>
+                        </div>
+                        <span>{currentOrder.phone}</span>
+                        <div>{currentOrder.address}</div>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell align="left">Master</TableCell>
+                      <TableCell align="left">
+                        Олежка
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell align="left">Дата заказа</TableCell>
+                      <TableCell align="left">
+                        {
+                          moment(currentOrder.createdAt).format('DD.MM.YYYY HH:mm')
+                        }
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell align="left">Сумма заказа</TableCell>
+                      <TableCell align="left">
+                        {currentOrder.totalPrice}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell align="left">Статус</TableCell>
+                      <TableCell align="left">
+                        <FormControl className={classes.formControl}>
+                          <TextField
+                            select
+                            // helperText="Изменить статус"
+                            className={classes.textField}
+                            value
+                            SelectProps={{
+                              native: true,
+                              MenuProps: {
+                                className: classes.menu,
+                              },
+                            }}
+                            margin="normal"
+                          >
+                            {props.statuses.map(option => (
+                              <option key={option.name} value={option.name}>
+                                {option.title}
+                              </option>
+                            ))}
+                          </TextField>
+                        </FormControl>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+                </PerfectScrollbar>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={7}>
+            <Card>
+              <CardHeader title="Лоты заказа"/>
+              <Divider className={classes.divider} />
+              <CardContent>
+                <PerfectScrollbar>
+                <div className={classes.inner}>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell align="left">Тип чистки</TableCell>
+                      <TableCell align="left">Количество</TableCell>
+                      <TableCell align="left">Стоимость</TableCell>
+                    </TableRow>
+                    {currentOrder.orderItems ?
+                      currentOrder.orderItems.map((orderItem, index) => (
+                        <TableRow key={index}>
+                          <TableCell align="left">
+                            {orderItem.title}
+                          </TableCell>
+                          <TableCell align="left">
+                            {orderItem.qty}
+                          </TableCell>
+                          <TableCell align="left">
+                            {orderItem.price}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                      : null
+                    }
+                  </TableBody>
+                </Table>
+                </div>
+                </PerfectScrollbar>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+        : <Typography>Отсутствует информация о заказе</Typography>}
+      <Divider className={classes.divider} />
+    </div>
+  );
 };
 const mapStateToProps = state => {
-    return {
-        defaultOrderItemFields: state.newOrder.orderItems,
-    };
+  return {
+    currentOrder: state.orders.currentOrder,
+    statuses: state.orders.statuses,
+  };
 };
 
 const mapDispatchToProps = dispatch => {
-    return {
-        getCleaningItems: () => dispatch(getCleaningItems()),
-    };
+  return {
+    updateCurrentOrder: (orderId) => dispatch(updateCurrentOrder(orderId)),
+    getStatuses: () => dispatch(getStatuses()),
+  };
 };
 export default connect(mapStateToProps , mapDispatchToProps)(OrderItems);

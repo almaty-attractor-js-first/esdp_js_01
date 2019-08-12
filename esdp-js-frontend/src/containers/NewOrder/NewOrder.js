@@ -99,7 +99,8 @@ function Checkout(props) {
       completedDate: props.completedDate,
       orderItems : props.orderItems,
       paymentMethod : paymentMethod,
-      deliveryType : deliveryType
+      deliveryType : deliveryType,
+      totalPrice: props.totalPrice
     };
     console.log(order);
     props.addOrder(order);

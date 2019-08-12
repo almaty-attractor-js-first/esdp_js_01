@@ -32,8 +32,7 @@ const createRouter = () => {
         }
         let orderData = req.body;
         orderData.id = nanoid(6);
-
-
+        orderData.createdAt = new Date();
         async function mailer(qr){
             let transporter = nodemailer.createTransport({
                 host: "smtp.yandex.com",
@@ -64,7 +63,7 @@ const createRouter = () => {
 
         const generateQR = async text => {
             try {
-                const qr = await QRCode.toDataURL(text, {scale: 10})
+                const qr = await QRCode.toDataURL(text, {scale: 10});
                 mailer(qr).catch(console.error);
             } catch (err) {
                 console.error(err)

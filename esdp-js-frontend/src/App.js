@@ -5,6 +5,7 @@ import {NotificationContainer} from 'react-notifications';
 import {logoutUser} from "./store/actions/usersActions";
 import Routes from "./Routes";
 import Layout from "./containers/Layout/Layout";
+import 'react-perfect-scrollbar/dist/css/styles.css';
 
 const App = props => {
 
