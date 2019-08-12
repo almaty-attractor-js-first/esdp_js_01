@@ -27,9 +27,16 @@ export default function AnonimousMenu() {
       <Button color="primary"
               variant={"text"}
               component={Link}
+              to='/admin-order-items'
+              className={classes.link}>
+        Админ
+      </Button>
+      <Button color="primary"
+              variant={"text"}
+              component={Link}
               to='/order-items'
               className={classes.link}>
-        заказы
+        мастер
       </Button>
       <Button color="secondary"
               variant={"text"}

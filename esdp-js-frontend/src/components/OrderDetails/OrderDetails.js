@@ -20,6 +20,8 @@ import {
 import { Link as RouterLink } from 'react-router-dom';
 import Link from '@material-ui/core/Link';
 import PerfectScrollbar from "react-perfect-scrollbar";
+import Button from "@material-ui/core/Button";
+import CardActions from "@material-ui/core/CardActions";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -72,8 +74,8 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1),
   },
   formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
+    marginBottom: theme.spacing(2),
+    minWidth: 140,
   }
 }));
 
@@ -92,6 +94,12 @@ const OrderItems = props => {
   useEffect(() => {
     props.getStatuses();
   }, []);
+
+  const [value, setValue] = React.useState();
+  const handleChangeStatus = name => event => {
+    setValue({ ...value, [name]: event.target.value });
+    console.log(value)
+  };
 
   return (
     <div>
@@ -144,14 +152,14 @@ const OrderItems = props => {
                       </TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell align="left">Статус</TableCell>
                       <TableCell align="left">
                         <FormControl className={classes.formControl}>
                           <TextField
                             select
                             // helperText="Изменить статус"
                             className={classes.textField}
-                            value
+                            value={value}
+                            onChange={handleChangeStatus}
                             SelectProps={{
                               native: true,
                               MenuProps: {
@@ -160,19 +168,27 @@ const OrderItems = props => {
                             }}
                             margin="normal"
                           >
-                            {props.statuses.map(option => (
-                              <option key={option.name} value={option.name}>
-                                {option.title}
+                            {props.statuses.map(status => (
+                              <option key={status.name} value={status.name}>
+                                {status.title}
                               </option>
                             ))}
                           </TextField>
                         </FormControl>
+                      </TableCell>
+                      <TableCell align="left">
+                        <Button color='primary' variant='outlined'>
+                          Сохранить
+                        </Button>
                       </TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
                 </PerfectScrollbar>
               </CardContent>
+              <CardActions>
+
+              </CardActions>
             </Card>
           </Grid>
           <Grid item xs={12} md={7}>

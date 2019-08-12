@@ -6,6 +6,7 @@ import NewOrder from "./containers/NewOrder/NewOrder";
 import OrderItems from "./containers/OrderItems";
 import Main from "./containers/Main/Main";
 import OrderDetails from "./components/OrderDetails/OrderDetails";
+import AdminOrderItems from "./containers/AdminOrderItems";
 
 const Routes = ({user}) => {
     return (
@@ -15,6 +16,7 @@ const Routes = ({user}) => {
             <Route exact path="/login" component={Login}/>
             <Route exact path="/new-order" component={NewOrder}/>
             <Route exact path="/order-items" component={OrderItems}/>
+            <Route exact path="/admin-order-items" component={AdminOrderItems}/>
             <Route exact path="/order/:id" component={OrderDetails}/>
         </Switch>
     )
