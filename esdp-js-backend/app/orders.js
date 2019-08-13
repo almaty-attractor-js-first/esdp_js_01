@@ -50,7 +50,7 @@ const createRouter = () => {
                 text: "Ваш заказ № " + orderData.id + " оформлен", // plain text body
                 html: `<h2>Здравствуйте, ${orderData.firstName}</h2>
                        <p>Ваш заказ № ${orderData.id} оформлен</p>
-                    <img src="${qr}" alt="qr code" />` // html body
+                       <img src="${qr}" alt="${qr}" />` // html body
             });
 
             console.log("Message sent: %s", info.messageId);
@@ -62,6 +62,7 @@ const createRouter = () => {
         }
 
         const generateQR = async text => {
+            console.log('generateQR');
             try {
                 const qr = await QRCode.toDataURL(text, {scale: 10});
                 mailer(qr).catch(console.error);
@@ -70,12 +71,14 @@ const createRouter = () => {
             }
         };
         generateQR(orderData.id);
+        console.log(orderData.id);
 
         db.addOrder(orderData);
         db.insertClients(orderData);
         res.send(orderData);
     });
     router.put('/orders/:id', async (req, res) => {
+        console.log(req.body);
         const orderId = req.params.id;
         let data = req.body;
         db.updateOrdersById(orderId, data);
@@ -83,7 +86,7 @@ const createRouter = () => {
     });
     router.put('/orders/:id/status', async (req, res) => {
         const orderId = req.params.id;
-        let status = req.body;
+        const status = req.body;
         db.updateOrderStatusById(orderId, status);
         res.send({message: 'OK'});
     });

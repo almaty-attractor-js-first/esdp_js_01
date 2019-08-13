@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
-import {getOrders} from "../store/actions/ordersActions";
+import {getOrders, updateOrderStatus} from "../store/actions/ordersActions";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Link as RouterLink } from 'react-router-dom';
 import {
@@ -125,7 +125,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    getOrders: () => dispatch(getOrders())
+    getOrders: () => dispatch(getOrders()),
   };
 };
 

@@ -1,31 +1,46 @@
 import {Button, TableBody, TableCell} from "@material-ui/core";
 import TableRow from '@material-ui/core/TableRow';
-import React, {useEffect} from "react";
+import React, {useEffect, useRef} from "react";
 import moment from "moment";
 import FormHelperText from '@material-ui/core/FormHelperText';
 import {withRouter} from "react-router";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
 import {connect} from "react-redux";
-import {getStatuses, updateCurrentOrder} from "../../store/actions/ordersActions";
+import {getStatuses, updateOrderStatus} from "../../store/actions/ordersActions";
 
 const TableOrderRow = (props) => {
   const { history } = props;
+  const [value, setValue] = React.useState();
+  const [id, setId] = React.useState('');
+  const [orders, setOrders] = React.useState(props.orders);
+
+  const handleChangeStatus =  async (event) => {
+    await setValue({[event.target.name]: event.target.value });
+  };
+
+  useEffect(() => {
+    setOrders(props.orders);
+    console.log(orders);
+    console.log(value);
+  }, [props.orders]);
 
   useEffect(() => {
     props.getStatuses();
   }, []);
 
-  const [value, setValue] = React.useState();
-  const handleChangeStatus = name => event => {
-    setValue({ ...value, [name]: event.target.value });
-    console.log(value)
-  };
+
+  useEffect(() => {
+    if (value) {
+      console.log(value);
+      props.updateOrderStatus(id, value)
+    }
+  }, [value]);
 
   return (
     <TableBody >
       {
-        props.orders.map((order, index) => (
+        orders.map((order, index) => (
           <TableRow
             hover
             key={index}
@@ -47,16 +62,19 @@ const TableOrderRow = (props) => {
                 <TextField
                   select
                   // helperText="Изменить статус"
-
-                  value={value}
-                  onChange={handleChangeStatus}
+                  name={order.id}
+                  value={order.status}
+                  onChange={(e) => {handleChangeStatus(e); setId(order.id)}}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                  }}
                   SelectProps={{
                     native: true,
                   }}
                   margin="normal"
                 >
-                  {props.statuses.map(status => (
-                    <option key={status.name} value={status.name}>
+                  {props.statuses.map((status, index) => (
+                    <option key={index} value={status.name}>
                       {status.title}
                     </option>
                   ))}
@@ -79,6 +97,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     getStatuses: () => dispatch(getStatuses()),
+    updateOrderStatus: (id, status) => dispatch(updateOrderStatus(id, status))
   };
 };
 
