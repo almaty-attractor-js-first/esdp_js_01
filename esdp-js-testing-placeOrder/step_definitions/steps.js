@@ -62,10 +62,8 @@ When('Я выбираю способ оплаты {string}', (buttonName) => {
   I.click(buttonName);
 });
 
-Then(/^Я возвращаюсь на главную страницу "(.*?)"$/, (text) => {
-  I.wait(2);
-  I.see(text);
+
+Then('Я вижу список заказов {string}', (text) => {
+	I.wait(2);
+	I.see(text);
 });
-
-
-
