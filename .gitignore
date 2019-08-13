@@ -1,2 +1,6 @@
 .idea
 node_modules
+
+esdp-js-testing-placeOrder/\.DS_Store
+
+esdp-js-testing-placeOrder/output/
