@@ -103,7 +103,9 @@ function OrderForm(props) {
                   {props.cleaningItems ?
                     props.cleaningItems.map((item, index) => {
                       return (
-                        <option key={index} value={item.name}>{item.title}</option>
+                        <option key={index} value={item.name}>
+                          {item.title}
+                        </option>
                       )
                   }) : null}
                 </TextField>

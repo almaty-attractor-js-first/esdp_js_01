@@ -51,20 +51,12 @@ export const getStatuses = () => {
     }
 };
 
-export const updateOrderStatus = (id, status) => {
-    const orderId = id;
-    const newOrderStatus = status[id];
-    const data = {status: newOrderStatus};
-    const orders = store.getState().orders.orders;
-    const index = orders.findIndex((order) => {return order.id === orderId});
-    // console.log(orders[index]);
-    orders[index] = {...orders[index], ...data};
+export const putUpdateOrder = (id, order) => {
     return dispatch => {
-        console.log(orders);
-        dispatch({type: UPDATE_ORDERS, orders});
-        axios.put(`/orders/${orderId}`, orders[index]);
+        axios.put(`/orders/${id}`, order);
     }
 };
+
 
 
 

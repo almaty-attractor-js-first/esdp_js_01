@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
-import {getOrders, updateOrderStatus} from "../store/actions/ordersActions";
+import {getOrders, getStatuses, putUpdateOrder, updateOrders} from "../store/actions/ordersActions";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Link as RouterLink } from 'react-router-dom';
 import {
@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
   statusContainer: {
     display: 'flex',
     alignItems: 'center',
-    minWidth: "90px"
+    minWidth: "125px"
   },
   status: {
     marginRight: theme.spacing(1)
@@ -49,9 +49,13 @@ const OrderItems = props => {
   useEffect(() => {
     props.getOrders();
   }, []);
-  const { className, getOrders, staticContext, ...rest } = props;
+
+  useEffect(() => {
+    props.getStatuses();
+  }, []);
+
+  const { className, getOrders, getStatuses, updateOrders, putUpdateOrder, staticContext, ...rest } = props;
   const classes = useStyles();
-  const orders = props.orders;
 
   return (
     <Card
@@ -95,8 +99,11 @@ const OrderItems = props => {
                 </TableRow>
               </TableHead>
               <AdminOrderRow
-                orders={orders}
+                orders={props.orders}
+                statuses={props.statuses}
                 statusContainer={classes.statusContainer}
+                updateOrders={props.updateOrders}
+                putUpdateOrder={props.putUpdateOrder}
               />
             </Table>
           </div>
@@ -119,13 +126,17 @@ OrderItems.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    orders: state.orders.orders
+    orders: state.orders.orders,
+    statuses: state.orders.statuses
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     getOrders: () => dispatch(getOrders()),
+    getStatuses: () => dispatch(getStatuses()),
+    updateOrders: (order) => dispatch(updateOrders(order)),
+    putUpdateOrder: (id, order) => dispatch(putUpdateOrder(id, order))
   };
 };
 

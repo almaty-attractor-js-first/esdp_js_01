@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
 	statusContainer: {
 		display: 'flex',
 		alignItems: 'center',
-		minWidth: "90px"
+		minWidth: "125px"
 	},
 	status: {
 		marginRight: theme.spacing(1)

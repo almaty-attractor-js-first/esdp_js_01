@@ -27,11 +27,9 @@ const TableOrderRow = (props) => {
 						</TableCell>
 						<TableCell>{order.deliveryType === 'self' ? 'Самовывоз' : 'Доставка'}</TableCell>
 						<TableCell>{order.paymentStatus ? 'Оплачен' : 'Не оплачен'}</TableCell>
-						<TableCell>
+						<TableCell className={props.statusContainer}>
 							<Button
-                                onClick={(e) => {
-                                e.stopPropagation()
-                            }}
+                                onClick={(e) => {e.stopPropagation()}}
                                 size="small"
                                 variant="outlined"
                                 color="primary">

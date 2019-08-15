@@ -1,46 +1,26 @@
-import {Button, TableBody, TableCell} from "@material-ui/core";
+import {TableBody, TableCell} from "@material-ui/core";
 import TableRow from '@material-ui/core/TableRow';
-import React, {useEffect, useRef} from "react";
+import React from "react";
 import moment from "moment";
 import FormHelperText from '@material-ui/core/FormHelperText';
 import {withRouter} from "react-router";
 import TextField from "@material-ui/core/TextField";
-import FormControl from "@material-ui/core/FormControl";
-import {connect} from "react-redux";
-import {getStatuses, updateOrderStatus} from "../../store/actions/ordersActions";
 
 const TableOrderRow = (props) => {
   const { history } = props;
-  const [value, setValue] = React.useState();
-  const [id, setId] = React.useState('');
-  const [orders, setOrders] = React.useState(props.orders);
 
-  const handleChangeStatus =  async (event) => {
-    await setValue({[event.target.name]: event.target.value });
+  const handleChange = (event, id) => {
+    const _tempOrders = [...props.orders];
+    const index = _tempOrders.findIndex(order => {return order.id === id});
+    _tempOrders[index][event.target.name] = event.target.value;
+    props.updateOrders(_tempOrders);
+    props.putUpdateOrder(id, _tempOrders[index]);
   };
-
-  useEffect(() => {
-    setOrders(props.orders);
-    console.log(orders);
-    console.log(value);
-  }, [props.orders]);
-
-  useEffect(() => {
-    props.getStatuses();
-  }, []);
-
-
-  useEffect(() => {
-    if (value) {
-      console.log(value);
-      props.updateOrderStatus(id, value)
-    }
-  }, [value]);
 
   return (
     <TableBody >
       {
-        orders.map((order, index) => (
+        props.orders.map((order, index) => (
           <TableRow
             hover
             key={index}
@@ -57,29 +37,32 @@ const TableOrderRow = (props) => {
             </TableCell>
             <TableCell>{order.deliveryType === 'self' ? 'Самовывоз' : 'Доставка'}</TableCell>
             <TableCell>{order.paymentStatus ? 'Оплачен' : 'Не оплачен'}</TableCell>
-            <TableCell>
-              <FormControl>
-                <TextField
-                  select
-                  // helperText="Изменить статус"
-                  name={order.id}
-                  value={order.status}
-                  onChange={(e) => {handleChangeStatus(e); setId(order.id)}}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                  }}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  margin="normal"
-                >
-                  {props.statuses.map((status, index) => (
-                    <option key={index} value={status.name}>
-                      {status.title}
-                    </option>
-                  ))}
-                </TextField>
-              </FormControl>
+            <TableCell className={props.statusContainer}>
+              <TextField
+                select
+                data-id={index}
+                fullWidth
+                value={order.status}
+                onChange={(e) => {handleChange(e, order.id);}}
+                onClick={(e) => e.stopPropagation()}
+                inputProps={{
+                  name: 'status',
+                  id: 'status',
+                }}
+                SelectProps={{
+                  native: true,
+                }}
+                helperText="Тип чистки"
+              >
+                {props.statuses ?
+                  props.statuses.map((item, index) => {
+                    return (
+                      <option key={index} value={item.name}>
+                        {item.title}
+                      </option>
+                    )
+                  }) : null}
+              </TextField>
             </TableCell>
           </TableRow>
         ))
@@ -88,18 +71,5 @@ const TableOrderRow = (props) => {
   );
 };
 
-const mapStateToProps = state => {
-  return {
-    statuses: state.orders.statuses,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    getStatuses: () => dispatch(getStatuses()),
-    updateOrderStatus: (id, status) => dispatch(updateOrderStatus(id, status))
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(TableOrderRow));
+export default withRouter(TableOrderRow);
 
