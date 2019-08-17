@@ -5,6 +5,7 @@ import store from "../configureStore";
 
 
 export const updateOrders = orders => {
+    console.log("updated Redux" , orders)
     return dispatch => {
         dispatch({type: UPDATE_ORDERS, orders});
     };
@@ -52,6 +53,7 @@ export const getStatuses = () => {
 };
 
 export const putUpdateOrder = (id, order) => {
+    console.log('updated order' , order);
     return dispatch => {
         axios.put(`/orders/${id}`, order);
     }

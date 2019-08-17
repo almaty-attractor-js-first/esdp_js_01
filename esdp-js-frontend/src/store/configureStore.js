@@ -34,7 +34,8 @@ const store = createStore(rootReducer, persistedState, enhancers);
 store.subscribe(() => {
   saveState({
     users: store.getState().users,
-    newOrder: store.getState().newOrder
+    newOrder: store.getState().newOrder,
+    orders: store.getState().orders,
   });
 });
 

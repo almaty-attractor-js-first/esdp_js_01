@@ -7,6 +7,7 @@ import OrderItems from "./containers/OrderItems";
 import Main from "./containers/Main/Main";
 import OrderDetails from "./components/OrderDetails/OrderDetails";
 import AdminOrderItems from "./containers/AdminOrderItems";
+import OrderDetailsEdite from "./components/OrderDetails/OrderDetailsEdite";
 
 const Routes = ({user}) => {
     return (
@@ -18,6 +19,7 @@ const Routes = ({user}) => {
             <Route exact path="/order-items" component={OrderItems}/>
             <Route exact path="/admin-order-items" component={AdminOrderItems}/>
             <Route exact path="/order/:id" component={OrderDetails}/>
+            <Route exact path="/edit-order/:id" component={OrderDetailsEdite}/>
         </Switch>
     )
 };

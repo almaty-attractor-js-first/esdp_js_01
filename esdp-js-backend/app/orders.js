@@ -22,7 +22,7 @@ const createRouter = () => {
     });
     router.get('/orders/:id', async (req, res) => {
         const orderId = req.params.id;
-        let order = await db.getOrdersById(orderId);
+        let order = await db.gextOrdersById(orderId);
         res.send(order);
     });
     router.post('/orders', async (req, res) => {

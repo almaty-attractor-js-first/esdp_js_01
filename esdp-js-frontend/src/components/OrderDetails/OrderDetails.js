@@ -22,6 +22,8 @@ import Link from '@material-ui/core/Link';
 import PerfectScrollbar from "react-perfect-scrollbar";
 import Button from "@material-ui/core/Button";
 import CardActions from "@material-ui/core/CardActions";
+import Box from "@material-ui/core/Box";
+import SvgIcon from "@material-ui/core/SvgIcon";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -76,6 +78,12 @@ const useStyles = makeStyles(theme => ({
   formControl: {
     marginBottom: theme.spacing(2),
     minWidth: 140,
+  },
+  link: {
+    textDecoration: 'none',
+    '&:hover': {
+      textDecoration: 'none',
+    },
   }
 }));
 
@@ -103,6 +111,33 @@ const OrderItems = props => {
 
   return (
     <div>
+        <div style={{ width: '100%' }}>
+            <Box display="flex" p={1} >
+                <Box p={1} flexGrow={1} >
+                    <Button
+                        color='primary'
+                        variant='outlined'
+                        component={RouterLink}
+                        className={classes.link}
+                        to={`/edit-order/${props.match.params.id}`}
+
+                    >
+                        <SvgIcon >
+                            <path d="M3 17.25 V 21 h 3.75 L 17.81 9.94 l -3.75 -3.75 L 3
+                            17.25 Z M 20.71 7.04 c 0.39 -0.39 0.39 -1.02 0 -1.41 l -2.34
+                            -2.34 a 0.9959 0.9959 0 0 0 -1.41 0 l -1.83 1.83 l 3.75 3.75 l 1.83 -1.83 Z"/>
+                        </SvgIcon>
+                        редактировать
+                    </Button>
+                </Box>
+                <Box p={1} >
+                    <Button color='primary' variant='outlined'>
+                        Сохранить
+                    </Button>
+                </Box>
+            </Box>
+        </div>
+
       {currentOrder ?
         <Grid container spacing={3}>
           <Grid item xs={12} md={5}>
@@ -175,11 +210,6 @@ const OrderItems = props => {
                             ))}
                           </TextField>
                         </FormControl>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Button color='primary' variant='outlined'>
-                          Сохранить
-                        </Button>
                       </TableCell>
                     </TableRow>
                   </TableBody>

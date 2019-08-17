@@ -37,8 +37,8 @@ db = {
       lastName: 'Bond',
       status: 'pending',
       orderItems: [
-        {cleaningType: 'slingBacks', qty: 1},
-        {cleaningType: 'sneakers', qty: 1}
+        {cleaningType: 'slingBacks', qty: 1 ,price: 3000 , title: "Туфли"},
+        {cleaningType: 'sneakers', qty: 1 , price: 1500 , title: "Кроссовки"}
       ],
       createdAt: '2019-08-02T15:17:48.831Z',
       description: 'помыть',
@@ -148,7 +148,7 @@ db = {
   getUsersByRole: (role) => {
     return db.users.find((user) => { return user.role === role});
   },
-  insertClients(newOrder) {
+  insertClients(newOrder) {``
     const index = this.clients.findIndex((client) => {return client.phone === newOrder.phone});
     if(index !== -1){
       let currentClient = {...this.clients[index],
