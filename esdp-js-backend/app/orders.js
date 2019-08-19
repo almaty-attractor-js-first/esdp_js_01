@@ -33,6 +33,11 @@ const createRouter = () => {
         let orderData = req.body;
         orderData.id = nanoid(6);
         orderData.createdAt = new Date();
+
+        const qr = await QRCode.toDataURL(orderData.id, {scale: 10});
+        mailer(qr).catch(console.error);
+        console.log(orderData.id);
+
         async function mailer(qr){
             let transporter = nodemailer.createTransport({
                 host: "smtp.yandex.com",
@@ -60,18 +65,6 @@ const createRouter = () => {
             console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
             // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
         }
-
-        const generateQR = async text => {
-            console.log('generateQR');
-            try {
-                const qr = await QRCode.toDataURL(text, {scale: 10});
-                mailer(qr).catch(console.error);
-            } catch (err) {
-                console.error(err)
-            }
-        };
-        generateQR(orderData.id);
-        console.log(orderData.id);
 
         db.addOrder(orderData);
         db.insertClients(orderData);

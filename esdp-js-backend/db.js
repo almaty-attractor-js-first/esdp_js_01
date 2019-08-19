@@ -148,7 +148,7 @@ db = {
   getUsersByRole: (role) => {
     return db.users.find((user) => { return user.role === role});
   },
-  insertClients(newOrder) {``
+  insertClients(newOrder) {
     const index = this.clients.findIndex((client) => {return client.phone === newOrder.phone});
     if(index !== -1){
       let currentClient = {...this.clients[index],

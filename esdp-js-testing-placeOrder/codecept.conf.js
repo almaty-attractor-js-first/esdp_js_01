@@ -3,7 +3,8 @@ exports.config = {
   helpers: {
     Puppeteer: {
       url: 'http://localhost:3000',
-      show: true
+      show: true,
+      windowSize: "1366x768",
     }
   },
   include: {
@@ -19,9 +20,9 @@ exports.config = {
   },
   plugins: {
     screenshotOnFail: {
-      enabled: true
+      enabled: false
     }
   },
   tests: './*_test.js',
   name: 'esdp-js-testing-placeOrder'
-}
+};

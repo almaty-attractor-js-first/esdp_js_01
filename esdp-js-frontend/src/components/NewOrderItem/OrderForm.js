@@ -89,7 +89,7 @@ function OrderForm(props) {
                   onChange={handleOrderItemsChange}
                   inputProps={{
                     name: 'cleaningType',
-                    id: 'cleaningType',
+                    id: 'cleaningType' + index,
                     'data-id': index
                   }}
                   SelectProps={{
@@ -119,6 +119,7 @@ function OrderForm(props) {
                     type="number"
                     inputProps={{
                       min: "1", max: "10", step: "1",
+                      id: 'cleaningQty' + index,
                       'data-id': index
                     }}
                     value={item.qty}
@@ -134,12 +135,12 @@ function OrderForm(props) {
               <Grid item xs={1}>
                 {index ?
                   <IconButton size="small" className={classes.bottomIcon} color="secondary" onClick={() => removeOrderItem(index)}>
-                    <DeleteIcon fontSize="small"/>
+                    <DeleteIcon fontSize="small" data-delete-id={index} />
                   </IconButton>
                 : null}
               </Grid>
               <Grid item xs={1}>
-                <IconButton size="small" className={classes.bottomIcon} color="primary"  onClick={addNewOrderItem}>
+                <IconButton data-id={index} size="small" className={classes.bottomIcon} color="primary"  onClick={addNewOrderItem}>
                   <AddIcon fontSize="small"/>
                 </IconButton>
               </Grid>
