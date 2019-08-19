@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "codeceptjs": "^2.2.1",
+    "diff": "^3.5.0",
     "eslint-plugin-react-hooks": "^1.6.1",
     "esm": "^3.1.0",
     "puppeteer": "^1.19.0"
