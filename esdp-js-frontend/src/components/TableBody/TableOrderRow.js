@@ -6,6 +6,12 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import {withRouter} from "react-router";
 
 const TableOrderRow = (props) => {
+	const statusToButton = {
+		"pending": "Взять в работу",
+		"inWork": "Закончить работу",
+		"completed": "Закончено"
+	};
+
 	const { history } = props;
 	return (
 		<TableBody >
@@ -29,11 +35,13 @@ const TableOrderRow = (props) => {
 						<TableCell>{order.paymentStatus ? 'Оплачен' : 'Не оплачен'}</TableCell>
 						<TableCell className={props.statusContainer}>
 							<Button
-                                onClick={(e) => {e.stopPropagation()}}
+								onClick={(e) => {props.changeStatusButton(order.id, order.status);
+								e.stopPropagation()}}
                                 size="small"
                                 variant="outlined"
-                                color="primary">
-								Взять в работу
+                                color="primary"
+							>
+								{statusToButton[order.status]}
 							</Button>
 						</TableCell>
 					</TableRow>

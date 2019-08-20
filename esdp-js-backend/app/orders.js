@@ -12,6 +12,13 @@ const createRouter = () => {
         const result = await db.getCleaningItems();
         res.send(result);
     });
+    router.put('/status/:id', async (req, res) => {
+        let orderData = req.body;
+        const status = orderData.status;
+        const orderId = req.params.id;
+        const result = await db.updateOrderStatusById(orderId, status);
+        res.send(result);
+    });
     router.get('/statuses' , async (req , res) => {
         const result = await db.getStatuses();
         res.send(result);
@@ -22,8 +29,8 @@ const createRouter = () => {
     });
     router.get('/orders/:id', async (req, res) => {
         const orderId = req.params.id;
-        let order = await db.gextOrdersById(orderId);
-        res.send(order);
+        let order = await db.getOrdersById(orderId);
+        res.send({message: "ok"});
     });
     router.post('/orders', async (req, res) => {
         if(req.query.phone){

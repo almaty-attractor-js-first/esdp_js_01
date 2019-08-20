@@ -100,7 +100,7 @@ db = {
   },
   updateOrderStatusById(orderId, status) {
     const index = this.orders.findIndex((order) => {return order.id === orderId});
-    this.orders[index] = {...this.orders[index], status};
+    return this.orders[index] = {...this.orders[index], status};
   },
   getCleaningItems() {
     return this.cleaningItems;

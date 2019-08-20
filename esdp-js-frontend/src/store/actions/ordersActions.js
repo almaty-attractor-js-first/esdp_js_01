@@ -59,6 +59,12 @@ export const putUpdateOrder = (id, order) => {
     }
 };
 
-
+export const changeStatus = (id, status) => {
+    return dispatch => {
+        axios.put(`/status/${id}`, {status: status}).then(()=>{
+            dispatch(getOrders());
+        });
+    }
+};
 
 

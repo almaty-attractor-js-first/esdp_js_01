@@ -1,9 +1,9 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import clsx from 'clsx';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
-import {getOrders} from "../store/actions/ordersActions";
+import {getOrders, changeStatus} from "../store/actions/ordersActions";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Link as RouterLink } from 'react-router-dom';
 import {
@@ -45,7 +45,20 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
+
+
 const OrderItems = props => {
+	const changeStatusButtonHandler = (id, status) => {
+		console.log('boom in orderitems', id, status);
+		let newStatus = '';
+		if (status === 'pending') {
+			newStatus = 'inWork'
+		} else if (status === 'inWork') {
+			newStatus = 'completed'
+		}
+		props.changeStatus(id, newStatus);
+	};
+	const [direction, setDirection] = useState(true);
 	useEffect(() => {
 		props.getOrders();
 	}, []);
@@ -83,9 +96,9 @@ const OrderItems = props => {
 										>
 											<TableSortLabel
 												active
-												direction="desc"
+												direction={direction ? 'desc':'asc'}
 											>
-												Дата заказа
+												<button onClick={() => setDirection({direction: false})}>Дата заказа</button>
 											</TableSortLabel>
 										</Tooltip>
 									</TableCell>
@@ -97,6 +110,7 @@ const OrderItems = props => {
 							<TableOrderRow
 								orders={orders}
 								statusContainer={classes.statusContainer}
+								changeStatusButton={changeStatusButtonHandler}
 							/>
 						</Table>
 					</div>
@@ -125,7 +139,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		getOrders: () => dispatch(getOrders())
+		getOrders: () => dispatch(getOrders()),
+		changeStatus: (id, status) => dispatch(changeStatus(id, status))
 	};
 };
 
