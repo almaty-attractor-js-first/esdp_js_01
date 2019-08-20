@@ -33,9 +33,9 @@ const useStyles = makeStyles(theme => ({
 		minWidth: 800
 	},
 	statusContainer: {
-		display: 'flex',
-		alignItems: 'center',
-		minWidth: "125px"
+		// display: 'flex',
+		// alignItems: 'center',
+		minWidth: "150px"
 	},
 	status: {
 		marginRight: theme.spacing(1)
@@ -62,9 +62,12 @@ const OrderItems = props => {
 	useEffect(() => {
 		props.getOrders();
 	}, []);
-	const { className, getOrders, staticContext, ...rest } = props;
+	const { className, getOrders, changeStatus, staticContext, ...rest } = props;
 	const classes = useStyles();
 	const orders = props.orders;
+	const user = {
+		role: "master"
+	};
 
 	return (
 		<Card
@@ -109,6 +112,7 @@ const OrderItems = props => {
 							</TableHead>
 							<TableOrderRow
 								orders={orders}
+								user={user}
 								statusContainer={classes.statusContainer}
 								changeStatusButton={changeStatusButtonHandler}
 							/>
