@@ -134,8 +134,8 @@ function OrderForm(props) {
 
               <Grid item xs={1}>
                 {index ?
-                  <IconButton size="small" className={classes.bottomIcon} color="secondary" onClick={() => removeOrderItem(index)}>
-                    <DeleteIcon fontSize="small" data-delete-id={index} />
+                  <IconButton  data-delete-id={index} size="small" className={classes.bottomIcon} color="secondary" onClick={() => removeOrderItem(index)}>
+                    <DeleteIcon fontSize="small"/>
                   </IconButton>
                 : null}
               </Grid>
