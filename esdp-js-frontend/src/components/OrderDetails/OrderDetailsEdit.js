@@ -6,13 +6,13 @@ import {
     updateOrders,
     putUpdateOrder
 } from "../../store/actions/ordersActions";
+import moment from "moment";
+import {connect} from "react-redux";
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
-import moment from "moment";
 import TableBody from "@material-ui/core/TableBody";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
-import {connect} from "react-redux";
 import Typography from "@material-ui/core/Typography";
 import {
     Card,
@@ -86,6 +86,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const OrderItemsEdit = props => {
+    const { history } = props;
     const classes = useStyles();
     const [currentOrder, setCurrentOrder] = React.useState(props.currentOrder);
 
@@ -128,7 +129,7 @@ const OrderItemsEdit = props => {
         const index = _tempOrders.findIndex(order => {return order.id === currentOrder.id});
         _tempOrders[index] = {..._tempOrders[index], ...userInput};
         props.updateOrders(_tempOrders);
-        props.putUpdateOrder(id, _tempOrders[index]);
+        props.putUpdateOrder(id, _tempOrders[index]).then(history.push(`/order/${currentOrder.id}`));
     };
     
     return (

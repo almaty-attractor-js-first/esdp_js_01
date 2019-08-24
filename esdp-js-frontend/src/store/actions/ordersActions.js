@@ -53,9 +53,7 @@ export const getStatuses = () => {
 
 export const putUpdateOrder = (id, order) => {
     return dispatch => {
-        axios.put(`/orders/${id}`, order).then(
-	        dispatch(push(`/order/${id}`))
-        );
+        return axios.put(`/orders/${id}`, order);
     }
 };
 
