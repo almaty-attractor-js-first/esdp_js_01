@@ -1,6 +1,11 @@
 import React, {useEffect, useReducer} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {updateCurrentOrder, getStatuses} from "../../store/actions/ordersActions";
+import {
+    updateCurrentOrder,
+    getStatuses,
+    updateOrders,
+    putUpdateOrder
+} from "../../store/actions/ordersActions";
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import moment from "moment";
@@ -18,7 +23,6 @@ import {
     TableRow
 } from "@material-ui/core";
 import { Link as RouterLink } from 'react-router-dom';
-import Link from '@material-ui/core/Link';
 import PerfectScrollbar from "react-perfect-scrollbar";
 import Button from "@material-ui/core/Button";
 import CardActions from "@material-ui/core/CardActions";
@@ -81,7 +85,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const OrderItemsEdite = props => {
+const OrderItemsEdit = props => {
     const classes = useStyles();
     const [currentOrder, setCurrentOrder] = React.useState(props.currentOrder);
 
@@ -97,11 +101,6 @@ const OrderItemsEdite = props => {
         props.getStatuses();
     }, []);
 
-    const [value, setValue] = React.useState();
-    const handleChangeStatus = name => event => {
-        setValue({ ...value, [name]: event.target.value });
-        console.log(value)
-    };
     const [userInput, setUserInput] = useReducer(
         (state, newState) => ({...state, ...newState}),
         {
@@ -111,21 +110,27 @@ const OrderItemsEdite = props => {
             address: props.currentOrder.address
         }
     );
+    
     const handleChange = e => {
         const {name, value} = e.target;
         setUserInput({[name]: value});
     };
-    const updateOrder = () => {
-        console.log("sent")
-        const _tempData = {...props.currentOrder};
-        _tempData = {..._tempData , ...userInput};
+    
+    const handleChangeStatus = (event, id) => {
+        const _tempOrders = [...props.orders];
+        const index = _tempOrders.findIndex(order => {return order.id === id});
+        _tempOrders[index][event.target.name] = event.target.value;
+        props.updateOrders(_tempOrders);
+    };
+    
+    const updateOrder = (id) => {
         const _tempOrders = [...props.orders];
         const index = _tempOrders.findIndex(order => {return order.id === currentOrder.id});
-        _tempOrders[index]= {..._tempOrders[index] , ...userInput};
+        _tempOrders[index] = {..._tempOrders[index], ...userInput};
         props.updateOrders(_tempOrders);
-        props.putUpdateOrder(currentOrder.id, (_tempData));
-
+        props.putUpdateOrder(id, _tempOrders[index]);
     };
+    
     return (
         <div>
             <div style={{ width: '100%' }}>
@@ -136,21 +141,19 @@ const OrderItemsEdite = props => {
                             variant='outlined'
                             // component={RouterLink}
                             className={classes.link}
-                            onClick={updateOrder}
-                            // to={`/edit-order/${props.match.params.id}`}
-
+                            onClick={() => updateOrder(props.currentOrder.id)}
                         >
                             <SvgIcon >
                                 <path d="M3 17.25 V 21 h 3.75 L 17.81 9.94 l -3.75 -3.75 L 3
                             17.25 Z M 20.71 7.04 c 0.39 -0.39 0.39 -1.02 0 -1.41 l -2.34
                             -2.34 a 0.9959 0.9959 0 0 0 -1.41 0 l -1.83 1.83 l 3.75 3.75 l 1.83 -1.83 Z"/>
                             </SvgIcon>
-                            отменить
+                            Сохранить
                         </Button>
                     </Box>
                     <Box p={1} >
-                        <Button color='primary' variant='outlined'>
-                            Сохранить
+                        <Button component={RouterLink} to={`/order/${props.currentOrder.id}`} color='primary' variant='outlined'>
+                            Отменить
                         </Button>
                     </Box>
                 </Box>
@@ -242,8 +245,12 @@ const OrderItemsEdite = props => {
                                                             select
                                                             // helperText="Изменить статус"
                                                             className={classes.textField}
-                                                            value={value}
-                                                            onChange={handleChangeStatus}
+                                                            value={currentOrder.status}
+                                                            onChange={(e) => {handleChangeStatus(e, props.match.params.id);}}
+                                                            inputProps={{
+                                                                name: 'status',
+                                                                id: 'status',
+                                                            }}
                                                             SelectProps={{
                                                                 native: true,
                                                                 MenuProps: {
@@ -325,6 +332,8 @@ const mapDispatchToProps = dispatch => {
     return {
         updateCurrentOrder: (orderId) => dispatch(updateCurrentOrder(orderId)),
         getStatuses: () => dispatch(getStatuses()),
+        updateOrders: (order) => dispatch(updateOrders(order)),
+        putUpdateOrder: (id, order) => dispatch(putUpdateOrder(id, order))
     };
 };
-export default connect(mapStateToProps , mapDispatchToProps)(OrderItemsEdite);
+export default connect(mapStateToProps , mapDispatchToProps)(OrderItemsEdit);

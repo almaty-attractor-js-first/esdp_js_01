@@ -1,11 +1,10 @@
 import axios from '../../axios-api'
 import {GET_STATUSES, UPDATE_CURRENT_ORDER, UPDATE_ORDERS} from "./actionTypes";
 import store from "../configureStore";
-// import {push} from "connected-react-router";
+import {push} from "connected-react-router";
 
 
 export const updateOrders = orders => {
-    console.log("updated Redux" , orders)
     return dispatch => {
         dispatch({type: UPDATE_ORDERS, orders});
     };
@@ -53,9 +52,10 @@ export const getStatuses = () => {
 };
 
 export const putUpdateOrder = (id, order) => {
-    console.log('updated order' , order);
     return dispatch => {
-        axios.put(`/orders/${id}`, order);
+        axios.put(`/orders/${id}`, order).then(
+	        dispatch(push(`/order/${id}`))
+        );
     }
 };
 
