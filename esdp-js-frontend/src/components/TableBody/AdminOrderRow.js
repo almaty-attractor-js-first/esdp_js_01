@@ -43,8 +43,8 @@ const TableOrderRow = (props) => {
                 data-id={index}
                 fullWidth
                 value={order.status}
-                onChange={(e) => {handleChange(e, order.id);}}
                 onClick={(e) => e.stopPropagation()}
+                onChange={(e) => {handleChange(e, order.id);}}
                 inputProps={{
                   name: 'status',
                   id: 'status',
@@ -52,7 +52,6 @@ const TableOrderRow = (props) => {
                 SelectProps={{
                   native: true,
                 }}
-                helperText="Тип чистки"
               >
                 {props.statuses ?
                   props.statuses.map((item, index) => {

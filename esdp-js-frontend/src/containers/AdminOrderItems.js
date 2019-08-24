@@ -33,8 +33,6 @@ const useStyles = makeStyles(theme => ({
     minWidth: 800
   },
   statusContainer: {
-    display: 'flex',
-    alignItems: 'center',
     minWidth: "125px"
   },
   status: {

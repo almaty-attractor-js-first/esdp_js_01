@@ -48,6 +48,8 @@ const TableOrderRow = (props) => {
 								</TableCell>
 							</TableRow>
 						)
+					} else {
+						return null
 					}
 				})
 			}

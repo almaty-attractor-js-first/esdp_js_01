@@ -5,8 +5,6 @@ import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import moment from "moment";
 import TableBody from "@material-ui/core/TableBody";
-import TextField from "@material-ui/core/TextField";
-import FormControl from "@material-ui/core/FormControl";
 import {connect} from "react-redux";
 import Typography from "@material-ui/core/Typography";
 import {
@@ -103,12 +101,6 @@ const OrderItems = props => {
     props.getStatuses();
   }, []);
 
-  const [value, setValue] = React.useState();
-  const handleChangeStatus = name => event => {
-    setValue({ ...value, [name]: event.target.value });
-    console.log(value)
-  };
-
   return (
     <div>
         <div style={{ width: '100%' }}>
@@ -128,11 +120,6 @@ const OrderItems = props => {
                             -2.34 a 0.9959 0.9959 0 0 0 -1.41 0 l -1.83 1.83 l 3.75 3.75 l 1.83 -1.83 Z"/>
                         </SvgIcon>
                         редактировать
-                    </Button>
-                </Box>
-                <Box p={1} >
-                    <Button color='primary' variant='outlined'>
-                        Сохранить
                     </Button>
                 </Box>
             </Box>
@@ -187,29 +174,9 @@ const OrderItems = props => {
                       </TableCell>
                     </TableRow>
                     <TableRow>
+                      <TableCell align="left">Статус заказа</TableCell>
                       <TableCell align="left">
-                        <FormControl className={classes.formControl}>
-                          <TextField
-                            select
-                            // helperText="Изменить статус"
-                            className={classes.textField}
-                            value={value}
-                            onChange={handleChangeStatus}
-                            SelectProps={{
-                              native: true,
-                              MenuProps: {
-                                className: classes.menu,
-                              },
-                            }}
-                            margin="normal"
-                          >
-                            {props.statuses.map(status => (
-                              <option key={status.name} value={status.name}>
-                                {status.title}
-                              </option>
-                            ))}
-                          </TextField>
-                        </FormControl>
+                        {(props.statuses.find(status => {return currentOrder.status === status.name}).title)}
                       </TableCell>
                     </TableRow>
                   </TableBody>
