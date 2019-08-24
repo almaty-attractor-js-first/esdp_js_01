@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const config = require('../config');
 const nanoid = require('nanoid');
 const QRCode = require('qrcode');
-const axios = require('axios');
 const db = require('../db');
+const fs = require('fs')
 const nodemailer = require("nodemailer");
 
 const createRouter = () => {
@@ -39,13 +38,34 @@ const createRouter = () => {
         }
         let orderData = req.body;
         orderData.id = nanoid(6);
+        const orderId = orderData.id;
         orderData.createdAt = new Date();
 
-        const qr = await QRCode.toDataURL(orderData.id, {scale: 10});
-        mailer(qr).catch(console.error);
-        console.log(orderData.id);
+        QRCode.toFile(`src/assets/images/${orderId}file.png`, orderId, {
+            scale: 10,
+            color: {
+                dark: '#000000',  //
+                light: '#0000' // Transparent background
+            }
+        }, function (err) {
+            if (err) throw err;
+            console.log('done')
+        });
+        mailer().catch(console.error).then(()=> {
+            fs.unlink(`src/assets/images/${orderId}file.png`, (err) => {
+                if (err) {
+                    console.error(err);
+                }
+                console.log(`file ${orderId}file.png удалён`);
+            });
+        });
 
-        async function mailer(qr){
+
+        // const qr = await QRCode.toDataURL(orderData.id, {scale: 10});
+
+        // console.log(orderData.id);
+
+        async function mailer(){
             let transporter = nodemailer.createTransport({
                 host: "smtp.yandex.com",
                 port: 465,
@@ -62,7 +82,12 @@ const createRouter = () => {
                 text: "Ваш заказ № " + orderData.id + " оформлен", // plain text body
                 html: `<h2>Здравствуйте, ${orderData.firstName}</h2>
                        <p>Ваш заказ № ${orderData.id} оформлен</p>
-                       <img src="${qr}" alt="${qr}" />` // html body
+                       <img src="cid:${orderData.email}" alt="qr" />`,// html body
+                attachments: [{
+                    filename: `${orderId}file.png`,
+                    path: `src/assets/images/${orderId}file.png`,
+                    cid: orderData.email //same cid value as in the html img src
+                }]
             });
 
             console.log("Message sent: %s", info.messageId);

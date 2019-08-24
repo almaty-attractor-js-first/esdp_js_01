@@ -3,7 +3,7 @@ exports.config = {
   helpers: {
     Puppeteer: {
       url: 'http://localhost:3000',
-      show: true,
+      show: false,
       windowSize: "1366x768",
     }
   },
