@@ -54,3 +54,38 @@ When('Я выбираю способ оплаты {string}', (buttonName) => {
 Then('Я вижу список заказов {string}', (text) => {
   I.see(text);
 });
+
+Given('Я нахожусь на странице списка заказов для админа', () => {
+  I.amOnPage("/admin-order-items");
+});
+
+When('Выбираю статус {string} в поле {int} {string}', (value, num) => {
+  I.selectOption({id: `status${num}`}, value);
+});
+
+Then('Я вижу статус {string} в поле {int} {string}', (value, num) => {
+  I.see(value, {id: `status${num}`})
+});
+
+
+When('Я копирую {string} из поля {int} нажимаю на поле {int} вижу {string}', async (name, num) => {
+  let clientName = await I.grabTextFrom({id: `tableCellName${num}`});
+  I.click({id: `tableRow${num}`});
+  I.see(clientName);
+});
+
+Then('Я вижу {string}', (title) => {
+  I.see(title);
+});
+
+When('Я нажимаю на поле {int}', (num) => {
+  I.click({id: `tableRow${num}`});
+});
+
+When('Я ввожу статус {string} в поле {string}', (value) => {
+  I.selectOption({id: `status`}, value);
+});
+
+Then('Я не вижу {string}', (value) => {
+  I.dontSee(value)
+});

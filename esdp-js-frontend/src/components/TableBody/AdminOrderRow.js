@@ -23,6 +23,7 @@ const TableOrderRow = (props) => {
         props.orders.map((order, index) => (
           <TableRow
             hover
+            id={`tableRow${index}`}
             key={index}
             onClick={() => history.push(`order/${order.id}`)}
           >
@@ -31,7 +32,7 @@ const TableOrderRow = (props) => {
               <FormHelperText>{moment(order.createdAt).format('DD.MM.YYYY HH:mm')}</FormHelperText>
             </TableCell>
             <TableCell>{order.masterId}</TableCell>
-            <TableCell>{order.firstName} {order.lastName}</TableCell>
+            <TableCell id={`tableCellName${index}`}>{order.firstName} {order.lastName}</TableCell>
             <TableCell>
               {moment(order.createdAt).format('DD.MM.YYYY HH:mm')}
             </TableCell>
@@ -47,7 +48,7 @@ const TableOrderRow = (props) => {
                 onChange={(e) => {handleChange(e, order.id);}}
                 inputProps={{
                   name: 'status',
-                  id: 'status',
+                  id: 'status' + index,
                 }}
                 SelectProps={{
                   native: true,
