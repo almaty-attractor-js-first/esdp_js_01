@@ -1,13 +1,27 @@
-import {Button, TableBody, TableCell} from "@material-ui/core";
+import {Button, makeStyles, TableBody, TableCell} from "@material-ui/core";
 import TableRow from '@material-ui/core/TableRow';
 import React from "react";
 import moment from "moment";
 import FormHelperText from '@material-ui/core/FormHelperText';
 import {withRouter} from "react-router";
+import cx from 'classnames';
+import withStyles from '@material-ui/core/styles/withStyles';
+
+
+const useStyles = makeStyles(theme => ({
+	red: {
+		color: 'red'
+	},
+	green: {
+		color: 'green'
+	},
+
+}));
+
 
 const TableOrderRow = (props) => {
-
-	const statusToButton = {
+	const classes = useStyles();
+ 	const statusToButton = {
 		"pending": "Взять в работу",
 		"inWork": "Закончить работу",
 		"completed": "Закончено"
@@ -41,7 +55,7 @@ const TableOrderRow = (props) => {
 										onClick={(e) => {props.changeStatusButton(order.id, order.status);
 											e.stopPropagation()}}
 										size="small"
-										color="primary"
+										className={order.status === 'pending'? classes.green : classes.red}
 									>
 										{statusToButton[order.status]}
 									</Button>
