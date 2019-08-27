@@ -89,3 +89,23 @@ When('Я ввожу статус {string} в поле {string}', (value) => {
 Then('Я не вижу {string}', (value) => {
   I.dontSee(value)
 });
+
+Given('Я нахожусь на странице списка заказов для мастера', () => {
+  I.amOnPage("/order-items");
+});
+
+When('Я вижу поле {int}', (num) => {
+  I.seeElement({id: `tableRow${num}`})
+});
+
+When('Я вижу {string} в поле {int}', (value, num) => {
+  I.see(value, {id: `tableRow${num}`})
+});
+
+When('Я нажимаю на {string} в поле {int}', (value, num) => {
+  I.click(value, '//*[@id="masterButton0"]/span[1]');
+});
+
+Then('Я не вижу поле {int}', (num) => {
+  I.dontSeeElement({id: `tableRow${num}`})
+});

@@ -35,6 +35,7 @@ const TableOrderRow = (props) => {
 					if (order.status === "pending" || order.status === "inWork" ) {
 						return (
 							<TableRow
+								id={`tableRow${index}`}
 								hover
 								key={index}
 								onClick={() => history.push(`order/${order.id}`)}
@@ -55,6 +56,7 @@ const TableOrderRow = (props) => {
 										onClick={(e) => {props.changeStatusButton(order.id, order.status);
 											e.stopPropagation()}}
 										size="small"
+										id={`masterButton${index}`}
 										className={order.status === 'pending'? classes.green : classes.red}
 									>
 										{statusToButton[order.status]}
