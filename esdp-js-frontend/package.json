@@ -23,6 +23,7 @@
     "react-facebook-login": "^4.1.1",
     "react-input-mask": "^2.0.4",
     "react-map-gl": "^5.0.7",
+    "react-material-color-picker": "^1.1.2",
     "react-notifications": "^1.4.3",
     "react-perfect-scrollbar": "^1.5.3",
     "react-redux": "^6.0.1",
