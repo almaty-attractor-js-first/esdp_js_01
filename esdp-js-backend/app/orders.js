@@ -3,7 +3,7 @@ const router = express.Router();
 const nanoid = require('nanoid');
 const QRCode = require('qrcode');
 const db = require('../db');
-const fs = require('fs')
+const fs = require('fs');
 const nodemailer = require("nodemailer");
 
 const createRouter = () => {
@@ -18,10 +18,10 @@ const createRouter = () => {
         const result = await db.updateOrderStatusById(orderId, status);
         res.send(result);
     });
-    router.get('/statuses' , async (req , res) => {
-        const result = await db.getStatuses();
-        res.send(result);
-    });
+    // router.get('/statuses' , async (req , res) => {
+    //     const result = await db.getStatuses();
+    //     res.send(result);
+    // });
     router.get('/orders', async (req, res) => {
         let orders = db.getOrders();
         res.send(orders);
