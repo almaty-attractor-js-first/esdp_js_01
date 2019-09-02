@@ -8,7 +8,7 @@ import Main from "./containers/Main/Main";
 import OrderDetails from "./components/OrderDetails/OrderDetails";
 import AdminOrderItems from "./containers/AdminOrderItems";
 import OrderDetailsEdit from "./components/OrderDetails/OrderDetailsEdit";
-import EnhancedTable from "./components/EditableList/EditableStatuses";
+import EditableTable from "./containers/Editable";
 
 const Routes = ({user}) => {
     return (
@@ -21,7 +21,7 @@ const Routes = ({user}) => {
             <Route exact path="/admin-order-items" component={AdminOrderItems}/>
             <Route exact path="/order/:id" component={OrderDetails}/>
             <Route exact path="/edit-order/:id" component={OrderDetailsEdit}/>
-            <Route exact path="/edit-statuses" component={EnhancedTable}/>
+            <Route exact path="/edit-statuses" component={EditableTable}/>
         </Switch>
     )
 };

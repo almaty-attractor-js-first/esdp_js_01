@@ -1,7 +1,8 @@
 import React, {Fragment} from 'react';
 import {connect} from "react-redux";
 import arrayMove from "array-move";
-import { makeStyles } from '@material-ui/core/styles';
+import uuid from 'uuid'
+import {makeStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -11,14 +12,15 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Edit from '@material-ui/icons/Edit';
+import DragHandleIcon from '@material-ui/icons/DragIndicator';
+import SubmitIcon from '@material-ui/icons/Check';
 import NoteAdd from '@material-ui/icons/NoteAdd';
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import MuiColorPicker from './MaterialColorPicker'
-import { SortableContainer, SortableHandle, SortableElement } from 'react-sortable-hoc'
+import {SortableContainer, SortableElement, SortableHandle} from 'react-sortable-hoc'
 
 // Компонент который используется активации drag-n-drop при клике внутри компонента
 const DragHandle = SortableHandle(({children}) => <Fragment>{children}</Fragment>);
@@ -39,15 +41,8 @@ const TableRowSortable = SortableElement(({ children, ...props }) => (
 TableBodySortable.muiName = 'TableBody';
 TableRowSortable.muiName = 'TableRow';
 
-
-
-
-const rows = [
-	{name: "pending", title: "В обработке", color: 'orange', status: true},
-	{name: "inWork", title: "В работе", color: 'indigo', status: false}
-];
-
 const headRows = [
+	{ label: 'Редактировать' },
 	{ label: 'Ключ' },
 	{ label: 'Отображение' },
 	{ label: 'Цвет' },
@@ -60,7 +55,7 @@ function EnhancedTableHead(props) {
 		<TableHead>
 			<TableRow>
 				<TableCell>
-					Редактировать
+					Тянуть
 				</TableCell>
 				{headRows.map(row => (
 					<TableCell
@@ -106,7 +101,7 @@ const EnhancedTableToolbar = props => {
 			<div className={classes.actions}>
 				{(
 					<Tooltip title="Добавить новый статус">
-						<IconButton aria-label="Add">
+						<IconButton aria-label="Add" onClick={props.handleAddNewStatus}>
 							<NoteAdd color='secondary'/>
 						</IconButton>
 					</Tooltip>
@@ -133,7 +128,10 @@ const useStyles = makeStyles(theme => ({
 		maxWidth: '200px'
 	},
 	tableRow: {
-		background: '#a6d0fb',
+		background: '#ffffff',
+	},
+	editCell: {
+		maxWidth: '50px'
 	},
 	colorPicker: {
 		maxWidth: '40px'
@@ -156,110 +154,135 @@ const useStyles = makeStyles(theme => ({
 
 function EnhancedTable(props) {
 	const classes = useStyles();
-	const [dense, setDense] = React.useState(false);
 	
-	function handleChangeDense(event) {
-		setDense(event.target.checked);
-	}
-	const [state, setState] = React.useState({
-		checkedA: true,
-		checkedB: true,
-	});
-	
-	const handleChange = name => event => {
-		setState({ ...state, [name]: event.target.checked });
-	};
-	const [editable, setEditable] = React.useState(false);
-	const handleSetEditable = () => {
-		setEditable(!editable);
+	const handleAddNewStatus = () => {
+		const tempStatuses = [...statuses];
+		const newStatus = {
+			id: uuid.v4(),
+			editable: true,
+			name: '',
+			title: '',
+			color: '#000',
+			status: false,
+			position: null
+		};
+		tempStatuses.unshift(newStatus);
+		setStatuses(tempStatuses);
 	};
 	
-	const [statuses, setStatuses] = React.useState(props.statuses);
+	const editCurrentStatus = (id) => {
+		const tempStatuses = [...statuses];
+		const index = tempStatuses.findIndex(item => {return item.id === id});
+		tempStatuses[index].status = !tempStatuses[index].status;
+		setStatuses(tempStatuses);
+	};
 	
-	// Обработчик заверщения перемещения, используется helper array-move
+	const handleSetEditable = (id) => {
+		const tempStatuses = [...statuses];
+		const index = tempStatuses.findIndex(item => {return item.id === id});
+		tempStatuses[index].editable = !tempStatuses[index].editable;
+		setStatuses(tempStatuses);
+	};
+	
+	const [statuses, setStatuses] = React.useState([]);
+	
+	React.useEffect(() => {
+		const tempStatuses = [...props.statuses];
+		tempStatuses.forEach(elem => elem.editable = false);
+		setStatuses(tempStatuses);
+	}, []);
+	
+	// Обработчик завершения перемещения, используется helper array-move
 	const onSortEnd = ({oldIndex, newIndex}) => {
-		const newStatuses = arrayMove(statuses, oldIndex, newIndex);
-		console.log(newStatuses);
-		setStatuses(newStatuses);
+		let tempStatuses = [...statuses];
+		tempStatuses = arrayMove(tempStatuses, oldIndex, newIndex);
+		tempStatuses.forEach((elem, index) => (
+			elem.position = index + 1
+		));
+		setStatuses(tempStatuses);
 	};
 	
-	const editCurrentStatus = event => {
-		console.log(event.target)
-	};
 	
 	
 	return (
 		<div className={classes.root}>
 			<Paper className={classes.paper}>
-				<EnhancedTableToolbar />
+				<EnhancedTableToolbar handleAddNewStatus={handleAddNewStatus}/>
 				<div className={classes.tableWrapper}>
 					<Table
 						className={classes.table}
 						aria-labelledby="tableTitle"
-						size={dense ? 'small' : 'medium'}
+						size='small'
 					>
 						<EnhancedTableHead
 							classes={classes}
-							rowCount={rows.length}
+							rowCount={statuses.length}
 						/>
 						<TableBodySortable onSortEnd={onSortEnd}
 						                   useDragHandle lockAxis='y'
-						                   transitionDuration={300}
+						                   transitionDuration={500}
 							displayRowCheckbox={false}>
 							{statuses.map((row, index) => {
 								return (
-
 										<TableRowSortable
-											key={row.name}
+											hover
+											key={index}
 											index={index}
 											role="checkbox"
 											className={classes.tableRow}
 										>
-											<DragHandle>
-												<TableCell padding="checkbox">
-													<Tooltip title="Редактировать">
-														<IconButton aria-label="edit" color='secondary' onClick={editCurrentStatus}>
-															<Edit />
-														</IconButton>
-													</Tooltip>
-													:::
-												</TableCell>
-											</DragHandle>
+											<TableCell align="right" className={classes.colorPicker}>
+												<DragHandle>
+													<IconButton color='primary'>
+														<DragHandleIcon />
+													</IconButton>
+												</DragHandle>
+											</TableCell>
+											<TableCell padding="checkbox" className={classes.editCell}>
+												<Tooltip title={row.editable ? "Сохранить" : "Редактировать"}>
+													<IconButton aria-label="edit"
+													            color={row.editable ? "primary" : "secondary"}
+													            onClick={() => handleSetEditable(row.id)}>
+														{row.editable ? <SubmitIcon/> :  <Edit />}
+													</IconButton>
+												</Tooltip>
+											</TableCell>
+											
 											
 											<TableCell align="right" className={classes.tableCell}>
-												{!editable ?
-													index + 1 :
-													<TextField
-														value={row.name}
-														margin="none"
-														inputProps={{
-															style: {textAlign: 'right'}
-														}}
-													/>
-												}
+											{row.editable ?
+												<TextField
+													value={row.name}
+													margin="none"
+													inputProps={{
+														style: {textAlign: 'right'}
+													}}
+												/> :
+												row.name
+											}
 											</TableCell>
 											<TableCell align="right" className={classes.tableCell}>
-												{!editable ?
-													row.title :
+												{row.editable ?
 													<TextField
 														value={row.title}
 														margin="none"
 														inputProps={{
 															style: {textAlign: 'right'}
 														}}
-													/>
+													/> :
+													row.title
 												}
 											</TableCell>
 											<TableCell align="right" className={classes.colorPicker}>
-												<MuiColorPicker color={row.color} editable={editable}/>
+												<MuiColorPicker color={row.color} editable={row.editable}/>
 											</TableCell>
 											<TableCell align="right">
 												<div>
 													<Switch
-														checked={state.checkedB}
-														onChange={handleChange('checkedB')}
-														value={state.checkedB}
-														color="secondary"
+														checked={row.status}
+														onChange={() => editCurrentStatus(row.id)}
+														value={row.status}
+														color="primary"
 														inputProps={{ 'aria-label': 'primary checkbox' }}
 													/>
 												</div>
@@ -272,10 +295,6 @@ function EnhancedTable(props) {
 					</Table>
 				</div>
 			</Paper>
-			<FormControlLabel
-				control={<Switch checked={dense} onChange={handleChangeDense} />}
-				label="Dense padding"
-			/>
 		</div>
 	);
 }

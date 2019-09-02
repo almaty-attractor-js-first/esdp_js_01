@@ -27,9 +27,16 @@ export default function AnonimousMenu() {
       <Button color="primary"
               variant={"text"}
               component={Link}
+              to='/edit-statuses'
+              className={classes.link}>
+        статусы
+      </Button>
+      <Button color="primary"
+              variant={"text"}
+              component={Link}
               to='/admin-order-items'
               className={classes.link}>
-        Админ
+        админ
       </Button>
       <Button color="primary"
               variant={"text"}
@@ -43,7 +50,7 @@ export default function AnonimousMenu() {
               component={Link}
               to='/register'
               className={classes.link}>
-        регистрация
+        курьер
       </Button>
     </Fragment>
     )

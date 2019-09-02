@@ -1,10 +1,10 @@
 import React from 'react';
-import EditableTable from '../components/EditableList/EditableTableTest'
+import EditableStatuses from '../components/EditableList/EditableStatuses'
 
-const Editable = () => {
+const EditableTable = () => {
 	return (
-		<EditableTable/>
+		<EditableStatuses/>
 	)
 };
 
-export default Editable;
+export default EditableTable;
