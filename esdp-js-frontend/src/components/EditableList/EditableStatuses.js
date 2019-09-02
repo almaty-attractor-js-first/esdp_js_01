@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from "react-redux";
+import arrayMove from "array-move";
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -17,6 +18,29 @@ import NoteAdd from '@material-ui/icons/NoteAdd';
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import MuiColorPicker from './MaterialColorPicker'
+import { SortableContainer, SortableHandle, SortableElement } from 'react-sortable-hoc'
+
+// Компонент который используется активации drag-n-drop при клике внутри компонента
+const DragHandle = SortableHandle(({children}) => <Fragment>{children}</Fragment>);
+
+// Универсальный компонент для превращения TableBody в sortable контейнер
+const TableBodySortable = SortableContainer(({ children }) => (
+	<TableBody>
+		{children}
+	</TableBody>
+));
+
+const TableRowSortable = SortableElement(({ children, ...props }) => (
+	<TableRow {...props}>
+		{children}
+	</TableRow>
+));
+
+TableBodySortable.muiName = 'TableBody';
+TableRowSortable.muiName = 'TableRow';
+
+
+
 
 const rows = [
 	{name: "pending", title: "В обработке", color: 'orange', status: true},
@@ -108,6 +132,9 @@ const useStyles = makeStyles(theme => ({
 		minWidth: '200px',
 		maxWidth: '200px'
 	},
+	tableRow: {
+		background: '#a6d0fb',
+	},
 	colorPicker: {
 		maxWidth: '40px'
 	},
@@ -145,7 +172,19 @@ function EnhancedTable(props) {
 	const [editable, setEditable] = React.useState(false);
 	const handleSetEditable = () => {
 		setEditable(!editable);
-		console.log(editable);
+	};
+	
+	const [statuses, setStatuses] = React.useState(props.statuses);
+	
+	// Обработчик заверщения перемещения, используется helper array-move
+	const onSortEnd = ({oldIndex, newIndex}) => {
+		const newStatuses = arrayMove(statuses, oldIndex, newIndex);
+		console.log(newStatuses);
+		setStatuses(newStatuses);
+	};
+	
+	const editCurrentStatus = event => {
+		console.log(event.target)
 	};
 	
 	
@@ -163,63 +202,73 @@ function EnhancedTable(props) {
 							classes={classes}
 							rowCount={rows.length}
 						/>
-						<TableBody>
-							{props.statuses.map((row, index) => {
+						<TableBodySortable onSortEnd={onSortEnd}
+						                   useDragHandle lockAxis='y'
+						                   transitionDuration={300}
+							displayRowCheckbox={false}>
+							{statuses.map((row, index) => {
 								return (
-									<TableRow
-										hover
-										role="checkbox"
-										key={row.name}
-									>
-										<TableCell padding="checkbox">
-											<Tooltip title="Редактировать">
-												<IconButton aria-label="edit" color='secondary' onClick={handleSetEditable}>
-													<Edit />
-												</IconButton>
-											</Tooltip>
-										</TableCell>
-										<TableCell align="right" className={classes.tableCell}>
-											{editable ?
-												row.name :
-												<TextField
-													value={row.name}
-													margin="none"
-													inputProps={{
-														style: {textAlign: 'right'}
-													}}
-												/>
-											}
-										</TableCell>
-										<TableCell align="right" className={classes.tableCell}>
-											{editable ?
-												row.title :
-												<TextField
-													value={row.title}
-													margin="none"
-													inputProps={{
-														style: {textAlign: 'right'}
-													}}
-												/>
-											}
-										</TableCell>
-										<TableCell align="right" className={classes.colorPicker}>
-											<MuiColorPicker color={row.color}/>
-										</TableCell>
-										<TableCell align="right">
-											<div>
-												<Switch
-													checked={state.checkedB}
-													onChange={handleChange('checkedB')}
-													value={state.checkedB}
-													color="secondary"
-													inputProps={{ 'aria-label': 'primary checkbox' }}
-												/>
-											</div>
-										</TableCell>
-									</TableRow>
+
+										<TableRowSortable
+											key={row.name}
+											index={index}
+											role="checkbox"
+											className={classes.tableRow}
+										>
+											<DragHandle>
+												<TableCell padding="checkbox">
+													<Tooltip title="Редактировать">
+														<IconButton aria-label="edit" color='secondary' onClick={editCurrentStatus}>
+															<Edit />
+														</IconButton>
+													</Tooltip>
+													:::
+												</TableCell>
+											</DragHandle>
+											
+											<TableCell align="right" className={classes.tableCell}>
+												{!editable ?
+													index + 1 :
+													<TextField
+														value={row.name}
+														margin="none"
+														inputProps={{
+															style: {textAlign: 'right'}
+														}}
+													/>
+												}
+											</TableCell>
+											<TableCell align="right" className={classes.tableCell}>
+												{!editable ?
+													row.title :
+													<TextField
+														value={row.title}
+														margin="none"
+														inputProps={{
+															style: {textAlign: 'right'}
+														}}
+													/>
+												}
+											</TableCell>
+											<TableCell align="right" className={classes.colorPicker}>
+												<MuiColorPicker color={row.color} editable={editable}/>
+											</TableCell>
+											<TableCell align="right">
+												<div>
+													<Switch
+														checked={state.checkedB}
+														onChange={handleChange('checkedB')}
+														value={state.checkedB}
+														color="secondary"
+														inputProps={{ 'aria-label': 'primary checkbox' }}
+													/>
+												</div>
+											</TableCell>
+										</TableRowSortable>
+									
 									);
 								})}
-						</TableBody>
+						</TableBodySortable>
 					</Table>
 				</div>
 			</Paper>

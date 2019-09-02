@@ -1,11 +1,19 @@
 import MaterialColorPicker from 'react-material-color-picker';
 import React from "react";
+import Button from "@material-ui/core/Button";
+import Colorize from '@material-ui/icons/Colorize';
+import Edit from "@material-ui/core/SvgIcon/SvgIcon";
+import IconButton from "@material-ui/core/IconButton";
+
 
 const MuiColorPicker = (props) => {
 	const [isEdit, setIsEdit] = React.useState(false);
 	const handleChange = () => {
-		console.log(isEdit);
-		setIsEdit(!isEdit);
+		props.editable
+			?
+			setIsEdit(!isEdit)
+			:
+			setIsEdit(false)
 	};
 	const onSubmit = () => {
 		setIsEdit(false);
@@ -18,17 +26,20 @@ const MuiColorPicker = (props) => {
 			initColor={props.color}
 			onSubmit={onSubmit}
 			// onReset={actionLog()}
-			style={{width: 400, backgroundColor: '#c7c7c7', position: "absolute", left: "30%", zIndex: "999"}}
+			style={{width: 400, backgroundColor: '#c7c7c7', position: "absolute", left: "30%", zIndex: "999999"}}
 			submitLabel='Apply'
 			resetLabel='Undo'
 		/> :
-		<div onClick={handleChange}
+		<IconButton onClick={handleChange}
 		     style={{
-					width: "25px",
-					height: "25px",
-					borderRadius: "3px",
-					background: props.color
-				}}/>
+					background: props.color,
+		     }}>
+			<Colorize style={{
+				width: "20px",
+				height: "20px",
+				color: '#fff',
+			}}/>
+		</IconButton>
 	)
 };
 
