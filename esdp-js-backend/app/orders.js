@@ -2,42 +2,42 @@ const express = require('express');
 const router = express.Router();
 const nanoid = require('nanoid');
 const QRCode = require('qrcode');
-const db = require('../db');
+const db = require("../db/postgre");
 const fs = require('fs');
 const nodemailer = require("nodemailer");
 
 const createRouter = () => {
     router.get('/cleaning-items' , async (req , res) => {
-        const result = await db.getCleaningItems();
-        res.send(result);
+        const result = await db.fetch('cleaningTypes');
+        res.send(result.rows);
     });
     router.put('/status/:id', async (req, res) => {
         let orderData = req.body;
-        const status = orderData.status;
         const orderId = req.params.id;
-        const result = await db.updateOrderStatusById(orderId, status);
+        const result = await db.update('statuses', orderData, orderId);
         res.send(result);
     });
-    // router.get('/statuses' , async (req , res) => {
-    //     const result = await db.getStatuses();
-    //     res.send(result);
-    // });
+    router.get('/statuses' , async (req , res) => {
+        const result = await db.fetch('statuses');
+        res.send(result.rows);
+    });
     router.get('/orders', async (req, res) => {
-        let orders = db.getOrders();
-        res.send(orders);
+        let order = await db.fetch('orders');
+        res.send(order.rows);
     });
     router.get('/orders/:id', async (req, res) => {
         const orderId = req.params.id;
-        let order = await db.getOrdersById(orderId);
-        res.send({message: "ok"});
+        let order = await db.fetch('orders', orderId);
+        res.send(order.rows[0]);
     });
     router.post('/orders', async (req, res) => {
-        if(req.query.phone){
-            const result = await db.findClient(req.query.phone);
-            return res.send(result);
-        }
+        // if(req.query.phone){
+        //     const result = await db.findClient(req.query.phone);
+        //     return res.send(result);
+        // }
         let orderData = req.body;
-        orderData.id = nanoid(6);
+        console.log(orderData);
+        orderData.id = nanoid('0123456789', 6);
         const orderId = orderData.id;
         orderData.createdAt = new Date();
 
@@ -59,11 +59,6 @@ const createRouter = () => {
                 console.log(`file ${orderId}file.png удалён`);
             });
         });
-
-
-        // const qr = await QRCode.toDataURL(orderData.id, {scale: 10});
-
-        // console.log(orderData.id);
 
         async function mailer(){
             let transporter = nodemailer.createTransport({
@@ -98,7 +93,7 @@ const createRouter = () => {
             // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
         }
 
-        db.addOrder(orderData);
+        db.save('orders', orderData);
         db.insertClients(orderData);
         res.send(orderData);
     });
@@ -114,6 +109,12 @@ const createRouter = () => {
         const status = req.body;
         db.updateOrderStatusById(orderId, status);
         res.send({message: 'OK'});
+    });
+    router.post('/statuses/', async (req, res) => {
+        const status = req.body;
+        status.id = 15;
+        db.save(status, 'statuses');
+        res.send({message: 'status saved'});
     });
     return router;
 };
