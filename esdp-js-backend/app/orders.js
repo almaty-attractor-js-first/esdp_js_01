@@ -11,16 +11,6 @@ const createRouter = () => {
         const result = await db.fetch('cleaningTypes');
         res.send(result.rows);
     });
-    router.put('/status/:id', async (req, res) => {
-        let orderData = req.body;
-        const orderId = req.params.id;
-        const result = await db.update('statuses', orderData, orderId);
-        res.send(result);
-    });
-    router.get('/statuses' , async (req , res) => {
-        const result = await db.fetch('statuses');
-        res.send(result.rows);
-    });
     router.get('/orders', async (req, res) => {
         let order = await db.fetch('orders');
         res.send(order.rows);
@@ -37,6 +27,10 @@ const createRouter = () => {
         // }
         let orderData = req.body;
         console.log(orderData);
+        //создаем клиента
+        orderData.
+
+
         orderData.id = nanoid('0123456789', 6);
         const orderId = orderData.id;
         orderData.createdAt = new Date();
@@ -110,12 +104,7 @@ const createRouter = () => {
         db.updateOrderStatusById(orderId, status);
         res.send({message: 'OK'});
     });
-    router.post('/statuses/', async (req, res) => {
-        const status = req.body;
-        status.id = 15;
-        db.save(status, 'statuses');
-        res.send({message: 'status saved'});
-    });
+
     return router;
 };
 
