@@ -35,6 +35,7 @@
     "react-virtualized": "^9.21.1",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
+    "set-value": "^2.0.1",
     "uuid": "^3.3.2"
   },
   "scripts": {

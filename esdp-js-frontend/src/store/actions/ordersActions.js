@@ -1,7 +1,6 @@
 import axios from '../../axios-api'
 import {GET_STATUSES, UPDATE_CURRENT_ORDER, UPDATE_ORDERS} from "./actionTypes";
 import store from "../configureStore";
-import {push} from "connected-react-router";
 
 
 export const updateOrders = orders => {

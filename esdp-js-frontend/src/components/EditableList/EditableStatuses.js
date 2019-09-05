@@ -16,6 +16,7 @@ import Switch from '@material-ui/core/Switch';
 import Edit from '@material-ui/icons/Edit';
 import DragHandleIcon from '@material-ui/icons/DragIndicator';
 import SubmitIcon from '@material-ui/icons/Check';
+import CancelIcon from '@material-ui/icons/Cancel';
 import NoteAdd from '@material-ui/icons/NoteAdd';
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -153,7 +154,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function EnhancedTable(props) {
+	const [statuses, setStatuses] = React.useState([]);
+	const [changedStatuses, setChangedStatuses] = React.useState('');
 	const classes = useStyles();
+	
+	React.useEffect(() => {
+		const defaultStatuses = JSON.stringify(props.statuses);
+		setChangedStatuses(defaultStatuses);
+	},[]);
+	
 	
 	const handleAddNewStatus = () => {
 		const tempStatuses = [...statuses];
@@ -184,7 +193,23 @@ function EnhancedTable(props) {
 		setStatuses(tempStatuses);
 	};
 	
-	const [statuses, setStatuses] = React.useState([]);
+	const handleSubmitChanges = id => {
+		const tempStatuses = [...statuses];
+		const index = tempStatuses.findIndex(item => {return item.id === id});
+		tempStatuses[index].editable = !tempStatuses[index].editable;
+		setStatuses(tempStatuses);
+		const newStatuses = JSON.stringify(props.statuses);
+		setChangedStatuses(newStatuses);
+	};
+	
+	const handleDiscardChanges = (id) => {
+		const tempStatuses = [...statuses];
+		const index = tempStatuses.findIndex(item => {return item.id === id});
+		tempStatuses[index].editable = !tempStatuses[index].editable;
+		const oldStatuses = JSON.parse(changedStatuses);
+		setStatuses(oldStatuses);
+	};
+	
 	
 	React.useEffect(() => {
 		const tempStatuses = [...props.statuses];
@@ -199,6 +224,13 @@ function EnhancedTable(props) {
 		tempStatuses.forEach((elem, index) => (
 			elem.position = index + 1
 		));
+		setStatuses(tempStatuses);
+	};
+	
+	const inputChangeHandler = (event, id) => {
+		const tempStatuses = [...statuses];
+		const index = tempStatuses.findIndex(item => {return item.id === id});
+		tempStatuses[index][event.target.name] = event.target.value;
 		setStatuses(tempStatuses);
 	};
 	
@@ -239,20 +271,43 @@ function EnhancedTable(props) {
 												</DragHandle>
 											</TableCell>
 											<TableCell padding="checkbox" className={classes.editCell}>
-												<Tooltip title={row.editable ? "Сохранить" : "Редактировать"}>
-													<IconButton aria-label="edit"
-													            color={row.editable ? "primary" : "secondary"}
-													            onClick={() => handleSetEditable(row.id)}>
-														{row.editable ? <SubmitIcon/> :  <Edit />}
-													</IconButton>
-												</Tooltip>
+												
+													{!row.editable ?
+														<Tooltip title="Редактировать">
+															<IconButton aria-label="edit"
+															            color="secondary"
+															            onClick={() => handleSetEditable(row.id)}>
+																<Edit/>
+															</IconButton>
+														</Tooltip> :
+														<>
+														<Tooltip title="Сохранить">
+															<IconButton aria-label="edit"
+															            color="primary"
+															            style={{marginRight: "10px"}}
+															            onClick={() => handleSubmitChanges(row.id)}>
+																<SubmitIcon/>
+															</IconButton>
+														</Tooltip>
+														<Tooltip title="Отменить">
+															<IconButton aria-label="edit"
+															            color="secondary"
+															            style={{marginRight: "10px"}}
+															            onClick={() => handleDiscardChanges(row.id)}>
+																<CancelIcon/>
+															</IconButton>
+														</Tooltip>
+														</>
+													}
 											</TableCell>
 											
 											
 											<TableCell align="right" className={classes.tableCell}>
 											{row.editable ?
 												<TextField
+													name="name"
 													value={row.name}
+													onChange={e => inputChangeHandler(e, row.id)}
 													margin="none"
 													inputProps={{
 														style: {textAlign: 'right'}
@@ -264,7 +319,9 @@ function EnhancedTable(props) {
 											<TableCell align="right" className={classes.tableCell}>
 												{row.editable ?
 													<TextField
+														name="title"
 														value={row.title}
+														onChange={e => inputChangeHandler(e, row.id)}
 														margin="none"
 														inputProps={{
 															style: {textAlign: 'right'}
