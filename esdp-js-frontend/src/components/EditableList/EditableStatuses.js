@@ -279,6 +279,7 @@ function EnhancedTable(props) {
 								{statuses.map((row, index) => {
 									return (
 										<TableRowSortable
+											id={'status' + index}
 											hover
 											key={index}
 											index={index}
@@ -287,7 +288,7 @@ function EnhancedTable(props) {
 										>
 											<TableCell align="right" className={classes.colorPicker}>
 												<DragHandle>
-													<IconButton color='primary'>
+													<IconButton color='primary' id={'draggable' + index}>
 														<DragHandleIcon />
 													</IconButton>
 												</DragHandle>
@@ -324,7 +325,7 @@ function EnhancedTable(props) {
 											</TableCell>
 											
 											
-											<TableCell align="right" className={classes.tableCell}>
+											<TableCell align="right" className={classes.tableCell} id={'statusName' + index}>
 												{row.editable ?
 													<TextField
 														name="name"

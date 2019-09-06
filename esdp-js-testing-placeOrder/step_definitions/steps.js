@@ -109,3 +109,24 @@ When('Я нажимаю на {string} в поле {int}', (value, num) => {
 Then('Я не вижу поле {int}', (num) => {
   I.dontSeeElement({id: `tableRow${num}`})
 });
+
+Given('Я нахожусь на странице редактирования статусов', () => {
+  I.amOnPage("/edit-statuses");
+});
+
+let statusName;
+Before(() => {
+  statusName = '';
+});
+
+When('Я копирую название статуса из поля {int}', async (num) => {
+  statusName = await I.grabTextFrom({id: `statusName${num}`});
+});
+
+When('Я меняю местами статус {int} и статус {int}', (num1, num2) => {
+  I.dragAndDrop(`//*[@id="draggable${num1}"]`, `//*[@id="draggable${num2}"]`);
+});
+
+When('Я вижу новое имя статуса в поле {int}', (num) => {
+  I.see(statusName, {id: `statusName${num}`})
+});
