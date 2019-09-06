@@ -1,5 +1,10 @@
 const { I } = inject();
 
+let state = {};
+Before(() => {
+  state = {};
+});
+
 Given('Я нахожусь на главной странице', () => {
   I.amOnPage("/");
 });
@@ -114,13 +119,9 @@ Given('Я нахожусь на странице редактирования с
   I.amOnPage("/edit-statuses");
 });
 
-let statusName;
-Before(() => {
-  statusName = '';
-});
 
 When('Я копирую название статуса из поля {int}', async (num) => {
-  statusName = await I.grabTextFrom({id: `statusName${num}`});
+  state.statusName = await I.grabTextFrom({id: `statusName${num}`});
 });
 
 When('Я меняю местами статус {int} и статус {int}', (num1, num2) => {
@@ -128,5 +129,29 @@ When('Я меняю местами статус {int} и статус {int}', (n
 });
 
 When('Я вижу новое имя статуса в поле {int}', (num) => {
-  I.see(statusName, {id: `statusName${num}`})
+  I.see(state.statusName, {id: `statusName${num}`})
+});
+
+When('в поле {int} нажимаю на кнопку Редактировать', (num) => {
+  I.click(`button[data-edit-button='${num}']`);
+});
+
+When('Я в поле {int} ввожу {string} в инпут {string}', (num, value) => {
+  I.fillField({id: `name${num}`}, value);
+});
+
+When('в поле {int} нажимаю на кнопку Отменить', (num) => {
+  I.click(`button[data-discard-button='${num}']`);
+});
+
+When('в поле {int} нажимаю на кнопку Сохранить', (num) => {
+  I.click(`button[data-submit-button='${num}']`);
+});
+
+Then('Я вижу название статуса в поле {int}', (num) => {
+  I.see(state.statusName, {id: `statusName${num}`});
+});
+
+Then('Я не вижу название статуса в поле {int}', (num) => {
+  I.dontSee(state.statusName, {id: `statusName${num}`});
 });

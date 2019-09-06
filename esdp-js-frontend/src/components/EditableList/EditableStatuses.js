@@ -52,7 +52,7 @@ const headRows = [
 ];
 
 function EnhancedTableHead(props) {
-
+	
 	return (
 		<TableHead>
 			<TableRow>
@@ -90,7 +90,7 @@ const useToolbarStyles = makeStyles(theme => ({
 
 const EnhancedTableToolbar = props => {
 	const classes = useToolbarStyles();
-
+	
 	return (
 		<Toolbar>
 			<div>
@@ -299,6 +299,7 @@ function EnhancedTable(props) {
 													<Tooltip title="Редактировать">
 														<IconButton aria-label="edit"
 														            color="secondary"
+														            data-edit-button={index}
 														            onClick={() => handleSetEditable(row.id)}>
 															<Edit/>
 														</IconButton>
@@ -306,6 +307,7 @@ function EnhancedTable(props) {
 													<>
 														<Tooltip title="Сохранить">
 															<IconButton aria-label="edit"
+															            data-submit-button={index}
 															            color="primary"
 															            style={{marginRight: "10px"}}
 															            onClick={() => handleSubmitChanges(row.id)}>
@@ -314,6 +316,7 @@ function EnhancedTable(props) {
 														</Tooltip>
 														<Tooltip title="Отменить">
 															<IconButton aria-label="edit"
+															            data-discard-button={index}
 															            color="secondary"
 															            style={{marginRight: "10px"}}
 															            onClick={() => handleDiscardChanges(row.id)}>
@@ -328,10 +331,11 @@ function EnhancedTable(props) {
 											<TableCell align="right" className={classes.tableCell} id={'statusName' + index}>
 												{row.editable ?
 													<TextField
-														name="name"
+														name={"name"}
 														value={row.name}
 														onChange={e => inputChangeHandler(e, row.id)}
 														margin="none"
+														id={"name" + index}
 														inputProps={{
 															style: {textAlign: 'right'}
 														}}
@@ -342,10 +346,11 @@ function EnhancedTable(props) {
 											<TableCell align="right" className={classes.tableCell}>
 												{row.editable ?
 													<TextField
-														name="title"
+														name={"title"}
 														value={row.title}
 														onChange={e => inputChangeHandler(e, row.id)}
 														margin="none"
+														id={"title" + index}
 														inputProps={{
 															style: {textAlign: 'right'}
 														}}
