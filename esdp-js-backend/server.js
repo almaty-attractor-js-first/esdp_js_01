@@ -3,7 +3,7 @@ const app = require('express')();
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const orders = require('./app/orders');
-// const statuses = require('./app/statuses');
+const statuses = require('./app/statuses');
 
 
 app.use(cors());
@@ -16,7 +16,7 @@ app.use(
     })
 );
 app.use('/' ,orders());
-// app.use('/statuses' ,statuses());
+app.use('/statuses' ,statuses());
 
 app.listen(8000, () => console.log('Example app listening on port 8000'));
 

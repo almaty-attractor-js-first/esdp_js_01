@@ -1,11 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const nanoid = require('nanoid/generate');
-const dbPsql = require('../db/postgre');
+const db = require('../db/postgre');
 
 const createRouter = () => {
+	router.put('/', async (req, res) => {
+		let data = req.body;
+		data.map(async status => {
+			delete status.editable;
+			const result = await db.update('statuses', status, status.id);
+		});
+		console.table(data);
+		res.send(result);
+	});
 	router.put('/:id', async (req, res) => {
 		let orderData = req.body;
+		delete orderData.editable;
 		const orderId = req.params.id;
 		const result = await db.update('statuses', orderData, orderId);
 		res.send(result);
@@ -17,6 +27,7 @@ const createRouter = () => {
 	});
 	router.post('/' , async (req , res) => {
 		const object = req.body;
+		delete object.editable;
 		try {
 			const res = await db.save(object, 'statuses');
 			console.table(res.rows[0]);

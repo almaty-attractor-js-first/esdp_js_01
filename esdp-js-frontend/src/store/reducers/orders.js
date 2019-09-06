@@ -1,4 +1,4 @@
-import {GET_STATUSES, UPDATE_CURRENT_ORDER, UPDATE_ORDERS} from "../actions/actionTypes";
+import {UPDATE_CURRENT_ORDER, UPDATE_ORDERS} from "../actions/actionTypes";
 
 const initialState = {
     orders: [],
@@ -12,8 +12,6 @@ const reducer = (state = initialState, action) => {
             return {...state, orders: action.orders};
         case UPDATE_CURRENT_ORDER:
             return {...state, currentOrder: action.currentOrder};
-        case GET_STATUSES:
-            return {...state, statuses: action.array};
         default:
             return state;
     }
