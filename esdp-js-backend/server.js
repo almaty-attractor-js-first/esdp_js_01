@@ -4,6 +4,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const orders = require('./app/orders');
 const statuses = require('./app/statuses');
+const workers = require('./app/workers');
+const cleaningTypes = require('./app/cleaningTypes');
 
 
 app.use(cors());
@@ -15,8 +17,10 @@ app.use(
         extended: true,
     })
 );
-app.use('/' ,orders());
-app.use('/statuses' ,statuses());
+app.use('/', orders());
+app.use('/statuses', statuses());
+app.use('/workers', workers());
+app.use('/cleaning-items', cleaningTypes());
 
 app.listen(8000, () => console.log('Example app listening on port 8000'));
 

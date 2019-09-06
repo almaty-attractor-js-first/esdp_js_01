@@ -1,16 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const nanoid = require('nanoid');
+const uuid = require('uuid');
 const QRCode = require('qrcode');
 const db = require("../db/postgre");
 const fs = require('fs');
 const nodemailer = require("nodemailer");
 
+
 const createRouter = () => {
-    router.get('/cleaning-items' , async (req , res) => {
-        const result = await db.fetch('cleaningTypes');
-        res.send(result.rows);
-    });
+
     router.get('/orders', async (req, res) => {
         let order = await db.fetch('orders');
         res.send(order.rows);
@@ -26,15 +24,38 @@ const createRouter = () => {
         //     return res.send(result);
         // }
         let orderData = req.body;
+        const orderId = uuid();
+        orderData.id = orderId;
         console.log(orderData);
         //создаем клиента
-        orderData.
+        const clientData = {
+            id: uuid(),
+            address: orderData.address,
+            email: orderData.email,
+            firstName: orderData.firstName,
+            lastName: orderData.lastName,
+            middleName: orderData.middleName,
+            createdAt: new Date(),
+            displayName: orderData.firstName,
+            birthDate: null,
+            phone: orderData.phone
+        };
+        orderData.clientId = clientData.id;
 
 
-        orderData.id = nanoid('0123456789', 6);
-        const orderId = orderData.id;
-        orderData.createdAt = new Date();
-
+        orderData.order_items.map((item) => {
+            const orderItem = {
+                id: uuid(),
+                orderId: orderData.id,
+                cleaningType: item.cleaningType,
+                qty: item.qty,
+                price: item.price,
+                title: item.title
+            };
+            db.save(orderItem,'order_items');
+        });
+        db.save(clientData, 'clients');
+        db.save(orderData, 'orders');
         QRCode.toFile(`src/assets/images/${orderId}file.png`, orderId, {
             scale: 10,
             color: {
@@ -87,8 +108,7 @@ const createRouter = () => {
             // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
         }
 
-        db.save('orders', orderData);
-        db.insertClients(orderData);
+
         res.send(orderData);
     });
     router.put('/orders/:id', async (req, res) => {

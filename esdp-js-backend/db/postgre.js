@@ -14,7 +14,7 @@ module.exports = {
         const VALUES = bodyKeys.map((key, index) => {
             return "$"+(index + 1);
         });
-        const sqlString = `INSERT INTO ${table}(${bodyKeys.join(", ")}) VALUES(${VALUES.join(", ")}) RETURNING *`;
+        const sqlString = `INSERT INTO "${table}"(${bodyKeys.join(", ")}) VALUES(${VALUES.join(", ")}) RETURNING *`;
         try {
             const res = await pool.query(sqlString, bodyValues);
             console.table(res.rows[0]);
@@ -23,9 +23,9 @@ module.exports = {
         }
     },
     fetch: async (table, id) => {
-        let sqlString = `SELECT * FROM ${table}`;
+        let sqlString = `SELECT * FROM "${table}"`;
         if (id) {
-            sqlString = `SELECT * FROM ${table} WHERE (${table}.id = ${id})`;
+            sqlString = `SELECT * FROM "${table}" WHERE ("${table}".id = ${id})`;
         }
         try {
             const res = await pool.query(sqlString);
@@ -44,7 +44,7 @@ module.exports = {
             str.push(`${bodyKeys[i]} = '${bodyValues[i]}'`);
         }
         str = str.join(", ");
-        let sqlString = `UPDATE ${table} SET ${str} WHERE ${table}.id = ${id}`;
+        let sqlString = `UPDATE "${table}" SET ${str} WHERE "${table}".id = ${id} RETURNING *`;
         try {
             const res = await pool.query(sqlString);
             console.table(res.rows[0]);

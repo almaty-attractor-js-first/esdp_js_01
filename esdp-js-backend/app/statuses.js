@@ -36,8 +36,6 @@ const createRouter = () => {
 		}
 		res.status(200).send(`Новый статус добавлен!`);
 	});
-
-
 	return router;
 };
 

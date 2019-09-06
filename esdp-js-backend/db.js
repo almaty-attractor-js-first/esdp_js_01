@@ -51,7 +51,6 @@ db = {
     }
   ],
   cleaningItems: [
-    {name: "sneakers", title: "Кроссовки", price: 1500, status: true},
     {name: "boots", title: "Ботинки", price: 2600, status: true},
     {name: "slingBacks", title: "Туфли", price: 3000, status: true},
     {name: "highBoots", title: "Сапоги", price: 3800, status: true},

@@ -1,9 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User');
 const config = require('../config');
 const nanoid = require('nanoid');
-const axios = require('axios');
 
 const createRouter = () => {
     router.post('/', (req, res) => {
