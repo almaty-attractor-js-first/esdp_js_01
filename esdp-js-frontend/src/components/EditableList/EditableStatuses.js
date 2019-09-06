@@ -1,7 +1,7 @@
 import React, {Fragment} from 'react';
 import {connect} from "react-redux";
 import arrayMove from "array-move";
-import uuid from 'uuid'
+import nanoid from 'nanoid/generate';
 import {makeStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -22,6 +22,7 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import MuiColorPicker from './MaterialColorPicker'
 import {SortableContainer, SortableElement, SortableHandle} from 'react-sortable-hoc'
+import {getStatuses, saveStatus, setStatuses, updateStatus, updateStatuses} from "../../store/actions/statusesActions";
 
 // Компонент который используется активации drag-n-drop при клике внутри компонента
 const DragHandle = SortableHandle(({children}) => <Fragment>{children}</Fragment>);
@@ -47,7 +48,7 @@ const headRows = [
 	{ label: 'Ключ' },
 	{ label: 'Отображение' },
 	{ label: 'Цвет' },
-	{ label: 'Выкл' },
+	{ label: 'Вкл/Выкл' },
 ];
 
 function EnhancedTableHead(props) {
@@ -154,9 +155,17 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function EnhancedTable(props) {
-	const [statuses, setStatuses] = React.useState([]);
+	const [statuses, setStatuses] = React.useState(props.statuses);
 	const [changedStatuses, setChangedStatuses] = React.useState('');
 	const classes = useStyles();
+	
+	React.useEffect(() => {
+		props.getStatuses();
+	}, []);
+	
+	React.useEffect(() => {
+		props.setStatuses(statuses);
+	}, [statuses]);
 	
 	React.useEffect(() => {
 		const defaultStatuses = JSON.stringify(props.statuses);
@@ -167,7 +176,7 @@ function EnhancedTable(props) {
 	const handleAddNewStatus = () => {
 		const tempStatuses = [...statuses];
 		const newStatus = {
-			id: uuid.v4(),
+			id: nanoid('1234567890', 6),
 			editable: true,
 			name: '',
 			title: '',
@@ -175,7 +184,13 @@ function EnhancedTable(props) {
 			status: false,
 			position: null
 		};
-		tempStatuses.unshift(newStatus);
+		const oldStatuses = JSON.parse(changedStatuses);
+		if (oldStatuses.length === statuses.length) {
+			tempStatuses.unshift(newStatus);
+		}
+		tempStatuses.forEach((elem, index) => (
+			elem.position = index + 1
+		));
 		setStatuses(tempStatuses);
 	};
 	
@@ -200,6 +215,12 @@ function EnhancedTable(props) {
 		setStatuses(tempStatuses);
 		const newStatuses = JSON.stringify(props.statuses);
 		setChangedStatuses(newStatuses);
+		const oldStatuses = JSON.parse(changedStatuses);
+		if (statuses.length === oldStatuses.length) {
+			props.updateStatus(tempStatuses[index]);
+		} else {
+			props.saveStatus(tempStatuses[index]);
+		}
 	};
 	
 	const handleDiscardChanges = (id) => {
@@ -217,7 +238,7 @@ function EnhancedTable(props) {
 		setStatuses(tempStatuses);
 	}, []);
 	
-	// Обработчик завершения перемещения, используется helper array-move
+	// Обработчик завершения перемещения, используется helper arrayMove
 	const onSortEnd = ({oldIndex, newIndex}) => {
 		let tempStatuses = [...statuses];
 		tempStatuses = arrayMove(tempStatuses, oldIndex, newIndex);
@@ -225,6 +246,7 @@ function EnhancedTable(props) {
 			elem.position = index + 1
 		));
 		setStatuses(tempStatuses);
+		props.updateStatuses(statuses);
 	};
 	
 	const inputChangeHandler = (event, id) => {
@@ -234,28 +256,28 @@ function EnhancedTable(props) {
 		setStatuses(tempStatuses);
 	};
 	
-	
-	
 	return (
 		<div className={classes.root}>
 			<Paper className={classes.paper}>
 				<EnhancedTableToolbar handleAddNewStatus={handleAddNewStatus}/>
-				<div className={classes.tableWrapper}>
-					<Table
-						className={classes.table}
-						aria-labelledby="tableTitle"
-						size='small'
-					>
-						<EnhancedTableHead
-							classes={classes}
-							rowCount={statuses.length}
-						/>
-						<TableBodySortable onSortEnd={onSortEnd}
-						                   useDragHandle lockAxis='y'
-						                   transitionDuration={500}
-							displayRowCheckbox={false}>
-							{statuses.map((row, index) => {
-								return (
+
+				{statuses ?
+					<div className={classes.tableWrapper}>
+						<Table
+							className={classes.table}
+							aria-labelledby="tableTitle"
+							size='small'
+						>
+							<EnhancedTableHead
+								classes={classes}
+								rowCount={statuses.length}
+							/>
+							<TableBodySortable onSortEnd={onSortEnd}
+							                   useDragHandle lockAxis='y'
+							                   transitionDuration={500}
+							                   displayRowCheckbox={false}>
+								{statuses.map((row, index) => {
+									return (
 										<TableRowSortable
 											hover
 											key={index}
@@ -272,15 +294,15 @@ function EnhancedTable(props) {
 											</TableCell>
 											<TableCell padding="checkbox" className={classes.editCell}>
 												
-													{!row.editable ?
-														<Tooltip title="Редактировать">
-															<IconButton aria-label="edit"
-															            color="secondary"
-															            onClick={() => handleSetEditable(row.id)}>
-																<Edit/>
-															</IconButton>
-														</Tooltip> :
-														<>
+												{!row.editable ?
+													<Tooltip title="Редактировать">
+														<IconButton aria-label="edit"
+														            color="secondary"
+														            onClick={() => handleSetEditable(row.id)}>
+															<Edit/>
+														</IconButton>
+													</Tooltip> :
+													<>
 														<Tooltip title="Сохранить">
 															<IconButton aria-label="edit"
 															            color="primary"
@@ -297,24 +319,24 @@ function EnhancedTable(props) {
 																<CancelIcon/>
 															</IconButton>
 														</Tooltip>
-														</>
-													}
+													</>
+												}
 											</TableCell>
 											
 											
 											<TableCell align="right" className={classes.tableCell}>
-											{row.editable ?
-												<TextField
-													name="name"
-													value={row.name}
-													onChange={e => inputChangeHandler(e, row.id)}
-													margin="none"
-													inputProps={{
-														style: {textAlign: 'right'}
-													}}
-												/> :
-												row.name
-											}
+												{row.editable ?
+													<TextField
+														name="name"
+														value={row.name}
+														onChange={e => inputChangeHandler(e, row.id)}
+														margin="none"
+														inputProps={{
+															style: {textAlign: 'right'}
+														}}
+													/> :
+													row.name
+												}
 											</TableCell>
 											<TableCell align="right" className={classes.tableCell}>
 												{row.editable ?
@@ -331,11 +353,12 @@ function EnhancedTable(props) {
 												}
 											</TableCell>
 											<TableCell align="right" className={classes.colorPicker}>
-												<MuiColorPicker color={row.color} editable={row.editable}/>
+												<MuiColorPicker color={row.color} editable={row.editable} id={row.id}/>
 											</TableCell>
 											<TableCell align="right">
 												<div>
 													<Switch
+														disabled={!row.editable}
 														checked={row.status}
 														onChange={() => editCurrentStatus(row.id)}
 														value={row.status}
@@ -345,21 +368,31 @@ function EnhancedTable(props) {
 												</div>
 											</TableCell>
 										</TableRowSortable>
-									
 									);
 								})}
-						</TableBodySortable>
-					</Table>
-				</div>
+							</TableBodySortable>
+						</Table>
+					</div>
+				: null}
 			</Paper>
 		</div>
 	);
 }
 
+
+const mapDispatchToProps = dispatch => {
+	return {
+		getStatuses: () => dispatch(getStatuses()),
+		setStatuses: (array) => dispatch(setStatuses(array)),
+		updateStatuses: (array) => dispatch(updateStatuses(array)),
+		saveStatus: (status) => dispatch(saveStatus(status)),
+		updateStatus: (status) => dispatch(updateStatus(status)),
+	};
+};
 const mapStateToProps = state => {
 	return {
-		statuses: state.orders.statuses
+		statuses: state.statusesReducer.statuses
 	};
 };
 
-export default connect(mapStateToProps)(EnhancedTable);
+export default connect(mapStateToProps, mapDispatchToProps)(EnhancedTable);

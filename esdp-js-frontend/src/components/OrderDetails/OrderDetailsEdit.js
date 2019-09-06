@@ -2,10 +2,12 @@ import React, {useEffect, useReducer} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     updateCurrentOrder,
-    getStatuses,
     updateOrders,
     putUpdateOrder
 } from "../../store/actions/ordersActions";
+import {
+    getStatuses,
+} from "../../store/actions/statusesActions";
 import moment from "moment";
 import {connect} from "react-redux";
 import Divider from '@material-ui/core/Divider';

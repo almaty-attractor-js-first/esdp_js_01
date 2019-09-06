@@ -3,7 +3,8 @@ import clsx from 'clsx';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
-import {getOrders, getStatuses, putUpdateOrder, updateOrders} from "../store/actions/ordersActions";
+import {getOrders, putUpdateOrder, updateOrders} from "../store/actions/ordersActions";
+import {getStatuses} from "../store/actions/statusesActions";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Link as RouterLink } from 'react-router-dom';
 import {
@@ -125,7 +126,7 @@ OrderItems.propTypes = {
 const mapStateToProps = state => {
   return {
     orders: state.orders.orders,
-    statuses: state.orders.statuses
+    statuses: state.statusesReducer.statuses
   };
 };
 

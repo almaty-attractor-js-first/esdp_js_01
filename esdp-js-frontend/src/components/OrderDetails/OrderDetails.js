@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {updateCurrentOrder, getStatuses} from "../../store/actions/ordersActions";
+import {updateCurrentOrder} from "../../store/actions/ordersActions";
+import {getStatuses} from "../../store/actions/statusesActions";
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import moment from "moment";

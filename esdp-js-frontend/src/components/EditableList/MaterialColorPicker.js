@@ -2,12 +2,16 @@ import MaterialColorPicker from 'react-material-color-picker';
 import React from "react";
 import Colorize from '@material-ui/icons/Colorize';
 import IconButton from "@material-ui/core/IconButton";
+import {connect} from "react-redux";
+import {setCurrentStatusColor} from "../../store/actions/statusesActions";
 
 
 const MuiColorPicker = (props) => {
 	const [isEdit, setIsEdit] = React.useState(false);
-	const [color, setColor] = React.useState(props.color);
+	// const [color, setColor] = React.useState(props.color);
+	
 	const handleChange = () => {
+		console.log(props.color);
 		props.editable
 			?
 			setIsEdit(!isEdit)
@@ -16,7 +20,8 @@ const MuiColorPicker = (props) => {
 	};
 	const onSubmit = (event) => {
 		setIsEdit(false);
-		setColor(event.target.value);
+		// setColor(event.target.value);
+		props.setCurrentStatusColor(event.target.value, props.id);
 	};
 	
 	
@@ -26,13 +31,13 @@ const MuiColorPicker = (props) => {
 			initColor={props.color}
 			onSubmit={onSubmit}
 			// onReset={actionLog()}
-			style={{width: 400, backgroundColor: '#c7c7c7', position: "absolute", left: "30%", zIndex: "999999"}}
+			style={{width: 500, backgroundColor: '#c7c7c7', position: "absolute", left: "30%", zIndex: "999999"}}
 			submitLabel='Apply'
-			resetLabel='Undo'
+			resetLabel=''
 		/> :
 		<IconButton onClick={handleChange}
 		     style={{
-					background: color,
+					background: props.color,
 		     }}>
 			<Colorize style={{
 				width: "25px",
@@ -43,4 +48,10 @@ const MuiColorPicker = (props) => {
 	)
 };
 
-export default MuiColorPicker;
+const mapDispatchToProps = dispatch => {
+	return {
+		setCurrentStatusColor: (color, id) => dispatch(setCurrentStatusColor(color, id))
+	}
+};
+
+export default connect(null, mapDispatchToProps)(MuiColorPicker);
