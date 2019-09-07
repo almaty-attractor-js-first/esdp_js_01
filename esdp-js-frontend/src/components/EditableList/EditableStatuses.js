@@ -1,7 +1,7 @@
 import React, {Fragment} from 'react';
 import {connect} from "react-redux";
 import arrayMove from "array-move";
-import nanoid from 'nanoid/generate';
+import uuid from 'uuid';
 import {makeStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -52,7 +52,7 @@ const headRows = [
 ];
 
 function EnhancedTableHead(props) {
-	
+
 	return (
 		<TableHead>
 			<TableRow>
@@ -90,7 +90,7 @@ const useToolbarStyles = makeStyles(theme => ({
 
 const EnhancedTableToolbar = props => {
 	const classes = useToolbarStyles();
-	
+
 	return (
 		<Toolbar>
 			<div>
@@ -158,25 +158,25 @@ function EnhancedTable(props) {
 	const [statuses, setStatuses] = React.useState(props.statuses);
 	const [changedStatuses, setChangedStatuses] = React.useState('');
 	const classes = useStyles();
-	
+
 	React.useEffect(() => {
 		props.getStatuses();
 	}, []);
-	
+
 	React.useEffect(() => {
 		props.setStatuses(statuses);
 	}, [statuses]);
-	
+
 	React.useEffect(() => {
 		const defaultStatuses = JSON.stringify(props.statuses);
 		setChangedStatuses(defaultStatuses);
 	},[]);
-	
-	
+
+
 	const handleAddNewStatus = () => {
 		const tempStatuses = [...statuses];
 		const newStatus = {
-			id: nanoid('1234567890', 6),
+			id: uuid.v4(),
 			editable: true,
 			name: '',
 			title: '',
@@ -193,21 +193,21 @@ function EnhancedTable(props) {
 		));
 		setStatuses(tempStatuses);
 	};
-	
+
 	const editCurrentStatus = (id) => {
 		const tempStatuses = [...statuses];
 		const index = tempStatuses.findIndex(item => {return item.id === id});
 		tempStatuses[index].status = !tempStatuses[index].status;
 		setStatuses(tempStatuses);
 	};
-	
+
 	const handleSetEditable = (id) => {
 		const tempStatuses = [...statuses];
 		const index = tempStatuses.findIndex(item => {return item.id === id});
 		tempStatuses[index].editable = !tempStatuses[index].editable;
 		setStatuses(tempStatuses);
 	};
-	
+
 	const handleSubmitChanges = id => {
 		const tempStatuses = [...statuses];
 		const index = tempStatuses.findIndex(item => {return item.id === id});
@@ -222,7 +222,7 @@ function EnhancedTable(props) {
 			props.saveStatus(tempStatuses[index]);
 		}
 	};
-	
+
 	const handleDiscardChanges = (id) => {
 		const tempStatuses = [...statuses];
 		const index = tempStatuses.findIndex(item => {return item.id === id});
@@ -230,14 +230,14 @@ function EnhancedTable(props) {
 		const oldStatuses = JSON.parse(changedStatuses);
 		setStatuses(oldStatuses);
 	};
-	
-	
+
+
 	React.useEffect(() => {
 		const tempStatuses = [...props.statuses];
 		tempStatuses.forEach(elem => elem.editable = false);
 		setStatuses(tempStatuses);
 	}, []);
-	
+
 	// Обработчик завершения перемещения, используется helper arrayMove
 	const onSortEnd = ({oldIndex, newIndex}) => {
 		let tempStatuses = [...statuses];
@@ -248,14 +248,14 @@ function EnhancedTable(props) {
 		setStatuses(tempStatuses);
 		props.updateStatuses(statuses);
 	};
-	
+
 	const inputChangeHandler = (event, id) => {
 		const tempStatuses = [...statuses];
 		const index = tempStatuses.findIndex(item => {return item.id === id});
 		tempStatuses[index][event.target.name] = event.target.value;
 		setStatuses(tempStatuses);
 	};
-	
+
 	return (
 		<div className={classes.root}>
 			<Paper className={classes.paper}>
@@ -294,7 +294,7 @@ function EnhancedTable(props) {
 												</DragHandle>
 											</TableCell>
 											<TableCell padding="checkbox" className={classes.editCell}>
-												
+
 												{!row.editable ?
 													<Tooltip title="Редактировать">
 														<IconButton aria-label="edit"
@@ -323,8 +323,8 @@ function EnhancedTable(props) {
 													</>
 												}
 											</TableCell>
-											
-											
+
+
 											<TableCell align="right" className={classes.tableCell} id={'statusName' + index}>
 												{row.editable ?
 													<TextField

@@ -10,12 +10,17 @@ const pool = new Pool({
 module.exports = {
     save: async (object, table) => {
         const bodyKeys = Object.keys(object);
+        console.log(bodyKeys);
         const bodyValues = Object.values(object);
+        const bodyKeysWithRegistr = bodyKeys.map((key, index) => {
+            return `"${key}"`;
+        });
         const VALUES = bodyKeys.map((key, index) => {
             return "$"+(index + 1);
         });
-        const sqlString = `INSERT INTO "${table}"(${bodyKeys.join(", ")}) VALUES(${VALUES.join(", ")}) RETURNING *`;
+        const sqlString = `INSERT INTO "${table}"(${bodyKeysWithRegistr.join(', ')}) VALUES(${VALUES.join(', ')}) RETURNING *`;
         try {
+            console.log(sqlString);
             const res = await pool.query(sqlString, bodyValues);
             console.table(res.rows[0]);
         } catch (err) {
@@ -29,6 +34,17 @@ module.exports = {
         }
         try {
             const res = await pool.query(sqlString);
+            console.table(res.rows);
+            return res;
+        } catch (err) {
+            console.log(err.stack);
+        }
+    },
+    fetchByPhone: async (table, phone) => {
+        let sqlString = `SELECT * FROM "${table}" WHERE ("${table}".phone = '${phone}')`;
+        console.log(sqlString);
+        try {
+            const res = await pool.query(sqlString);
             console.table(res.rows[0]);
             return res;
         } catch (err) {
@@ -36,6 +52,7 @@ module.exports = {
         }
     },
     update: async (table, object, id) => {
+        console.log(id);
         const bodyKeys = Object.keys(object);
         const bodyValues = Object.values(object);
         let str = [];
@@ -44,7 +61,7 @@ module.exports = {
             str.push(`${bodyKeys[i]} = '${bodyValues[i]}'`);
         }
         str = str.join(", ");
-        let sqlString = `UPDATE "${table}" SET ${str} WHERE "${table}".id = ${id} RETURNING *`;
+        let sqlString = `UPDATE "${table}" SET ${str} WHERE "${table}".id = '${id}' RETURNING *`;
         try {
             const res = await pool.query(sqlString);
             console.table(res.rows[0]);

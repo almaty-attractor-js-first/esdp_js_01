@@ -6,9 +6,9 @@ const db = require('../db/postgre');
 const createRouter = () => {
 	router.put('/', async (req, res) => {
 		let data = req.body;
-		data.map(async status => {
+		const result = data.map(async status => {
 			delete status.editable;
-			const result = await db.update('statuses', status, status.id);
+			await db.update('statuses', status, status.id);
 		});
 		console.table(data);
 		res.send(result);

@@ -8,7 +8,6 @@ const nodemailer = require("nodemailer");
 
 
 const createRouter = () => {
-
     router.get('/orders', async (req, res) => {
         let order = await db.fetch('orders');
         res.send(order.rows);
@@ -19,11 +18,12 @@ const createRouter = () => {
         res.send(order.rows[0]);
     });
     router.post('/orders', async (req, res) => {
-        // if(req.query.phone){
-        //     const result = await db.findClient(req.query.phone);
-        //     return res.send(result);
-        // }
+        if(req.query.phone){
+            const result = await db.fetchByPhone('clients',req.query.phone);
+            return res.send(result);
+        }
         let orderData = req.body;
+
         const orderId = uuid();
         orderData.id = orderId;
         console.log(orderData);
@@ -36,14 +36,32 @@ const createRouter = () => {
             lastName: orderData.lastName,
             middleName: orderData.middleName,
             createdAt: new Date(),
-            displayName: orderData.firstName,
             birthDate: null,
             phone: orderData.phone
         };
         orderData.clientId = clientData.id;
 
+        await db.save(clientData, 'clients');
 
-        orderData.order_items.map((item) => {
+        const finalOrder = {
+            id: orderId,
+            clientId: null,
+            masterId: null,
+            courierId: null,
+            statusId: orderData.statusId,
+            createdAt: null,
+            description: null,
+            paymentStatus: orderData.paymentStatus,
+            paymentMethod: orderData.paymentMethod,
+            totalPrice: orderData.totalPrice,
+            pickupAddress: orderData.address,
+            deliveryAddress: orderData.address,
+            deliveryType: orderData.deliveryType,
+            completedDate: orderData.completedDate
+        };
+
+        await db.save(finalOrder, 'orders');
+        orderData.orderItems.map((item) => {
             const orderItem = {
                 id: uuid(),
                 orderId: orderData.id,
@@ -52,10 +70,9 @@ const createRouter = () => {
                 price: item.price,
                 title: item.title
             };
-            db.save(orderItem,'order_items');
+            db.save(orderItem,'orderItems');
         });
-        db.save(clientData, 'clients');
-        db.save(orderData, 'orders');
+
         QRCode.toFile(`src/assets/images/${orderId}file.png`, orderId, {
             scale: 10,
             color: {
