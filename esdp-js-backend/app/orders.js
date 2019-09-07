@@ -23,33 +23,34 @@ const createRouter = () => {
             return res.send(result);
         }
         let orderData = req.body;
-
         const orderId = uuid();
         orderData.id = orderId;
-        console.log(orderData);
         //создаем клиента
-        const clientData = {
-            id: uuid(),
-            address: orderData.address,
-            email: orderData.email,
-            firstName: orderData.firstName,
-            lastName: orderData.lastName,
-            middleName: orderData.middleName,
-            createdAt: new Date(),
-            birthDate: null,
-            phone: orderData.phone
-        };
-        orderData.clientId = clientData.id;
-
-        await db.save(clientData, 'clients');
-
+        const result = await db.fetchByPhone('clients', orderData.phone);
+        if (result) {
+            console.log("Client already exists, it's ok, creating new order for him")
+        } else {
+            const clientData = {
+                id: uuid(),
+                address: orderData.address,
+                email: orderData.email,
+                firstName: orderData.firstName,
+                lastName: orderData.lastName,
+                middleName: orderData.middleName,
+                createdAt: new Date(),
+                birthDate: null,
+                phone: orderData.phone
+            };
+            orderData.clientId = clientData.id;
+            await db.save(clientData, 'clients');
+        }
         const finalOrder = {
             id: orderId,
             clientId: null,
             masterId: null,
             courierId: null,
             statusId: orderData.statusId,
-            createdAt: null,
+            createdAt: new Date(),
             description: null,
             paymentStatus: orderData.paymentStatus,
             paymentMethod: orderData.paymentMethod,
