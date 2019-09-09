@@ -1,10 +1,16 @@
 import axios from '../../axios-api'
-import {SET_STATUSES} from "./actionTypes";
+import {SET_STATUSES, SET_CHANGED_STATUSES} from "./actionTypes";
 import store from "../configureStore";
 
 export const setStatuses = (array) => {
 	return dispatch => {
 		dispatch({type: SET_STATUSES, array});
+	}
+};
+
+export const setChangedStatuses = (JSONString) => {
+	return dispatch => {
+		dispatch({type: SET_CHANGED_STATUSES, JSONString});
 	}
 };
 
@@ -23,9 +29,12 @@ export const setCurrentStatusColor = (color, statusId) => {
 
 export const getStatuses = () => {
 	return dispatch => {
-		axios.get("/statuses").then(response => {
+		return axios.get("/statuses").then(response => {
 			let data = response.data;
 			dispatch(setStatuses(data));
+			const JSONString = JSON.stringify(data);
+			dispatch(setChangedStatuses(JSONString));
+			return response;
 		},error => {
 			if (error.response && error.response.data) {
 			} else {
