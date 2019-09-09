@@ -8,9 +8,10 @@ import Main from "./containers/Main/Main";
 import OrderDetails from "./components/OrderDetails/OrderDetails";
 import AdminOrderItems from "./containers/AdminOrderItems";
 import OrderDetailsEdit from "./components/OrderDetails/OrderDetailsEdit";
-import EditableTable from "./containers/Editable";
+import Statuses from "./containers/Statuses";
+import CleaningTypes from "./containers/CleaningTypes";
 
-const Routes = ({user}) => {
+const Routes = () => {
     return (
         <Switch>
             <Route exact path="/" component={Main}/>
@@ -21,7 +22,8 @@ const Routes = ({user}) => {
             <Route exact path="/admin-order-items" component={AdminOrderItems}/>
             <Route exact path="/order/:id" component={OrderDetails}/>
             <Route exact path="/edit-order/:id" component={OrderDetailsEdit}/>
-            <Route exact path="/edit-statuses" component={EditableTable}/>
+            <Route exact path="/edit-statuses" component={Statuses}/>
+            <Route exact path="/edit-types" component={CleaningTypes}/> 
         </Switch>
     )
 };

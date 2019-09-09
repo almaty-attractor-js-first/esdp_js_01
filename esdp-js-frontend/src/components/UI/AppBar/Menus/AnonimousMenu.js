@@ -27,6 +27,13 @@ export default function AnonimousMenu() {
       <Button color="primary"
               variant={"text"}
               component={Link}
+              to='/edit-types'
+              className={classes.link}>
+        чистки
+      </Button>
+      <Button color="primary"
+              variant={"text"}
+              component={Link}
               to='/edit-statuses'
               className={classes.link}>
         статусы

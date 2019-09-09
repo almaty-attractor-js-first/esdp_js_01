@@ -5,6 +5,7 @@ import {routerMiddleware, connectRouter} from 'connected-react-router';
 
 import ordersReducer from './reducers/orders';
 import statusesReducer from './reducers/statusesReducer';
+import cleaningTypesReducer from './reducers/cleaningTypesReducer';
 import usersReducer from "./reducers/users";
 import newOrderReducer from "./reducers/newOrderReducer";
 import {loadState, saveState} from "./localStorage";
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   users: usersReducer,
   newOrder: newOrderReducer,
   statusesReducer: statusesReducer,
+  cleaningTypesReducer: cleaningTypesReducer,
   router: connectRouter(history)
 });
 

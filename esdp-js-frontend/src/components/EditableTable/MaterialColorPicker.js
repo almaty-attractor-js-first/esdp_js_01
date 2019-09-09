@@ -8,7 +8,6 @@ import {setCurrentStatusColor} from "../../store/actions/statusesActions";
 
 const MuiColorPicker = (props) => {
 	const [isEdit, setIsEdit] = React.useState(false);
-	// const [color, setColor] = React.useState(props.color);
 	
 	const handleChange = () => {
 		console.log(props.color);
@@ -20,7 +19,6 @@ const MuiColorPicker = (props) => {
 	};
 	const onSubmit = (event) => {
 		setIsEdit(false);
-		// setColor(event.target.value);
 		props.setCurrentStatusColor(event.target.value, props.id);
 	};
 	
@@ -30,7 +28,6 @@ const MuiColorPicker = (props) => {
 		<MaterialColorPicker
 			initColor={props.color}
 			onSubmit={onSubmit}
-			// onReset={actionLog()}
 			style={{width: 500, backgroundColor: '#c7c7c7', position: "absolute", left: "30%", zIndex: "999999"}}
 			submitLabel='Apply'
 			resetLabel=''
