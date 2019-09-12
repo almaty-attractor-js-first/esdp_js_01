@@ -9,6 +9,7 @@ import cleaningTypesReducer from './reducers/cleaningTypesReducer';
 import usersReducer from "./reducers/users";
 import newOrderReducer from "./reducers/newOrderReducer";
 import {loadState, saveState} from "./localStorage";
+import axios from '../axios-api';
 
 export const history = createBrowserHistory();
 
@@ -42,5 +43,16 @@ store.subscribe(() => {
     orders: store.getState().orders,
   });
 });
+
+
+axios.interceptors.request.use(config => {
+  try {
+    config.headers['authorization'] = store.getState().users.user.token
+  } catch {
+    // do nothing
+  }
+  return config
+});
+
 
 export default store;

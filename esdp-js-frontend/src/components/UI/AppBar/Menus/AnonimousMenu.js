@@ -20,18 +20,10 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-export default function AnonimousMenu() {
+export default function AnonimousMenu({user}) {
   const classes = useStyles();
   return (
     <Fragment>
-      
-      <Button color="secondary"
-              variant={"text"}
-              component={Link}
-              to='/register'
-              className={classes.link}>
-        регистрация
-      </Button>
       <Button color="secondary"
               variant={"text"}
               component={Link}

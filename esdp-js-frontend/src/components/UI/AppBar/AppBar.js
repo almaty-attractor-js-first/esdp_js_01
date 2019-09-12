@@ -69,12 +69,7 @@ const Header = (props) => {
       <MenuItem onClick={() => {
         props.logout();
         handleMenuClose();}}>
-        Logout
-      </MenuItem>
-      <MenuItem onClick={handleMenuClose}
-                component={Link}
-                to='/orders'>
-        My orders
+        Выход
       </MenuItem>
     </Menu>
   );
@@ -101,7 +96,7 @@ const Header = (props) => {
                             avatar={classes.avatar}/>
                 </div>
                :
-                <AnonimousMenu/>
+                <AnonimousMenu user={props.user}/>
             }
           </div>
         </Toolbar>
