@@ -9,7 +9,6 @@ import Container from '@material-ui/core/Container';
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
 import {loginUser} from "../store/actions/usersActions";
-import FacebookLogin from "../components/FacebookLogin";
 import {TextField} from "@material-ui/core";
 const styles = theme => ({
   '@global': {
@@ -42,7 +41,7 @@ const styles = theme => ({
 
 class SignIn extends React.Component {
   state = {
-    username: '',
+    phone: '',
     password: ''
   };
   inputChangeHandler = e => {
@@ -64,25 +63,23 @@ class SignIn extends React.Component {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5" className={classes.text}>
-              Sign in
+              Вход
             </Typography>
             <form className={classes.form}
                   noValidate
                   onSubmit={this.onSubmitHandler}>
               <TextField
-                variant="outlined"
                 margin="normal"
                 required
                 fullWidth
-                label="Username"
-                name="username"
+                label="Телефон"
+                name="phone"
                 autoFocus
                 type="text"
                 value={this.state.username}
                 onChange={this.inputChangeHandler}
               />
               <TextField
-                variant="outlined"
                 margin="normal"
                 required
                 fullWidth
@@ -95,14 +92,13 @@ class SignIn extends React.Component {
               <Button
                 type="submit"
                 fullWidth
-                variant="outlined"
+                variant="contained"
                 color="primary"
                 className={classes.submit}
               >
-                Sign In
+                Продолжить
               </Button>
             </form>
-            <FacebookLogin />
           </div>
         </Container>
       );

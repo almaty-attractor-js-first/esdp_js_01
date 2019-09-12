@@ -18,16 +18,17 @@ const registerUserError = error => {
 };
 
 export const registerUser = userData => {
+    userData.phone = userData.phone.replace(/[^0-9]/g, '');
     return dispatch => {
-        axios.post("/users", userData)
+        axios.post("/workers", userData)
             .then(
                 response => {
                     dispatch(registerUserSuccess());
                     dispatch(push("/"));
                 },
                 error => {
-                    if (error.response && error.response.data) {
-                        dispatch(registerUserError(error.response.data));
+                    if (error) {
+                        dispatch(registerUserError(error));
                     } else {
                         dispatch(registerUserError({global: "No internet connection"}));
                     }
@@ -44,8 +45,9 @@ const loginUserError = (error) => {
 };
 
 export const loginUser = userData => {
+    userData.phone = userData.phone.replace(/[^0-9]/g, '');
     return dispatch => {
-        axios.post("/users/sessions", userData)
+        axios.post("/workers/sessions", userData)
             .then(
                 response => {
                     dispatch(loginUserSuccess(response.data));
@@ -68,23 +70,11 @@ export const logoutUser = () => {
         const headers = {
             Authorization: token
         };
-        axios.delete("/users/sessions", {headers}).then(response => {
+        axios.delete("/workers/sessions", {headers}).then(response => {
             dispatch({type: LOGOUT_USER});
-            NotificationManager.success(response.data.message);
+            // NotificationManager.success(response.data.message);
             dispatch(push("/"));
         });
     }
 };
 
-export const facebookLogin = (data) => {
-    return dispatch => {
-        axios.post("/users/facebookLogin", data).then(responce => {
-            dispatch(loginUserSuccess(responce.data));
-            dispatch(push("/"));
-            NotificationManager.success("Logged in with facebook");
-
-        }, error => {
-            dispatch(loginUserError(error.response.data));
-        })
-    };
-};

@@ -24,40 +24,20 @@ export default function AnonimousMenu() {
   const classes = useStyles();
   return (
     <Fragment>
-      <Button color="primary"
-              variant={"text"}
-              component={Link}
-              to='/edit-types'
-              className={classes.link}>
-        чистки
-      </Button>
-      <Button color="primary"
-              variant={"text"}
-              component={Link}
-              to='/edit-statuses'
-              className={classes.link}>
-        статусы
-      </Button>
-      <Button color="primary"
-              variant={"text"}
-              component={Link}
-              to='/admin-order-items'
-              className={classes.link}>
-        админ
-      </Button>
-      <Button color="primary"
-              variant={"text"}
-              component={Link}
-              to='/order-items'
-              className={classes.link}>
-        мастер
-      </Button>
+      
       <Button color="secondary"
               variant={"text"}
               component={Link}
               to='/register'
               className={classes.link}>
-        курьер
+        регистрация
+      </Button>
+      <Button color="secondary"
+              variant={"text"}
+              component={Link}
+              to='/login'
+              className={classes.link}>
+        вход
       </Button>
     </Fragment>
     )

@@ -34,7 +34,7 @@ const MuiColorPicker = (props) => {
 		/> :
 		<IconButton onClick={handleChange}
 		     style={{
-					background: props.color,
+			     background: props.color,
 		     }}>
 			<Colorize style={{
 				width: "25px",

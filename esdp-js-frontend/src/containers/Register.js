@@ -9,9 +9,8 @@ import Container from '@material-ui/core/Container';
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
 import {registerUser} from "../store/actions/usersActions";
-import FacebookLogin from "../components/FacebookLogin";
-import Chip from "@material-ui/core/Chip";
 import {TextField} from "@material-ui/core";
+import InputMask from "react-input-mask";
 const styles = theme => ({
   '@global': {
     body: {
@@ -45,10 +44,11 @@ const styles = theme => ({
 
 class SignUp extends React.Component {
   state = {
-    username: '',
+    firstName: '',
+    lastName: '',
     password: '',
-    displayName: '',
-    avatarImage: ''
+    phone: '',
+    email: ''
   };
   inputChangeHandler = e => {
     this.setState({
@@ -56,9 +56,6 @@ class SignUp extends React.Component {
     });
   };
 
-  fileChangeHandler = e => {
-    this.setState({avatarImage: e.target.files[0]});
-  };
 
   onSubmitHandler = e => {
     e.preventDefault();
@@ -74,73 +71,74 @@ class SignUp extends React.Component {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5" className={classes.text}>
-            Sign up
+            Регистрация
           </Typography>
           <form className={classes.form}
                 noValidate
                 onSubmit={this.onSubmitHandler}>
+            <InputMask value={this.state.phone}
+                       mask="+7 999 999 9999"
+                       maskChar={null}
+                       required
+                       id="phone"
+                       name="phone"
+                       label="Телефон"
+                       fullWidth
+                       autoFocus
+                       onChange={this.inputChangeHandler}>
+              {(inputProps) => <TextField {...inputProps}
+                                          type="tel" value={this.state.phone}/>}
+            </InputMask>
             <TextField
-              variant="outlined"
               margin="normal"
               required
               fullWidth
-              label="Username"
-              name="username"
-              autoFocus
-              type="text"
-              value={this.state.username}
-              onChange={this.inputChangeHandler}
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              label="Password"
+              label="Пароль"
               name="password"
               type="password"
               value={this.state.password}
               onChange={this.inputChangeHandler}
             />
             <TextField
-              variant="outlined"
               margin="normal"
               required
               fullWidth
-              label="Display name"
-              name="displayName"
+              label="Имэйл"
+              name="email"
               type="text"
-              value={this.state.displayName}
+              value={this.state.email}
               onChange={this.inputChangeHandler}
             />
-            <div className={classes.typeFile}>
-              <input
-                  accept="image/*"
-                  className={classes.input}
-                  id="contained-button-file"
-                  multiple
-                  type="file"
-                  onChange={this.fileChangeHandler}
-                  name='avatarImage'
-              />
-              <label htmlFor="contained-button-file">
-                <Button component="span"  variant="contained" color="default" className={classes.button}>
-                  Select avatar
-                </Button>
-              </label>
-              {this.state.avatarImage ? <Chip onDelete={this.imageDeleteHandler} label={this.state.avatarImage.name} className={classes.chip}/> : null}
-            </div>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Имя"
+              name="firstName"
+              type="text"
+              value={this.state.firstName}
+              onChange={this.inputChangeHandler}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Фамилия"
+              name="lastName"
+              type="text"
+              value={this.state.lastName}
+              onChange={this.inputChangeHandler}
+            />
             <Button
               type="submit"
+              variant='contained'
               fullWidth
-              variant="outlined"
               color="primary"
               className={classes.submit}
             >
-              Sign Up
+              Продолжить
             </Button>
           </form>
-          <FacebookLogin />
         </div>
       </Container>
     );
