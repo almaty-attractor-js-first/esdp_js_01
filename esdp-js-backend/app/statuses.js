@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const nanoid = require('nanoid/generate');
 const db = require('../db/postgre');
+const auth = require('../middleware/auth');
 
 const createRouter = () => {
 	router.put('/', async (req, res) => {
@@ -20,7 +21,7 @@ const createRouter = () => {
 		const result = await db.update('statuses', orderData, orderId);
 		res.send(result);
 	});
-	router.get('/' , async (req , res) => {
+	router.get('/' , auth, async (req , res) => {
 		const result = await db.fetch('statuses');
 		result.rows.sort((a, b) => a.position - b.position);
 		res.send(result.rows);

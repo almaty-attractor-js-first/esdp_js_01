@@ -1,12 +1,16 @@
 const { Pool } = require('pg');
 
 const pool = new Pool({
-    user: '',
+    user: 'sysadmin',
     host: '127.0.0.1',
     database: 'shoeser',
-    password: '',
+    password: '123456',
     port: 5432,
 });
+pool.on('connect', () => {
+    console.log('connected to the Shoeser');
+});
+
 module.exports = {
     save: async (object, table) => {
         const bodyKeys = Object.keys(object);
@@ -23,10 +27,13 @@ module.exports = {
             console.log(sqlString);
             const res = await pool.query(sqlString, bodyValues);
             console.table(res.rows[0]);
+            return (res.rows[0]);
         } catch (err) {
-            console.log(err.stack);
+            // console.log('register error', err);
+            return (err);
         }
     },
+    
     fetch: async (table, id) => {
         let sqlString = `SELECT * FROM "${table}"`;
         if (id) {
@@ -40,6 +47,28 @@ module.exports = {
             console.log(err.stack);
         }
     },
+    
+    saveUser: async (object) => {
+        const bodyKeys = Object.keys(object);
+        console.log(bodyKeys);
+        const bodyValues = Object.values(object);
+        const bodyKeysWithRegister = bodyKeys.map((key) => {
+            return `"${key}"`;
+        });
+        const VALUES = bodyKeys.map((key, index) => {
+            return "$"+(index + 1);
+        });
+        const sql = `INSERT INTO "workers"(${bodyKeysWithRegister.join(', ')}) VALUES(${VALUES.join(', ')}) RETURNING *`;
+        try {
+            console.log(sql);
+            const res = await pool.query(sql, bodyValues);
+            console.table(res.rows[0]);
+        } catch (err) {
+            console.log(err.stack);
+        }
+    },
+    
+
     fetchByPhone: async (table, phone) => {
         let sqlString = `SELECT * FROM "${table}" WHERE ("${table}".phone = '${phone}')`;
         console.log(sqlString);
@@ -51,21 +80,30 @@ module.exports = {
             console.log(err.stack);
         }
     },
-    update: async (table, object, id) => {
-        console.log(id);
-        const bodyKeys = Object.keys(object);
-        const bodyValues = Object.values(object);
-        let str = [];
-        console.log(object);
-        for (let i in bodyKeys) {
-            str.push(`${bodyKeys[i]} = '${bodyValues[i]}'`);
-        }
-        str = str.join(", ");
-        let sqlString = `UPDATE "${table}" SET ${str} WHERE "${table}".id = '${id}' RETURNING *`;
+
+    fetchByToken: async (token) => {
+        let sqlString = `SELECT * FROM "workers" WHERE ("workers".token = '${token}')`;
+        console.log(sqlString);
         try {
             const res = await pool.query(sqlString);
             console.table(res.rows[0]);
             return res;
+        } catch (err) {
+            console.log(err.stack);
+        }
+    },
+    update: async (table, object, id) => {
+        const bodyKeys = Object.keys(object);
+        const bodyValues = Object.values(object);
+        let str = [];
+        for (let i in bodyKeys) {
+            str.push(`"${bodyKeys[i]}" = '${bodyValues[i]}'`);
+        }
+        str = str.join(", ");
+        let sqlString = `UPDATE "${table}" SET ${str} WHERE "${table}".id = '${id}' RETURNING *`;
+        console.log(sqlString);
+        try {
+            return res = await pool.query(sqlString);
         } catch (err) {
             console.log(err.stack);
         }
