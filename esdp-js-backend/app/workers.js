@@ -1,29 +1,48 @@
 const express = require('express');
 const router = express.Router();
 const config = require('../config');
-const nanoid = require('nanoid');
+const uuid = require('uuid');
+const db = require('../db/postgre');
+const Helper = require('../controllers/Helper');
 
 const createRouter = () => {
     router.post('/', (req, res) => {
-        const user = new User({
-            username: req.body.username,
+        const id = uuid.v4();
+        const token = Helper.generateToken(id);
+        const newUser = {
+            phone: req.body.phone,
+            email: req.body.email,
             password: req.body.password,
-            displayName: req.body.displayName
-        });
-        user.save().then(result => {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            id,
+            token
+        };
+        if (newUser.phone.length < 11) return res.status(400).send({message: 'Неправильный формат номера телефона'});
+        if (newUser.password.length <= 0) return res.status(400).send({message: 'Вы не ввели пароль'});
+    
+        newUser.password = Helper.hashPassword(newUser.password);
+        db.saveUser(newUser).then(result => {
             res.send(result);
         }).catch(err => {
             res.status(400).send({message: err});
-        })
+        });
     });
     router.post('/sessions', async (req, res) => {
-        const user = await User.findOne({username: req.body.username});
+        const data = await db.fetchByPhone('workers', req.body.phone);
+        const user = data.rows[0];
         if (!user) return res.status(400).send({message: 'User not found'});
-        const isMatch = await user.checkPassword(req.body.password);
+        const password = user.password;
+        console.log(user.password);
+        console.log(req.body.password);
+        const isMatch = await Helper.comparePassword(password, req.body.password);
         if(!isMatch) return res.status(400).send({message: "Wrong password"});
-        user.token = nanoid();
-        user.save().then((result) => {
-            res.send(result);
+        user.token = Helper.generateToken(user.id);
+        const token = {token: user.token};
+        db.update('workers', token, user.id).then(result => {
+            let response = result.rows[0];
+            delete response.password;
+            res.send(response);
         });
     });
 
@@ -31,48 +50,13 @@ const createRouter = () => {
         const token = req.get("Authorization");
         const success = {message: "Logged out!"};
         if(!token) return res.send(success);
-        const user = await User.findOne({token});
+        const user = await db.fetchByToken({token});
         if(!user) return res.send(success);
-        user.token = nanoid();
-        await user.save();
-        res.send(success);
-    });
-
-    router.post('/facebookLogin', async (req, res) => {
-        const inputToken = req.body.accessToken;
-        const accessToken = config.facebook.appId + "|" + config.facebook.secretKey;
-        const debugTokenUrl = `https://graph.facebook.com/debug_token?input_token=${inputToken}&access_token=${accessToken}`;
-        try {
-            const response = await axios.get(debugTokenUrl);
-            console.log(response)
-
-            if(response.data.data.error) {
-                return res.status(401).send({message: "facebook token incorrect"});
-            }
-
-            if (req.body.id !== response.data.data.user_id) {
-                return res.status(401).send({message: "Wrong user ID"});
-            }
-
-            let user = await User.findOne({facebookId: req.body.id});
-            if(!user) {
-                user = new User({
-                    username: req.body.email,
-                    password: nanoid(),
-                    facebookId: req.body.id,
-                    displayName: req.body.name
-
-                });
-            }
-            user.token = nanoid();
-            await user.save();
-
-            res.send(user);
-
-
-        } catch {
-            res.status(401).send({message: "facebook token incorrect"});
-        }
+        user.token = Helper.generateToken(user.id);
+        const newToken = {token: user.token};
+        db.update('workers', newToken, user.id).then(() => {
+            res.send(success);
+        });
     });
 
     return router;
