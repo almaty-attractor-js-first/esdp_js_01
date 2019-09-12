@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const config = require('../config.js');
+
 
 const Helper = {
 	/**
@@ -37,7 +39,7 @@ const Helper = {
 		const token = jwt.sign({
 				userId: id
 			},
-			'verySecret', { expiresIn: '7d' }
+			config.secret, { expiresIn: '1h' }
 		);
 		return token;
 	}

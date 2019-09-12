@@ -12,6 +12,7 @@ module.exports = {
     getDBPath: function() {
         return this.db.url + this.db.name;
     },
+    secret: 'verySecret',
     facebook:{
         appId: "632833597236084",
         secretKey: "dff85891159bb69b20a27b4d81a5fc51"
