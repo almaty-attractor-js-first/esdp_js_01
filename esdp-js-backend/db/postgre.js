@@ -1,10 +1,10 @@
 const { Pool } = require('pg');
 
 const pool = new Pool({
-    user: 'sysadmin',
+    user: '',
     host: '127.0.0.1',
     database: 'shoeser',
-    password: '123456',
+    password: '',
     port: 5432,
 });
 pool.on('connect', () => {
@@ -26,14 +26,13 @@ module.exports = {
         try {
             console.log(sqlString);
             const res = await pool.query(sqlString, bodyValues);
-            console.table(res.rows[0]);
             return (res.rows[0]);
         } catch (err) {
             // console.log('register error', err);
             return (err);
         }
     },
-    
+
     fetch: async (table, id) => {
         let sqlString = `SELECT * FROM "${table}"`;
         if (id) {
@@ -41,13 +40,12 @@ module.exports = {
         }
         try {
             const res = await pool.query(sqlString);
-            console.table(res.rows);
             return res;
         } catch (err) {
             console.log(err.stack);
         }
     },
-    
+
     saveUser: async (object) => {
         const bodyKeys = Object.keys(object);
         console.log(bodyKeys);
@@ -67,7 +65,7 @@ module.exports = {
             console.log(err.stack);
         }
     },
-    
+
 
     fetchByPhone: async (table, phone) => {
         let sqlString = `SELECT * FROM "${table}" WHERE ("${table}".phone = '${phone}')`;
@@ -86,7 +84,7 @@ module.exports = {
         console.log(sqlString);
         try {
             const res = await pool.query(sqlString);
-            console.table(res.rows[0]);
+            console.table(res);
             return res;
         } catch (err) {
             console.log(err.stack);

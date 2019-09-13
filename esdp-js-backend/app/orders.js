@@ -25,10 +25,12 @@ const createRouter = () => {
         let orderData = req.body;
         const orderId = uuid();
         orderData.id = orderId;
+        let clientId;
         //создаем клиента
         const result = await db.fetchByPhone('clients', orderData.phone);
-        if (result) {
+        if (result.rows[0]) {
             console.log("Client already exists, it's ok, creating new order for him")
+            clientId = result.rows[0].id;
         } else {
             const clientData = {
                 id: uuid(),
@@ -42,11 +44,12 @@ const createRouter = () => {
                 phone: orderData.phone
             };
             orderData.clientId = clientData.id;
+            console.table(clientData);
             await db.save(clientData, 'clients');
         }
         const finalOrder = {
             id: orderId,
-            clientId: null,
+            clientId: orderData.clientId || clientId,
             masterId: null,
             courierId: null,
             statusId: orderData.statusId,
