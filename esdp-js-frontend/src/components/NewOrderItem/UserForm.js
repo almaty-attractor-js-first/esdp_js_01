@@ -6,7 +6,20 @@ import {getUserByPhoneNumber, updateUserData} from "../../store/actions/newOrder
 import {connect} from "react-redux";
 import TimePicker from "../UI/DatePicker";
 import ReactMapGl from "../UI/ReactMap/ReactMapGl";
+import CircularProgress from '@material-ui/core/CircularProgress';
 import InputMask from "react-input-mask";
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(theme => ({
+  phoneField: {
+    position: 'relative',
+  },
+  progress: {
+    position: 'absolute',
+    top: '35%',
+    left: '47%'
+  },
+}));
 
 const usePrevious = (value) => {
   const ref = useRef();
@@ -17,6 +30,7 @@ const usePrevious = (value) => {
 };
 
 const UserForm = props => {
+  const classes = useStyles();
   const { userData } = props;
   const [userInput, setUserInput] = useReducer(
     (state, newState) => ({...state, ...newState}),
@@ -63,7 +77,8 @@ const UserForm = props => {
         Введите ФИО, выберите способ доставки и оплаты
       </Typography>
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid item xs={12}                      className={classes.phoneField}
+        >
           <InputMask value={userInput.phone}
                      helperText="123 456 7890"
                      mask="+7 999 999 9999"
@@ -75,12 +90,13 @@ const UserForm = props => {
                      fullWidth
                      onChange={(e) => {autocompleteUserFields(e); handleChange(e); }}>
             {(inputProps) => <TextField {...inputProps}
-                                        type="tel" value={userInput.phone}/>}
+                                        type="tel" value={userInput.phone} />}
           </InputMask>
-
+          {props.loading && <CircularProgress size={20} className={classes.progress}/>}
         </Grid>
         <Grid item xs={12}>
           <TextField
+            disabled={props.loading}
             value={userInput.email}
             required
             id="email"
@@ -92,6 +108,7 @@ const UserForm = props => {
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
+            disabled={props.loading}
             value={userInput.firstName}
             required
             id="firsName"
@@ -103,6 +120,7 @@ const UserForm = props => {
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
+            disabled={props.loading}
             value={userInput.lastName}
             required
             id="lastName"
@@ -116,6 +134,7 @@ const UserForm = props => {
         <Fragment>
           <Grid item xs={props.deliveryType === 'delivery' ? 9 : 12}>
             <TextField
+              disabled={props.loading}
               value={userInput.address}
               required
               id="address"
@@ -142,6 +161,7 @@ const mapStateToProps = state => {
   return {
     userData: state.newOrder.userData,
     autocomplete: state.newOrder.autocomplete,
+    loading: state.newOrder.loading,
   };
 };
 

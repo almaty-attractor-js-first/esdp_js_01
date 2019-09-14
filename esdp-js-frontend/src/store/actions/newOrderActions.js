@@ -1,14 +1,18 @@
 import axios from '../../axios-api'
 import {
   CALCULATE_TOTAL,
-  GET_CLEANING_ITEMS,
+  GET_CLEANING_ITEMS, SET_LOADING,
   UPDATE_COMPLETED_DATE,
   UPDATE_ORDER_ITEMS,
   UPDATE_USER_DATA
 } from "./actionTypes";
 import {push} from "connected-react-router";
 
-export const getAllFields = (cleaningFields) => {
+const setLoading = (loading) => {
+    return dispatch => {
+        dispatch({type: SET_LOADING, loading});
+    };
+};export const getAllFields = (cleaningFields) => {
     return dispatch => {
         dispatch({type: CALCULATE_TOTAL, cleaningFields});
     };
@@ -59,12 +63,15 @@ export const addOrder = (order) => {
 export const getUserByPhoneNumber = (phoneNumber) => {
   return dispatch => {
     const queryWithPlus = phoneNumber.replace("+", "%2B");
-    return axios.post(`/orders?phone=${queryWithPlus}`).then(response => {
+    dispatch(setLoading(true));
+    return axios.get(`/orders/client?phone=${queryWithPlus}`).then(response => {
       if (response.data) {
         console.log(response.data);
+        dispatch(setLoading(false));
         return response;
       }
-    })}
+      
+    }).catch(() => dispatch(setLoading(false)))}
 };
 
 

@@ -1,6 +1,6 @@
 import {
   CALCULATE_TOTAL,
-  GET_CLEANING_ITEMS, UPDATE_COMPLETED_DATE,
+  GET_CLEANING_ITEMS, SET_LOADING, UPDATE_COMPLETED_DATE,
   UPDATE_ORDER_ITEMS,
   UPDATE_USER_DATA
 } from "../actions/actionTypes";
@@ -22,7 +22,8 @@ const initialState = {
   ],
   totalPrice: 0,
   completedDate: d.setDate(d.getDate() + 5),
-  cleaningItems: []
+  cleaningItems: [],
+  loading: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -41,6 +42,8 @@ const reducer = (state = initialState, action) => {
       return {...state, completedDate: action.completedDate};
     case GET_CLEANING_ITEMS:
       return {...state, cleaningItems: action.array};
+    case SET_LOADING:
+      return {...state, loading: action.loading};
     default:
       return state;
   }

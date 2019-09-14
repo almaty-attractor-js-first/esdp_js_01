@@ -12,16 +12,23 @@ const createRouter = () => {
         let order = await db.fetch('orders');
         res.send(order.rows);
     });
+    router.get('/orders/client', async (req, res) => {
+	    if(req.query.phone){
+		    const result = await db.fetchByPhone('clients',req.query.phone);
+		    if (result.rows[0]) {
+			    return res.send(result.rows[0]);
+		    } else {
+			    return res.status(404).send({message: "Number not found"});
+		    }
+	    }
+    });
+    
     router.get('/orders/:id', async (req, res) => {
         const orderId = req.params.id;
         let order = await db.fetch('orders', orderId);
         res.send(order.rows[0]);
     });
     router.post('/orders', async (req, res) => {
-        if(req.query.phone){
-            const result = await db.fetchByPhone('clients',req.query.phone);
-            return res.send(result);
-        }
         let orderData = req.body;
         const orderId = uuid();
         orderData.id = orderId;
@@ -44,7 +51,6 @@ const createRouter = () => {
                 phone: orderData.phone
             };
             orderData.clientId = clientData.id;
-            console.table(clientData);
             await db.save(clientData, 'clients');
         }
         const finalOrder = {

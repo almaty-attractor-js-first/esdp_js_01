@@ -71,7 +71,7 @@ class SignUp extends React.Component {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5" className={classes.text}>
-            Регистрация
+            Зарегистрировать пользователя
           </Typography>
           <form className={classes.form}
                 noValidate
