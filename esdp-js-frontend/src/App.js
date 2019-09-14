@@ -1,7 +1,9 @@
 import React, {Fragment} from 'react';
 import {withRouter} from "react-router";
 import {connect} from "react-redux";
-import {NotificationContainer} from 'react-notifications';
+import { bindActionCreators } from 'redux';
+import withLoadingHandler from "./HOC/withLoadingHandler";
+import axios from "./axios-api";
 import {logoutUser} from "./store/actions/usersActions";
 import Routes from "./Routes";
 import Layout from "./containers/Layout/Layout";
@@ -11,7 +13,6 @@ const App = props => {
 
   return (
         <Fragment>
-          <NotificationContainer/>
           <Layout user={props.user}
                   logout={props.logoutUser}>
             <Routes user={props.user}/>
@@ -25,10 +26,6 @@ const mapStateToProps = state => {
     user: state.users.user
   }
 };
-const mapDispatchToProps = dispatch => {
-  return {
-    logoutUser: () => dispatch(logoutUser())
-  };
-};
+const mapDispatchToProps = dispatch => bindActionCreators({logoutUser}, dispatch);
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withLoadingHandler(App, axios)));

@@ -6,18 +6,17 @@ const createRouter = () => {
     router.get('/', async (req , res) => {
         const result = await db.fetch('cleaningTypes');
         result.rows.sort((a, b) => a.position - b.position);
-        console.log(result);
         res.send(result.rows);
     });
     router.post('/', async (req, res) => {
         const item = req.body;
-        const result = db.save(item, 'cleaningTypes');
+        const result = await db.save(item, 'cleaningTypes');
         res.send(result.rows);
     });
     router.put('/:id/edit', async (req, res) => {
         const id = req.query.id;
         const item = req.body;
-        const result = db.update('cleaningTypes', item, id);
+        const result = await db.update('cleaningTypes', item, id);
         res.send(result.rows);
     });
     return router;

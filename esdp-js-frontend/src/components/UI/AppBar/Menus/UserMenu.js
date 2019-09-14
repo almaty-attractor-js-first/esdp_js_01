@@ -7,7 +7,6 @@ import {makeStyles} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import indigo from '@material-ui/core/colors/indigo';
 import {darken} from "@material-ui/core/styles";
-import Toolbar from "@material-ui/core/Toolbar";
 
 const useStyles = makeStyles(theme => ({
   grow: {
