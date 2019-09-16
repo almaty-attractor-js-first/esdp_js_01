@@ -7,12 +7,6 @@ import PropTypes from "prop-types";
 import Image from '../../assets/images/bgmain.jpg'
 
 const styles = theme => ({
-    '@global': {
-        body: {
-            backgroundColor: theme.palette.background.paper,
-            marginTop: theme.spacing(12),
-        },
-    },
     main: {
         marginTop: theme.spacing(8),
         display: 'flex',
