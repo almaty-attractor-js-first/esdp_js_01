@@ -1,5 +1,5 @@
 const config = {
-    apiURL: 'http://localhost:8000',
+    apiURL: 'https://shoeser.ltestl.com/api',
     facebookAppId: "632833597236084"
 };
 
