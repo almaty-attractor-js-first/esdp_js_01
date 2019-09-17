@@ -1,11 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const config = require('../config');
 const uuid = require('uuid');
 const db = require('../db/postgre');
 const Helper = require('../controllers/Helper');
 
 const createRouter = () => {
+    router.get('/', async (req, res) => {
+        let workers = await db.fetch('workers');
+        res.send(workers.rows);
+    });
     router.post('/', (req, res) => {
         const id = uuid.v4();
         const token = Helper.generateToken(id);

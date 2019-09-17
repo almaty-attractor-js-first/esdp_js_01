@@ -23,6 +23,7 @@ import {
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import TableRow from "@material-ui/core/TableRow";
 import AdminOrderRow from "../components/TableBody/AdminOrderRow";
+import {getWorkers} from "../store/actions/workersActions";
 
 
 const useStyles = makeStyles(theme => ({
@@ -34,6 +35,12 @@ const useStyles = makeStyles(theme => ({
     minWidth: 800
   },
   statusContainer: {
+    minWidth: "125px"
+  },
+  master: {
+    minWidth: "125px"
+  },
+  client: {
     minWidth: "125px"
   },
   status: {
@@ -53,7 +60,11 @@ const OrderItems = props => {
     props.getStatuses();
   }, []);
 
-  const { className, getOrders, getStatuses, updateOrders, putUpdateOrder, staticContext, ...rest } = props;
+  useEffect(() => {
+    props.getWorkers();
+  }, []);
+
+  const { className, getOrders, getWorkers, getStatuses, updateOrders, putUpdateOrder, staticContext, ...rest } = props;
   const classes = useStyles();
 
   return (
@@ -99,8 +110,9 @@ const OrderItems = props => {
               </TableHead>
               <AdminOrderRow
                 orders={props.orders}
+                workers={props.workers}
                 statuses={props.statuses}
-                statusContainer={classes.statusContainer}
+                classes={classes}
                 updateOrders={props.updateOrders}
                 putUpdateOrder={props.putUpdateOrder}
               />
@@ -126,6 +138,7 @@ OrderItems.propTypes = {
 const mapStateToProps = state => {
   return {
     orders: state.orders.orders,
+    workers: state.workersReducer.workers,
     statuses: state.statusesReducer.statuses
   };
 };
@@ -133,6 +146,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     getOrders: () => dispatch(getOrders()),
+    getWorkers: () => dispatch(getWorkers()),
     getStatuses: () => dispatch(getStatuses()),
     updateOrders: (order) => dispatch(updateOrders(order)),
     putUpdateOrder: (id, order) => dispatch(putUpdateOrder(id, order))

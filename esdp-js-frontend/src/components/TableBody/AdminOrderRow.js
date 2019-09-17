@@ -2,7 +2,6 @@ import {TableBody, TableCell} from "@material-ui/core";
 import TableRow from '@material-ui/core/TableRow';
 import React from "react";
 import moment from "moment";
-import FormHelperText from '@material-ui/core/FormHelperText';
 import {withRouter} from "react-router";
 import TextField from "@material-ui/core/TextField";
 
@@ -16,7 +15,7 @@ const TableOrderRow = (props) => {
     props.updateOrders(_tempOrders);
     props.putUpdateOrder(id, _tempOrders[index]);
   };
-
+  console.log(props);
   return (
     <TableBody >
       {
@@ -29,16 +28,47 @@ const TableOrderRow = (props) => {
           >
             <TableCell>
               {order.id}
-              <FormHelperText>{moment(order.createdAt).format('DD.MM.YYYY HH:mm')}</FormHelperText>
             </TableCell>
-            <TableCell>{order.masterId}</TableCell>
-            <TableCell id={`tableCellName${index}`}>{order.firstName} {order.lastName}</TableCell>
+            <TableCell>
+              <TextField
+                className={props.classes.master}
+                select
+                data-id={index}
+                fullWidth
+                value={order.masterId || ''}
+                onClick={(e) => e.stopPropagation()}
+                inputProps={{
+                  name: 'master',
+                  id: 'master' + index,
+                }}
+                SelectProps={{
+                  native: true,
+                }}
+              >
+                <option value="" disabled>
+                  Выбрать мастера
+                </option>
+                {props.workers ?
+                  props.workers.map((item, index) => {
+                    console.log(item.id);
+                    return (
+                      <option key={index} value={item.id}>
+                        {`${item.firstName} ${item.lastName}`}
+                      </option>
+                    )
+                  }) : null}
+              </TextField>
+            </TableCell>
+            <TableCell id={`tableCellName${index}`}
+                       className={props.classes.client}>
+              {order.firstName} {order.lastName}
+            </TableCell>
             <TableCell>
               {moment(order.createdAt).format('DD.MM.YYYY HH:mm')}
             </TableCell>
             <TableCell>{order.deliveryType === 'self' ? 'Самовывоз' : 'Доставка'}</TableCell>
             <TableCell>{order.paymentStatus ? 'Оплачен' : 'Не оплачен'}</TableCell>
-            <TableCell className={props.statusContainer}>
+            <TableCell className={props.classes.statusContainer}>
               <TextField
                 select
                 data-id={index}

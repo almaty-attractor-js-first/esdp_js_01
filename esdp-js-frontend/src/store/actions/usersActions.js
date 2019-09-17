@@ -1,6 +1,5 @@
 import axios from "../../axios-api";
 import {push} from "connected-react-router";
-import {NotificationManager} from "react-notifications";
 import {
     LOGIN_USER_ERROR,
     LOGIN_USER_SUCCESS,
