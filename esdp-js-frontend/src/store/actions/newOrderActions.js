@@ -3,7 +3,7 @@ import {
   CALCULATE_TOTAL,
   GET_CLEANING_ITEMS, SET_LOADING,
   UPDATE_COMPLETED_DATE,
-  UPDATE_ORDER_ITEMS,
+  UPDATE_ORDER_ITEMS, UPDATE_SAVED_ORDER,
   UPDATE_USER_DATA
 } from "./actionTypes";
 import {push} from "connected-react-router";
@@ -12,7 +12,8 @@ const setLoading = (loading) => {
     return dispatch => {
         dispatch({type: SET_LOADING, loading});
     };
-};export const getAllFields = (cleaningFields) => {
+};
+export const getAllFields = (cleaningFields) => {
     return dispatch => {
         dispatch({type: CALCULATE_TOTAL, cleaningFields});
     };
@@ -37,6 +38,11 @@ export const updateCompletedDate = completedDate => {
     dispatch({type: UPDATE_COMPLETED_DATE, completedDate});
   };
 };
+export const updateSavedOrder = savedOrder => {
+  return dispatch => {
+    dispatch({type: UPDATE_SAVED_ORDER, savedOrder});
+  };
+};
 
 export const getCleaningItems = () => {
   return dispatch => {
@@ -54,8 +60,11 @@ export const getCleaningItems = () => {
 
 export const addOrder = (order) => {
   return dispatch => {
-    axios.post('/orders', order).then(() => {
-      dispatch(push("/order-items"));
+    axios.post('/orders', order)
+        .then(res => {
+          dispatch(updateSavedOrder(res.data));
+        })
+        .then(() => {dispatch(push("/orders/current"));
     })
   }
 };
@@ -66,7 +75,6 @@ export const getUserByPhoneNumber = (phoneNumber) => {
     dispatch(setLoading(true));
     return axios.get(`/orders/client?phone=${queryWithPlus}`).then(response => {
       if (response.data) {
-        console.log(response.data);
         dispatch(setLoading(false));
         return response;
       }

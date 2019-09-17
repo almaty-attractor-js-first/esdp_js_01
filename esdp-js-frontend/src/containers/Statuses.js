@@ -20,7 +20,6 @@ const Statuses = (props) => {
 	}, []);
 	//
 	useEffect(() => {
-		console.log(props.statuses);
 	}, [props.statuses]);
 
 

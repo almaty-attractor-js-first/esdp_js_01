@@ -5,7 +5,7 @@ const db = require('../db/postgre');
 const auth = require('../middleware/auth');
 
 const createRouter = () => {
-	router.put('/', async (req, res) => {
+	router.put('/', auth, async (req, res) => {
 		let data = req.body;
 		const result = data.map(async status => {
 			delete status.editable;
@@ -14,19 +14,19 @@ const createRouter = () => {
 		console.table(data);
 		res.send(result);
 	});
-	router.put('/:id', async (req, res) => {
+	router.put('/:id', auth, async (req, res) => {
 		let orderData = req.body;
 		delete orderData.editable;
 		const orderId = req.params.id;
 		const result = await db.update('statuses', orderData, orderId);
 		res.send(result);
 	});
-	router.get('/' , auth, async (req , res) => {
+	router.get('/' , async (req , res) => {
 		const result = await db.fetch('statuses');
 		result.rows.sort((a, b) => a.position - b.position);
 		res.send(result.rows);
 	});
-	router.post('/' , async (req , res) => {
+	router.post('/', auth, async (req , res) => {
 		const object = req.body;
 		delete object.editable;
 		try {

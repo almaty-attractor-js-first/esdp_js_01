@@ -102,7 +102,6 @@ function Checkout(props) {
       deliveryType : deliveryType,
       totalPrice: props.totalPrice
     };
-    console.log(order);
     props.addOrder(order);
   };
 

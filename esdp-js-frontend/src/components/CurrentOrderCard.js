@@ -1,13 +1,9 @@
-import React from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import React, {Fragment} from 'react';
+import { makeStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import SkipNextIcon from '@material-ui/icons/SkipNext';
 import image from '../assets/images/6dbd75cb-3029-4490-8215-0a3fe18250b4file.png'
 
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -20,6 +16,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import moment from "moment";
 
 
 const useStyles = makeStyles(theme => ({
@@ -63,77 +60,74 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-function createData(name, qty, price) {
-	return { name, qty, price };
-}
-
-const rows = [
-	createData('Кроссовки', 1, 1000),
-	createData('Туфли', 1, 500),
-	createData('Ботинки', 1, 2000),
-	createData('Сапоги', 1, 5000),
-];
-
-export default function MediaControlCard() {
+export default function MediaControlCard({savedOrder, statuses}) {
 	const classes = useStyles();
-	const theme = useTheme();
-	
+
 	return (
 		<Card className={classes.root}>
-			<div className={classes.card}>
-				<div className={classes.details}>
-					<CardContent className={classes.content}>
-						<Typography component="h5" variant="h5">
-							Заказ: F6ssdf34
-						</Typography>
-						<Typography variant="subtitle1" color="textPrimary">
-							Дата создания: 01/02/2019 | 17:30
-						</Typography>
-						<Typography variant="subtitle1" color="textPrimary">
-							Статус заказа: В работе
-						</Typography>
-						<Typography variant="subtitle1" color="textPrimary">
-							Сумма заказа: 8500 тг
-						</Typography>
-					</CardContent>
-				</div>
-				<CardMedia
-					className={classes.cover}
-					image={image}
-					title="Live from space album cover"
-				/>
-			</div>
-			<ExpansionPanel>
-				<ExpansionPanelSummary
-					expandIcon={<ExpandMoreIcon />}
-					aria-controls="panel1a-content"
-					id="panel1a-header"
-				>
-					<Typography className={classes.heading}>Позиции заказа</Typography>
-				</ExpansionPanelSummary>
-				<ExpansionPanelDetails>
-					<Table className={classes.table}>
-						<TableHead>
-							<TableRow>
-								<TableCell>Тип чистки</TableCell>
-								<TableCell align="right">Количество</TableCell>
-								<TableCell align="right">Цена</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{rows.map(row => (
-								<TableRow key={row.name}>
-									<TableCell component="th" scope="row">
-										{row.name}
-									</TableCell>
-									<TableCell align="right">{row.qty}</TableCell>
-									<TableCell align="right">{row.price}</TableCell>
-								</TableRow>
-							))}
-						</TableBody>
-					</Table>
-				</ExpansionPanelDetails>
-			</ExpansionPanel>
+			{
+				savedOrder ?
+					<Fragment>
+						<div className={classes.card}>
+							<div className={classes.details}>
+								<CardContent className={classes.content}>
+									<Typography component="h5" variant="h5">
+										{`Заказ: ${savedOrder.id.substring(0, 7)}`}
+									</Typography>
+									<Typography variant="subtitle1" color="textPrimary">
+										{`Дата создания: ${moment(savedOrder.createdAt).format('DD.MM.YYYY HH:mm')} `}
+									</Typography>
+									<Typography variant="subtitle1" color="textPrimary">
+										{`Дата забора: ${moment(savedOrder.completedDate).format('DD.MM.YYYY HH:mm')} `}
+									</Typography>
+									<Typography variant="subtitle1" color="textPrimary">
+										{(statuses.find(status => {return savedOrder.statusId === status.id})) ?
+											`Статус заказа: ${(statuses.find(status => {return savedOrder.statusId === status.id}).title)}`
+										: null}
+									</Typography>
+									<Typography variant="subtitle1" color="textPrimary">
+										{`Сумма заказа: ${savedOrder.totalPrice}`}
+									</Typography>
+								</CardContent>
+							</div>
+							<CardMedia
+								className={classes.cover}
+								image={image}
+								title={savedOrder.id}
+							/>
+						</div>
+						<ExpansionPanel defaultExpanded>
+							<ExpansionPanelSummary
+								expandIcon={<ExpandMoreIcon />}
+								aria-controls="panel1a-content"
+								id="panel1a-header"
+							>
+								<Typography className={classes.heading}>Позиции заказа</Typography>
+							</ExpansionPanelSummary>
+							<ExpansionPanelDetails>
+								<Table className={classes.table}>
+									<TableHead>
+										<TableRow>
+											<TableCell>Тип чистки</TableCell>
+											<TableCell align="right">Количество</TableCell>
+											<TableCell align="right">Цена</TableCell>
+										</TableRow>
+									</TableHead>
+									<TableBody>
+										{savedOrder.orderItems.map((row, index) => (
+											<TableRow key={index}>
+												<TableCell component="th" scope="row">{row.title}</TableCell>
+												<TableCell align="right">{row.qty}</TableCell>
+												<TableCell align="right">{row.price}</TableCell>
+											</TableRow>
+										))}
+									</TableBody>
+								</Table>
+							</ExpansionPanelDetails>
+						</ExpansionPanel>
+					</Fragment>
+				: null
+			}
 		</Card>
 	);
 }

@@ -6,3 +6,5 @@ esdp-js-testing-placeOrder/\.DS_Store
 esdp-js-testing-placeOrder/output/
 esdp-js-backend/db/postgre.js
 esdp-js-frontend/src/config.js
+
+esdp-js-backend/src/assets/images/

@@ -1,33 +1,45 @@
-import React, {Component, Fragment} from 'react';
-import Button from '@material-ui/core/Button';
+import React, {Fragment, useEffect} from 'react';
 import {connect} from "react-redux";
-import {Link} from "react-router-dom";
-import { withStyles } from '@material-ui/core/styles';
-import config from "../config";
 import CurrentOrderCard from "../components/CurrentOrderCard";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import {getStatuses} from "../store/actions/statusesActions";
+import {updateSavedOrder} from "../store/actions/newOrderActions";
 
-const useStyles = makeStyles(theme => ({
-	'@global': {
-		body: {
-			backgroundColor: theme.palette.background.paper,
-			marginTop: theme.spacing(12),
-		},
-	}
-}));
 
 function CurrentOrder(props)  {
-	const classes = useStyles();
+	useEffect(() => {
+		props.getStatuses();
+	}, []);
+
+	useEffect(() => {
+		return () => {
+			props.updateSavedOrder([]);
+		};
+	}, []);
+
+	useEffect(() => {
+	}, [props.savedOrder, props.statuses]);
 	return (
 		<Fragment>
-			<CurrentOrderCard/>
-			<CurrentOrderCard/>
-			<CurrentOrderCard/>
+			<CurrentOrderCard
+				savedOrder={props.savedOrder}
+				statuses={props.statuses}/>
 		</Fragment>
 	);
 }
 
 //image={`${config.apiURL}/uploads/${this.props.photo}`}
+const mapDispatchToProps = dispatch => {
+	return {
+		getStatuses: () => dispatch(getStatuses()),
+		updateSavedOrder: (order) => dispatch(updateSavedOrder(order))
+	};
+};
 
+const mapStateToProps = state => {
+	return {
+		savedOrder: state.newOrder.savedOrder,
+		statuses: state.statusesReducer.statuses
+	}
+};
 
-export default CurrentOrder;
+export default connect(mapStateToProps, mapDispatchToProps)(CurrentOrder);

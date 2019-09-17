@@ -32,11 +32,12 @@ const createRouter = () => {
         let orderData = req.body;
         const orderId = uuid();
         orderData.id = orderId;
+        orderData.statusId = "80659b19-1bf5-466b-8221-bce9ab456efb";
         let clientId;
         //создаем клиента
         const result = await db.fetchByPhone('clients', orderData.phone);
         if (result.rows[0]) {
-            console.log("Client already exists, it's ok, creating new order for him")
+            console.log("Client already exists, it's ok, creating new order for him");
             clientId = result.rows[0].id;
         } else {
             const clientData = {
@@ -70,7 +71,7 @@ const createRouter = () => {
             completedDate: orderData.completedDate
         };
 
-        await db.save(finalOrder, 'orders');
+        const completedOrder = await db.save(finalOrder, 'orders');
         orderData.orderItems.map((item) => {
             const orderItem = {
                 id: uuid(),
@@ -108,12 +109,12 @@ const createRouter = () => {
                 port: 465,
                 secure: true, // true for 465, false for other ports
                 auth: {
-                    user: 'natebevlast@yandex.kz', // generated ethereal user
-                    pass: 'KZApex2017' // generated ethereal password
+                    user: 'shoeserkz@yandex.kz', // generated ethereal user
+                    pass: 'TfJsh8fwAGX6nhS' // generated ethereal password
                 }
             });
             let info = await transporter.sendMail({
-                from: 'natebevlast@yandex.kz', // sender address
+                from: 'shoeserkz@yandex.kz', // sender address
                 to: orderData.email, // list of receivers
                 subject: "Здравствуйте, " + orderData.firstName + " ваш заказ оформлен", // Subject line
                 text: "Ваш заказ № " + orderData.id + " оформлен", // plain text body
@@ -134,9 +135,16 @@ const createRouter = () => {
             console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
             // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
         }
-
-
-        res.send(orderData);
+        
+        if (!(completedOrder instanceof Error))  {
+            console.log('No error'); //@TODO Добавить запрос в базу на текущие заказы по номеру клиента
+            orderData.createdAt = await db.fetch('orders', orderData.id);
+            res.send(orderData);
+        } else {
+            res.status(500).send({message: 'Internal error'});
+        }
+        
+        
     });
     router.put('/orders/:id', async (req, res) => {
         console.log(req.body);

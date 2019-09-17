@@ -56,7 +56,6 @@ const UserForm = props => {
     if (phoneField.length === 15 && inputName === 'phone') {
       props.getUserByPhoneNumber(phoneField).then(response => {
         if (response) {
-          console.log(response);
           setUserInput(response.data);
         }
       });
