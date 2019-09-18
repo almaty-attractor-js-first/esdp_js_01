@@ -76,8 +76,8 @@ const Header = (props) => {
 
   return (
     <div className={classes.grow}>
-      <AppBar position="fixed" style={{marginTop: '4px'}}>
-        <Toolbar>
+      <AppBar position="fixed" style={{marginTop: '4px', paddingBottom: '4px'}}>
+        <Toolbar variant="dense">
           <Typography className={classes.link}
                       variant="h6" noWrap
                       component={Link}

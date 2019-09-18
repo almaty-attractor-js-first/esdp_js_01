@@ -60,43 +60,46 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-export default function MediaControlCard({savedOrder, statuses}) {
+export default function OrderCard({order, statuses, defaultExpanded}) {
 	const classes = useStyles();
 
 	return (
 		<Card className={classes.root}>
 			{
-				savedOrder ?
+				order ?
 					<Fragment>
 						<div className={classes.card}>
 							<div className={classes.details}>
 								<CardContent className={classes.content}>
 									<Typography component="h5" variant="h5">
-										{`Заказ: ${savedOrder.id.substring(0, 7)}`}
+										{`Заказ: ${order.id.substring(0, 7)}`}
 									</Typography>
 									<Typography variant="subtitle1" color="textPrimary">
-										{`Дата создания: ${moment(savedOrder.createdAt).format('DD.MM.YYYY HH:mm')} `}
+										{`Дата создания: ${moment(order.createdAt).format('DD.MM.YYYY HH:mm')} `}
 									</Typography>
 									<Typography variant="subtitle1" color="textPrimary">
-										{`Дата забора: ${moment(savedOrder.completedDate).format('DD.MM.YYYY HH:mm')} `}
+										{`Дата забора: ${moment(order.completedDate).format('DD.MM.YYYY HH:mm')} `}
 									</Typography>
 									<Typography variant="subtitle1" color="textPrimary">
-										{(statuses.find(status => {return savedOrder.statusId === status.id})) ?
-											`Статус заказа: ${(statuses.find(status => {return savedOrder.statusId === status.id}).title)}`
+										{`Адрес доставки/забора: ${order.address} `}
+									</Typography>
+									<Typography variant="subtitle1" color="textPrimary">
+										{(statuses.find(status => {return order.statusId === status.id})) ?
+											`Статус заказа: ${(statuses.find(status => {return order.statusId === status.id}).title)}`
 										: null}
 									</Typography>
 									<Typography variant="subtitle1" color="textPrimary">
-										{`Сумма заказа: ${savedOrder.totalPrice}`}
+										{`Сумма заказа: ${order.totalPrice}`}
 									</Typography>
 								</CardContent>
 							</div>
 							<CardMedia
 								className={classes.cover}
 								image={image}
-								title={savedOrder.id}
+								title={order.id}
 							/>
 						</div>
-						<ExpansionPanel defaultExpanded>
+						<ExpansionPanel defaultExpanded={defaultExpanded}>
 							<ExpansionPanelSummary
 								expandIcon={<ExpandMoreIcon />}
 								aria-controls="panel1a-content"
@@ -114,7 +117,7 @@ export default function MediaControlCard({savedOrder, statuses}) {
 										</TableRow>
 									</TableHead>
 									<TableBody>
-										{savedOrder.orderItems.map((row, index) => (
+										{order.orderItems.map((row, index) => (
 											<TableRow key={index}>
 												<TableCell component="th" scope="row">{row.title}</TableCell>
 												<TableCell align="right">{row.qty}</TableCell>

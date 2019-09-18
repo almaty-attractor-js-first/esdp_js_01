@@ -3,12 +3,13 @@ import thunkMiddleware from 'redux-thunk';
 import {createBrowserHistory} from 'history';
 import {routerMiddleware, connectRouter} from 'connected-react-router';
 
-import ordersReducer from './reducers/orders';
+import ordersReducer from './reducers/ordersReducer';
 import statusesReducer from './reducers/statusesReducer';
 import cleaningTypesReducer from './reducers/cleaningTypesReducer';
-import usersReducer from "./reducers/users";
+import usersReducer from "./reducers/usersReducer";
 import newOrderReducer from "./reducers/newOrderReducer";
 import workersReducer from "./reducers/workersReducer";
+import clientsReducer from "./reducers/clientsReducer";
 import {loadState, saveState} from "./localStorage";
 import axios from '../axios-api';
 import {logoutUser} from "./actions/usersActions";
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   orders: ordersReducer,
   users: usersReducer,
   workersReducer: workersReducer,
+  clientsReducer: clientsReducer,
   newOrder: newOrderReducer,
   statusesReducer: statusesReducer,
   cleaningTypesReducer: cleaningTypesReducer,
@@ -54,9 +56,11 @@ axios.interceptors.response.use(
     },
     (error) => {
   const errorResponse = error.response.data;
-  if (!errorResponse.success) {
+  const user = store.getState().users.user;
+  if (user && errorResponse.message === "Token is not valid") {
+      console.log(error.response);
       store.dispatch(logoutUser());
-      // store.dispatch(push("/login")); // @TODO Переводить на страницу логина, добавить отметку оставать онлайн. Реализовать с помощью jwt
+      // @TODO Переводить на страницу логина, добавить отметку оставаться онлайн. Реализовать с помощью jwt
       
       return Promise.reject(error);
   }

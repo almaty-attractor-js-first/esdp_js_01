@@ -32,7 +32,7 @@ const createRouter = () => {
         let orderData = req.body;
         const orderId = uuid();
         orderData.id = orderId;
-        orderData.statusId = "80659b19-1bf5-466b-8221-bce9ab456efb";
+        orderData.statusId = "80659b19-1bf5-466b-8221-bce9ab456efb"; //@TODO Переделать на "name" статуса!!!
         let clientId;
         //создаем клиента
         const result = await db.fetchByPhone('clients', orderData.phone);
@@ -66,7 +66,7 @@ const createRouter = () => {
             paymentMethod: orderData.paymentMethod,
             totalPrice: orderData.totalPrice,
             pickupAddress: orderData.address,
-            deliveryAddress: orderData.address,
+            address: orderData.address,
             deliveryType: orderData.deliveryType,
             completedDate: orderData.completedDate
         };

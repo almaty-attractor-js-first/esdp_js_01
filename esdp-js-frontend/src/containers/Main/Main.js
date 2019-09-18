@@ -1,57 +1,73 @@
-import React, {Component, Fragment} from 'react';
+import React, {Fragment} from 'react';
 import Button from '@material-ui/core/Button';
 import {connect} from "react-redux";
 import {Link} from "react-router-dom";
-import { withStyles } from '@material-ui/core/styles';
-import PropTypes from "prop-types";
+import {makeStyles} from '@material-ui/core/styles';
 import Image from '../../assets/images/bgmain.jpg'
+import FormDialog from "../../components/UI/FormDialog";
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
     main: {
         marginTop: theme.spacing(8),
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        background: `url(${Image})`,
-        height: '700px',
+        backgroundImage: `url(${Image})`,
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+        height: '75vh',
         padding: 'auto',
         color: 'white'
     },
     submit: {
-        margin: theme.spacing(3, 0, 2)
+        margin: theme.spacing(1)
     },
     text: {
         color: theme.palette.text.primary,
     },
-});
-
-class Main extends Component {
-    render() {
-        const {classes} = this.props;
-        return (
-            <Fragment>
-                <div className={classes.main}>
-                    <h1>
-                        Самая быстрая химчистка кроссовок в городе
-                    </h1>
-                    <h3>Закажи химчистку прямо сейчас</h3>
-                    <Button component={Link}
-                            to="/new-order"
-                            color="primary"
-                            variant="contained"
-                            className={classes.submit}
-                    >
-                        Оформить заказ на чистку
-                    </Button>
-                </div>
-            </Fragment>
-        );
+    textShadow: {
+        textShadow: '0 2px 5px #000'
     }
-}
+}));
 
-Main.propTypes = {
-    classes: PropTypes.object.isRequired,
+const Main = () => {
+    const classes = useStyles();
+    const [open, setOpen] = React.useState(false);
+
+    function handleClickOpen() {
+        setOpen(true);
+    }
+
+    function handleClose() {
+        setOpen(false);
+    }
+    return (
+        <Fragment>
+            <div className={classes.main}>
+                <h1 className={classes.textShadow}>
+                    Самая быстрая химчистка кроссовок в городе
+                </h1>
+                <h3 className={classes.textShadow}>Закажи химчистку прямо сейчас</h3>
+                <Button component={Link}
+                        to="/new-order"
+                        color="default"
+                        variant="contained"
+                        className={classes.submit}
+                >
+                    Оформить заказ на чистку
+                </Button>
+                <Button color="primary"
+                        variant="contained"
+                        className={classes.submit}
+                        onClick={handleClickOpen}
+                >
+                    Проверить статус заказа
+                </Button>
+                <FormDialog open={open} handleClose={handleClose}/>
+            </div>
+        </Fragment>
+    );
 };
 
 const mapStateToProps = state => {
@@ -60,4 +76,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(withStyles(styles)(Main));
+export default connect(mapStateToProps, null)(Main);

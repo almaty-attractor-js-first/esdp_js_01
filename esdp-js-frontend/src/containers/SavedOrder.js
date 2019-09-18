@@ -1,11 +1,12 @@
 import React, {Fragment, useEffect} from 'react';
 import {connect} from "react-redux";
-import CurrentOrderCard from "../components/CurrentOrderCard";
+import OrderCard from "../components/OrderCard";
 import {getStatuses} from "../store/actions/statusesActions";
 import {updateSavedOrder} from "../store/actions/newOrderActions";
+import Typography from "@material-ui/core/Typography";
 
 
-function CurrentOrder(props)  {
+function SavedOrder(props)  {
 	useEffect(() => {
 		props.getStatuses();
 	}, []);
@@ -20,11 +21,15 @@ function CurrentOrder(props)  {
 	}, [props.savedOrder, props.statuses]);
 	return (
 		<Fragment>
-			<CurrentOrderCard
-				savedOrder={props.savedOrder}
-				statuses={props.statuses}/>
+			<Typography variant="h4" gutterBottom>
+				Ваш заказ успешно создан!
+			</Typography>
+			<OrderCard
+				order={props.savedOrder}
+				statuses={props.statuses}
+				defaultExpanded={true}/>
 		</Fragment>
-	);
+		);
 }
 
 //image={`${config.apiURL}/uploads/${this.props.photo}`}
@@ -42,4 +47,4 @@ const mapStateToProps = state => {
 	}
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CurrentOrder);
+export default connect(mapStateToProps, mapDispatchToProps)(SavedOrder);

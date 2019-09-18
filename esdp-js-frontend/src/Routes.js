@@ -10,7 +10,8 @@ import AdminOrderItems from "./containers/AdminOrderItems";
 import OrderDetailsEdit from "./components/OrderDetails/OrderDetailsEdit";
 import Statuses from "./containers/Statuses";
 import CleaningTypes from "./containers/CleaningTypes";
-import CurrentOrder from "./containers/CurrentOrder";
+import SavedOrder from "./containers/SavedOrder";
+import CurrentOrders from "./containers/CurrentOrders";
 
 const Routes = () => {
     return (
@@ -19,7 +20,8 @@ const Routes = () => {
             <Route exact path="/register" component={Register}/>
             <Route exact path="/login" component={Login}/>
             <Route exact path="/new-order" component={NewOrder}/>
-            <Route exact path="/orders/current" component={CurrentOrder}/>
+            <Route exact path="/orders/saved" component={SavedOrder}/>
+            <Route exact path="/orders/current" component={CurrentOrders}/>
             <Route exact path="/order-items" component={OrderItems}/>
             <Route exact path="/admin-order-items" component={AdminOrderItems}/>
             <Route exact path="/order/:id" component={OrderDetails}/>

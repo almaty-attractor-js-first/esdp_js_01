@@ -3,7 +3,6 @@ import {UPDATE_CURRENT_ORDER, UPDATE_ORDERS} from "../actions/actionTypes";
 const initialState = {
     orders: [],
     currentOrder: {},
-    statuses: []
 };
 
 const reducer = (state = initialState, action) => {
