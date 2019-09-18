@@ -59,21 +59,22 @@ export const getCleaningItems = () => {
 };
 
 export const addOrder = (order) => {
+  order.phone = order.phone.replace(/[^0-9]/g, '');
   return dispatch => {
     axios.post('/orders', order)
         .then(res => {
           dispatch(updateSavedOrder(res.data));
         })
-        .then(() => {dispatch(push("/orders/current"));
+        .then(() => {dispatch(push("/orders/saved"));
     })
   }
 };
 
 export const getUserByPhoneNumber = (phoneNumber) => {
   return dispatch => {
-    const queryWithPlus = phoneNumber.replace("+", "%2B");
+    phoneNumber = phoneNumber.replace(/[^0-9]/g, '');
     dispatch(setLoading(true));
-    return axios.get(`/orders/client?phone=${queryWithPlus}`).then(response => {
+    return axios.get(`/orders/client?phone=${phoneNumber}`).then(response => {
       if (response.data) {
         dispatch(setLoading(false));
         return response;
