@@ -28,8 +28,8 @@ module.exports = {
             const res = await pool.query(sqlString, bodyValues);
             return (res.rows[0]);
         } catch (err) {
-            // console.log('register error', err);
-            return (err);
+            console.log('register error', err);
+            return err;
         }
     },
 
@@ -43,6 +43,20 @@ module.exports = {
             return res;
         } catch (err) {
             console.log(err.stack);
+        }
+    },
+
+    fetchBy: async (table, column, value) => {
+        let sqlString = `SELECT * FROM "${table}"`;
+        if (column && value) {
+            sqlString = `SELECT * FROM "${table}" WHERE ("${table}"."${column}" = '${value}')`;
+        }
+        try {
+            const res = await pool.query(sqlString);
+            return res;
+        } catch (err) {
+            console.log(err.stack);
+            return err;
         }
     },
 
@@ -60,9 +74,9 @@ module.exports = {
         try {
             console.log(sql);
             const res = await pool.query(sql, bodyValues);
-            console.table(res.rows[0]);
         } catch (err) {
             console.log(err.stack);
+            return err;
         }
     },
 
@@ -72,10 +86,10 @@ module.exports = {
         console.log(sqlString);
         try {
             const res = await pool.query(sqlString);
-            console.table(res.rows[0]);
             return res;
         } catch (err) {
             console.log(err.stack);
+            return err;
         }
     },
 
@@ -84,10 +98,10 @@ module.exports = {
         console.log(sqlString);
         try {
             const res = await pool.query(sqlString);
-            console.table(res);
             return res;
         } catch (err) {
             console.log(err.stack);
+            return err;
         }
     },
     update: async (table, object, id) => {
@@ -104,6 +118,7 @@ module.exports = {
             return res = await pool.query(sqlString);
         } catch (err) {
             console.log(err.stack);
+            return err;
         }
     }
 };
