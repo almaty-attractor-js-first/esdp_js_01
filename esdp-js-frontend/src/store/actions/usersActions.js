@@ -1,5 +1,7 @@
 import axios from "../../axios-api";
 import {push} from "connected-react-router";
+import {openSnack} from "./notificationsActions";
+import store from "../configureStore";
 import {
     LOGIN_USER_ERROR,
     LOGIN_USER_SUCCESS,
@@ -26,10 +28,14 @@ export const registerUser = userData => {
                     dispatch(push("/"));
                 },
                 error => {
-                    if (error) {
-                        dispatch(registerUserError(error));
+                    if (error.response.data) {
+                        dispatch(registerUserError(error.response.data));
+                        let errorMessage = store.getState().users.registerError.message;
+                        dispatch(openSnack((errorMessage), 'error'));
                     } else {
-                        dispatch(registerUserError({global: "No internet connection"}));
+                        dispatch(registerUserError({global: "Нет подключения"}));
+                        let errorMessage = store.getState().users.registerError.message;
+                        dispatch(openSnack((errorMessage), 'error'));
                     }
                 }
             )
@@ -49,17 +55,25 @@ export const loginUser = userData => {
         axios.post("/workers/sessions", userData)
             .then(
                 response => {
-                    dispatch(loginUserSuccess(response.data));
-                    dispatch(push("/"));
+                    if (response.data) {
+                        dispatch(loginUserSuccess(response.data));
+                        dispatch(push("/"));
+                        dispatch(openSnack((`Привет ${response.data.firstName}!`), 'success'));
+                    }
+
                 },
                 error => {
-                    if (error.response.data) {
+                    if (error.response && error.response.data) {
                         dispatch(loginUserError(error.response.data));
+                        let errorMessage = store.getState().users.loginError.message;
+                        dispatch(openSnack((errorMessage), 'error'));
                     } else {
-                        dispatch(loginUserError({global: "No internet connection"}));
+                        dispatch(loginUserError({global: "Нет подключения"}));
+                        let errorMessage = store.getState().users.loginError.message;
+                        dispatch(openSnack((errorMessage), 'error'));
                     }
                 }
-            )
+            ).catch((err) => console.log('err', err));
     }
 };
 
@@ -71,7 +85,7 @@ export const logoutUser = () => {
         };
         axios.delete("/workers/sessions", {headers}).then(response => {
             dispatch({type: LOGOUT_USER});
-            // NotificationManager.success(response.data.message);
+            dispatch(openSnack('Сессия завершена', 'info'));
             dispatch(push("/"));
         });
     }

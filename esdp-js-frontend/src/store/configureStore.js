@@ -3,6 +3,7 @@ import thunkMiddleware from 'redux-thunk';
 import {createBrowserHistory} from 'history';
 import {routerMiddleware, connectRouter} from 'connected-react-router';
 
+import notificationsReducer from './reducers/notificationsReducer';
 import ordersReducer from './reducers/ordersReducer';
 import statusesReducer from './reducers/statusesReducer';
 import cleaningTypesReducer from './reducers/cleaningTypesReducer';
@@ -17,6 +18,7 @@ import {logoutUser} from "./actions/usersActions";
 export const history = createBrowserHistory();
 
 const rootReducer = combineReducers({
+  notifications: notificationsReducer,
   orders: ordersReducer,
   users: usersReducer,
   workersReducer: workersReducer,
@@ -61,9 +63,8 @@ axios.interceptors.response.use(
       console.log(error.response);
       store.dispatch(logoutUser());
       // @TODO Переводить на страницу логина, добавить отметку оставаться онлайн. Реализовать с помощью jwt
-      
-      return Promise.reject(error);
   }
+  return Promise.reject(error);
 });
 
 axios.interceptors.request.use(config => {

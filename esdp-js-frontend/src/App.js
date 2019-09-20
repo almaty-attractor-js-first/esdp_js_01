@@ -8,16 +8,18 @@ import {logoutUser} from "./store/actions/usersActions";
 import Routes from "./Routes";
 import Layout from "./containers/Layout/Layout";
 import 'react-perfect-scrollbar/dist/css/styles.css';
+import Notifier from './Notifier';
 
 const App = props => {
 
   return (
-        <Fragment>
-          <Layout user={props.user}
-                  logout={props.logoutUser}>
-            <Routes user={props.user}/>
-          </Layout>
-        </Fragment>
+    <Fragment>
+      <Notifier/>
+      <Layout user={props.user}
+              logout={props.logoutUser}>
+        <Routes user={props.user}/>
+      </Layout>
+    </Fragment>
   );
 };
 

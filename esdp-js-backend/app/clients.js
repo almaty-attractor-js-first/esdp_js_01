@@ -12,7 +12,7 @@ const createRouter = () => {
             const clientId = client.rows[0].id;
 
             const orders = await db.fetchBy('orders', 'clientId', clientId).catch(error => console.log(error));
-            if (!orders.rows[0]) return res.status(404).send({message: 'Заказы не найден'});
+            if (!orders.rows[0]) return res.status(404).send({message: 'Нет текущих заказов'});
 
             for (let i in orders.rows) {
                 if ( orders.rows.hasOwnProperty(i) ) {
@@ -28,7 +28,7 @@ const createRouter = () => {
             res.send(result);
 
         } catch (error){
-            res.status(400).send({message: error});
+            res.status(500).send({message: "Ошибка сервера"});
         }
 
     });

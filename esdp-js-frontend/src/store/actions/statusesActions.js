@@ -1,6 +1,7 @@
 import axios from '../../axios-api'
 import {SET_STATUSES, SET_CHANGED_STATUSES} from "./actionTypes";
 import store from "../configureStore";
+import {openSnack} from "./notificationsActions";
 
 export const setStatuses = (array) => {
 	return dispatch => {
@@ -47,20 +48,26 @@ export const getStatuses = () => {
 export const updateStatuses = (statuses) => {
 	return dispatch => {
 		console.log('updated');
-		axios.put('/statuses', statuses);
+		axios.put('/statuses', statuses).then(() => {
+			dispatch(openSnack(('Статус успешно обновлен'), 'info'));
+		});
 	}
 };
 
 export const saveStatus = (status) => {
 	return dispatch => {
 		console.log('saved');
-		axios.post('/statuses', status);
+		axios.post('/statuses', status).then(() => {
+			dispatch(openSnack(('Статус успешно сохранен'), 'success'));
+		});
 	}
 };
 
 export const updateStatus = (status) => {
 	return dispatch => {
 		console.log('updatetOne');
-		axios.put(`/statuses/${status.id}`, status);
+		axios.put(`/statuses/${status.id}`, status).then(() => {
+			dispatch(openSnack(('Статус успешно обновлен'), 'info'));
+		});
 	}
 };
