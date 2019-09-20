@@ -10,6 +10,7 @@ import PropTypes from "prop-types";
 import {connect} from "react-redux";
 import {loginUser} from "../store/actions/usersActions";
 import {TextField} from "@material-ui/core";
+import InputMask from "react-input-mask";
 const styles = theme => ({
   '@global': {
     body: {
@@ -68,17 +69,19 @@ class SignIn extends React.Component {
             <form className={classes.form}
                   noValidate
                   onSubmit={this.onSubmitHandler}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                label="Телефон"
-                name="phone"
-                autoFocus
-                type="text"
-                value={this.state.username}
-                onChange={this.inputChangeHandler}
-              />
+              <InputMask value={this.state.phone}
+                         mask="+7 999 999 9999"
+                         maskChar={null}
+                         required
+                         id="phone"
+                         name="phone"
+                         label="Телефон"
+                         fullWidth
+                         autoFocus
+                         onChange={this.inputChangeHandler}>
+                {(inputProps) => <TextField {...inputProps}
+                                            type="tel" value={this.state.phone}/>}
+              </InputMask>
               <TextField
                 margin="normal"
                 required
