@@ -22,7 +22,7 @@ import {
 } from '@material-ui/core';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import TableRow from "@material-ui/core/TableRow";
-import TableOrderRow from "../components/TableBody/TableOrderRow";
+import TableOrderRow from "../components/OrdersTable/TableOrderRow";
 
 
 const useStyles = makeStyles(theme => ({

@@ -10,6 +10,7 @@ const nodemailer = require("nodemailer");
 const createRouter = () => {
     router.get('/orders', async (req, res) => {
         let order = await db.fetch('orders');
+        order.rows.sort((a, b) => b.createdAt - a.createdAt);
         res.send(order.rows);
     });
     router.get('/orders/client', async (req, res) => {

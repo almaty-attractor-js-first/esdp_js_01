@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {Fragment, useEffect} from 'react';
 import clsx from 'clsx';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
@@ -22,7 +22,7 @@ import {
 } from '@material-ui/core';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import TableRow from "@material-ui/core/TableRow";
-import AdminOrderRow from "../components/TableBody/AdminOrderRow";
+import AdminOrderRow from "../components/OrdersTable/AdminOrderRow";
 import {getWorkers} from "../store/actions/workersActions";
 
 
@@ -73,10 +73,13 @@ const OrderItems = props => {
       className={clsx(classes.root, className)}
     >
       <CardHeader
-        action={
-          <Button component={RouterLink} to="/new-order" color="primary" size="small" variant="outlined">
-            Добавить заказ
-          </Button>
+        action={props.user?
+          props.user.role === 'admin' ?
+            <Button component={RouterLink} to="/new-order" color="primary" size="small" variant="outlined">
+              Добавить заказ
+            </Button>
+         : null
+        : null
         }
         title="Список заказов"
       />
@@ -87,29 +90,42 @@ const OrderItems = props => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>ID заказа</TableCell>
-                  <TableCell>Имя мастера</TableCell>
-                  <TableCell>Имя клиента</TableCell>
-                  <TableCell sortDirection="desc">
-                    <Tooltip
-                      enterDelay={300}
-                      title="Sort"
-                    >
-                      <TableSortLabel
-                        active
-                        direction="desc"
-                      >
-                        Дата заказа
-                      </TableSortLabel>
-                    </Tooltip>
-                  </TableCell>
-                  <TableCell>Тип доставки</TableCell>
-                  <TableCell>Статус оплаты</TableCell>
-                  <TableCell>Статус заказа</TableCell>
+                  {props.user ?
+                      props.user.role === 'admin' ?
+                      <Fragment>
+                        <TableCell>ID заказа</TableCell>
+                        <TableCell sortDirection="desc">
+                          <Tooltip
+                              enterDelay={300}
+                              title="Sort"
+                          >
+                            <TableSortLabel
+                                active
+                                direction="desc"
+                            >
+                              Дата заказа
+                            </TableSortLabel>
+                          </Tooltip>
+                        </TableCell>
+                        <TableCell>Тип доставки</TableCell>
+                        <TableCell>Статус оплаты</TableCell>
+                        <TableCell>Мастер</TableCell>
+                        <TableCell>Курьер</TableCell>
+                        <TableCell>Статус заказа</TableCell>
+                      </Fragment>
+                    :
+                      <Fragment>
+                        <TableCell>ID заказа</TableCell>
+                        <TableCell>Имя клиента</TableCell>
+                        <TableCell>Дата</TableCell>
+                        <TableCell align='center'>Статус заказа</TableCell>
+                      </Fragment>
+                  : null}
                 </TableRow>
               </TableHead>
               <AdminOrderRow
                 orders={props.orders}
+                user={props.user}
                 workers={props.workers}
                 statuses={props.statuses}
                 classes={classes}
@@ -137,6 +153,7 @@ OrderItems.propTypes = {
 
 const mapStateToProps = state => {
   return {
+    user: state.users.user,
     orders: state.orders.orders,
     workers: state.workersReducer.workers,
     statuses: state.statusesReducer.statuses

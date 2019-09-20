@@ -71,25 +71,25 @@ export default function OrderCard({order, statuses, defaultExpanded}) {
 						<div className={classes.card}>
 							<div className={classes.details}>
 								<CardContent className={classes.content}>
-									<Typography component="h5" variant="h5">
-										{`Заказ: ${order.id.substring(0, 7)}`}
+									<Typography component="h6" variant="h6">
+										<b>Заказ:</b>{` ${order.id.substring(0, 7)}`}
 									</Typography>
 									<Typography variant="subtitle1" color="textPrimary">
-										{`Дата создания: ${moment(order.createdAt).format('DD.MM.YYYY HH:mm')} `}
+										<b>Дата создания: </b>{`${moment(order.createdAt).format('DD.MM.YYYY HH:mm')} `}
 									</Typography>
 									<Typography variant="subtitle1" color="textPrimary">
-										{`Дата забора: ${moment(order.completedDate).format('DD.MM.YYYY HH:mm')} `}
+										<b>Дата забора: </b>{`${moment(order.completedDate).format('DD.MM.YYYY HH:mm')} `}
 									</Typography>
 									<Typography variant="subtitle1" color="textPrimary">
-										{`Адрес доставки/забора: ${order.address} `}
+										<b>Адрес доставки/забора: </b>{`${order.address} `}
 									</Typography>
 									<Typography variant="subtitle1" color="textPrimary">
-										{(statuses.find(status => {return order.statusId === status.id})) ?
-											`Статус заказа: ${(statuses.find(status => {return order.statusId === status.id}).title)}`
+										<b>Статус заказа: </b>{(statuses.find(status => {return order.statusId === status.id})) ?
+											`${(statuses.find(status => {return order.statusId === status.id}).title)}`
 										: null}
 									</Typography>
 									<Typography variant="subtitle1" color="textPrimary">
-										{`Сумма заказа: ${order.totalPrice}`}
+										<b>Сумма заказа: </b>{`${order.totalPrice}`}
 									</Typography>
 								</CardContent>
 							</div>
