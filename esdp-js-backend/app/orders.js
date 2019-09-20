@@ -6,7 +6,6 @@ const db = require("../db/postgre");
 const fs = require('fs');
 const nodemailer = require("nodemailer");
 
-
 const createRouter = () => {
     router.get('/orders', async (req, res) => {
         let order = await db.fetch('orders_with_status_names');

@@ -8,3 +8,5 @@ esdp-js-backend/db/postgre.js
 esdp-js-frontend/src/config.js
 
 esdp-js-backend/src/assets/images/
+
+esdp-js-backend/db/postgre

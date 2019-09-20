@@ -7,21 +7,17 @@ export default class FooterTabsExample extends Component {
 		return (
 			<Footer>
 				<FooterTab>
-					<Button vertical active onPress= {() => {Actions.pop(); }}>
+					<Button vertical active onPress= {() => {Actions.Orders(); }}>
 						<Icon name="apps" />
 						<Text>Заказы</Text>
 					</Button>
-					<Button vertical onPress= {() => {Actions.pageTwo(); }}>
+					<Button vertical onPress= {() => {Actions.QRScreen(); }}>
 						<Icon name="camera" />
 						<Text>Камера</Text>
 					</Button>
-					<Button vertical>
-						<Icon active name="navigate" />
-						<Text>Карта</Text>
-					</Button>
-					<Button vertical>
-						<Icon name="person" />
-						<Text>Кабинет</Text>
+					<Button vertical onPress= {() => {Actions.FindOrder(); }}>
+						<Text>Найти заказ</Text>
+							<Text>по Id</Text>
 					</Button>
 				</FooterTab>
 			</Footer>

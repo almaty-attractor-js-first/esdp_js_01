@@ -1,14 +1,22 @@
-import {} from "../actions/action-types";
+import { combineReducers } from 'redux';
 
-const initialState = {
-  list: [],
-};
+import { DATA_AVAILABLE } from "./actions" //Import the actions types constant we defined in our actions
 
-const reducer = (state = initialState, action) => {
+let dataState = { data: [] };
+
+const dataReducer = (state = dataState, action) => {
   switch (action.type) {
+    case DATA_AVAILABLE:
+      return {...state, data: action.data};
     default:
       return state;
   }
 };
 
-export default reducer;
+// Combine all the reducers
+const rootReducer = combineReducers({
+  dataReducer
+  // ,[ANOTHER REDUCER], [ANOTHER REDUCER] ....
+})
+
+export default rootReducer;

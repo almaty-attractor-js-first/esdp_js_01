@@ -5,15 +5,15 @@ import FooterTabsExample from "../components/Footer";
 import BarcodeScannerExample from "../components/BarCodeScanner";
 
 class QRScreen extends React.Component {
-	
+
 	render() {
-		
-		
+
+
 		return (
 			<Container>
 				<HeaderTitleSubtitleExample />
 				<Content>
-				
+
 				</Content>
 				{this.props.loading
 					?
