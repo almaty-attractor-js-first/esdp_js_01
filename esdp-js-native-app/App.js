@@ -5,22 +5,26 @@ import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { Provider } from 'react-redux';
 import Main from "./src/screens/Main";
+import Login from "./src/screens/Login";
+import Order from "./src/screens/Order";
+import QRScreen from "./src/screens/QRScreen";
+import FindOrder from "./src/screens/FindOrder";
 import thunk from 'redux-thunk';
 import { AppLoading } from 'expo';
 import { Router, Scene } from 'react-native-router-flux';
-import QRScreen from "./src/screens/QRScreen";
+
 
 const store = createStore(reducer, applyMiddleware(thunk));
 
 export default class App extends Component{
-  
+
   constructor(props) {
     super(props);
     this.state = {
       isReady: false,
     };
   }
-  
+
   async componentDidMount() {
     await Font.loadAsync({
       Roboto: require('native-base/Fonts/Roboto.ttf'),
@@ -37,11 +41,15 @@ export default class App extends Component{
       <Provider store= {store}>
 	      <Router hideNavBar="false">
 		      <Scene key="root">
-			      <Scene key="pageOne" hideNavBar={true} component={Main} initial={true} />
-			      <Scene key="pageTwo" hideNavBar={true} component={QRScreen} title="PageTwo" />
+                  <Scene key="Login" hideNavBar={true} component={Login} initial={true} />
+			      <Scene key="Orders" hideNavBar={true} component={Main} title="Orders" />
+			      <Scene key="Order" hideNavBar={true} component={Order} title="Order" />
+			      <Scene key="QRScreen" hideNavBar={true} component={QRScreen} title="QRScreen" />
+			      <Scene key="FindOrder" hideNavBar={true} component={FindOrder} title="FindOrder" />
 		      </Scene>
 	      </Router>
       </Provider>
     );
   }
 }
+
