@@ -23,7 +23,8 @@ const useStyles = makeStyles(theme => ({
   avatar: {
     display: 'flex',
     flexWrap: 'nowrap',
-    alignItems: 'center'
+    alignItems: 'center',
+    cursor: 'pointer'
   },
   top: {
     display: 'flex',
@@ -34,7 +35,6 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-
 export default function UserMenu(props) {
   const classes = useStyles();
   
@@ -44,30 +44,23 @@ export default function UserMenu(props) {
         <Button color="primary"
                 variant={"text"}
                 component={Link}
-                to='/admin-order-items'
+                to='/orders'
                 className={classes.link}>
-          админ
-        </Button>
-        <Button color="primary"
-                variant={"text"}
-                component={Link}
-                to='/order-items'
-                className={classes.link}>
-          мастер
+          заказы
         </Button>
         {props.user.role === 'admin' ?
           <Fragment>
             <Button color="primary"
                     variant={"text"}
                     component={Link}
-                    to='/edit-types'
+                    to='/types/edit'
                     className={classes.link}>
               чистки
             </Button>
             < Button color = "primary"
                      variant={"text"}
                      component={Link}
-                     to='/edit-statuses'
+                     to='/statuses/edit'
                      className={classes.link}>
               статусы
             </Button>
@@ -82,14 +75,14 @@ export default function UserMenu(props) {
           : null
         }
       </div>
-      <div className={classes.avatar}>
+      <div className={classes.avatar}
+           onClick={props.handleProfileMenuOpen}>
         <Typography variant="body2" style={{marginLeft: '35px', marginRight: '5px'}}>
           {`${props.user.firstName} ${props.user.lastName}`}
         </Typography>
         <IconButton edge="end"
                     aria-owns={props.isMenuOpen ? 'material-appbar' : undefined}
                     aria-haspopup="true"
-                    onClick={props.handleProfileMenuOpen}
                     color="inherit"
         >
           <AccountCircle />

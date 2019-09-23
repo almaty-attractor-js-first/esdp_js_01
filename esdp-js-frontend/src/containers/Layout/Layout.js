@@ -6,9 +6,9 @@ import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles(theme => ({
   main: {
-    marginTop: '186px',
+    marginTop: '70px',
     [theme.breakpoints.up('sm')]: {
-      marginTop: '100px',
+      marginTop: '95px',
       maxWidth: '1100px',
       marginLeft: 'auto',
       marginRight: 'auto',

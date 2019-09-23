@@ -7,6 +7,7 @@ const Helper = require('../controllers/Helper');
 const createRouter = () => {
     router.get('/', async (req, res) => {
         let workers = await db.fetch('workers');
+        workers.rows.sort((a, b) => a.createdAt - b.createdAt);
         res.send(workers.rows);
     });
     router.post('/', (req, res) => {

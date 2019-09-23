@@ -17,7 +17,8 @@ const useStyles = makeStyles(theme => ({
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
         height: '75vh',
-        padding: 'auto',
+        padding: '8px',
+        textAlign: 'center',
         color: 'white'
     },
     submit: {

@@ -23,11 +23,11 @@ const Routes = () => {
             <Route exact path="/orders/saved" component={SavedOrder}/>
             <Route exact path="/orders/current" component={CurrentOrders}/>
             <Route exact path="/order-items" component={OrderItems}/>
-            <Route exact path="/admin-order-items" component={AdminOrderItems}/>
+            <Route exact path="/orders" component={AdminOrderItems}/>
             {/*<Route exact path="/order/:id" component={OrderDetails}/>*/}
             <Route exact path="/edit-order/:id" component={OrderDetailsEdit}/>
-            <Route exact path="/edit-statuses" component={Statuses}/>
-            <Route exact path="/edit-types" component={CleaningTypes}/> 
+            <Route exact path="/statuses/edit" component={Statuses}/>
+            <Route exact path="/types/edit" component={CleaningTypes}/>
         </Switch>
     )
 };

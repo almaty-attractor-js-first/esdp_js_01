@@ -131,7 +131,7 @@ const UserForm = props => {
         </Grid>
         {props.deliveryType === 'delivery' ?
         <Fragment>
-          <Grid item xs={props.deliveryType === 'delivery' ? 9 : 12}>
+          <Grid item xs={props.deliveryType === 'delivery' ? 8 : 12}>
             <TextField
               disabled={props.loading}
               value={userInput.address}
@@ -143,7 +143,7 @@ const UserForm = props => {
               onChange={handleChange}
             />
           </Grid>
-          <Grid container item justify='flex-end' xs={3}>
+          <Grid container item justify='flex-end' xs={4}>
             <TimePicker />
           </Grid>
         </Fragment>
