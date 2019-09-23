@@ -9,7 +9,7 @@ const nodemailer = require("nodemailer");
 
 const createRouter = () => {
     router.get('/orders', async (req, res) => {
-        let order = await db.fetch('orders');
+        let order = await db.fetch('orders_with_status_names');
         order.rows.sort((a, b) => b.createdAt - a.createdAt);
         res.send(order.rows);
     });
@@ -151,9 +151,14 @@ const createRouter = () => {
         console.log(req.body);
         const orderId = req.params.id;
         let data = req.body;
-        db.updateOrdersById(orderId, data);
-        res.send({message: 'OK'});
+        await db.update('orders', data, orderId)
+            .then(() => {
+                res.status(200).send({message: `Заказ ${orderId.substring(0, 7)} обновлен`});
+            }).catch(() => {
+                res.status(500).send({message: `Ошибка сервера`});
+            });
     });
+
     router.put('/orders/:id/status', async (req, res) => {
         const orderId = req.params.id;
         const status = req.body;

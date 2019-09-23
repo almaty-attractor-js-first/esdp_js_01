@@ -24,7 +24,7 @@ export const openSnack = (message, variant) => (dispatch) => {
         options: {
             key: new Date().getTime() + Math.random(),
             variant: variant,
-            autoHideDuration: 2000,
+            autoHideDuration: 1500,
         },
     }));
 };

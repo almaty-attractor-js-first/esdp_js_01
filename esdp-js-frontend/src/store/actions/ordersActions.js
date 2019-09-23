@@ -1,6 +1,7 @@
 import axios from '../../axios-api'
 import {UPDATE_CURRENT_ORDER, UPDATE_ORDERS} from "./actionTypes";
 import store from "../configureStore";
+import {openSnack} from "./notificationsActions";
 
 
 export const updateOrders = orders => {
@@ -21,6 +22,7 @@ export const getOrders = () => {
     return dispatch => {
         axios.get("/orders").then(response => {
             let data = response.data;
+            console.log(data);
             dispatch(updateOrders(data));
         },error => {
             if (error.response && error.response.data) {
@@ -33,15 +35,22 @@ export const getOrders = () => {
 
 export const putUpdateOrder = (id, order) => {
     return dispatch => {
-        return axios.put(`/orders/${id}`, order);
+        console.log('UPDATE_ORDER', order);
+        return axios.put(`/orders/${id}`, order )
+            .then(res => {
+                dispatch(openSnack(res.data.message, 'info'));
+            }).catch((error) => dispatch(openSnack(error.message, 'error')));
     }
 };
 
 export const changeStatus = (id, status) => {
     return dispatch => {
-        axios.put(`/status/${id}`, {status: status}).then(()=>{
-            dispatch(getOrders());
-        });
+        axios.put(`/status/${id}`, {status: status})
+            .then((res)=>{
+                dispatch(getOrders());
+                dispatch(openSnack(res.message, 'info'));
+            })
+            .catch((error) => dispatch(openSnack(error.message, 'error')));
     }
 };
 
