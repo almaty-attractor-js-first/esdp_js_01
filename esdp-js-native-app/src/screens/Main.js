@@ -3,7 +3,7 @@ import { Container, Spinner, Content } from 'native-base';
 import HeaderTitleSubtitleExample from "../components/Header";
 import FooterTabsExample from "../components/Footer";
 import FABExample from "../components/FloatingButton";
-import ListIconExample from "../components/ListExample";
+import ListItems from "../components/ListItems";
 
 class Main extends React.Component {
 
@@ -19,7 +19,7 @@ class Main extends React.Component {
           ?
           <Spinner color='blue' />
           :
-          <ListIconExample />
+          <ListItems />
         }
         </Content>
 

@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 
-import { DATA_AVAILABLE } from "./actions" //Import the actions types constant we defined in our actions
+import { DATA_AVAILABLE } from "./../actions/action-types"
+import {history} from "../store-config"; //Import the actions types constant we defined in our actions
 
 let dataState = { data: [] };
 
@@ -15,8 +16,17 @@ const dataReducer = (state = dataState, action) => {
 
 // Combine all the reducers
 const rootReducer = combineReducers({
-  dataReducer
+  dataReducer,
+  notifications: notificationsReducer,
+  orders: ordersReducer,
+  users: usersReducer,
+  workersReducer: workersReducer,
+  clientsReducer: clientsReducer,
+  newOrder: newOrderReducer,
+  statusesReducer: statusesReducer,
+  cleaningTypesReducer: cleaningTypesReducer,
+  router: connectRouter(history)
   // ,[ANOTHER REDUCER], [ANOTHER REDUCER] ....
-})
+});
 
 export default rootReducer;

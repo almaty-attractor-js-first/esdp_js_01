@@ -21,7 +21,11 @@ class Order extends Component {
                             <CardItem bordered>
                                 <Body>
                                     <Text>
-
+                                    Order info
+                                    Order info
+                                    Order info
+                                    Order info
+                                    Order info
                                     </Text>
                                 </Body>
                             </CardItem>

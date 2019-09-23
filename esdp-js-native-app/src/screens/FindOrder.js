@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Spinner, Content, Form, Item, Input, Text, Button, StyleProvider, Icon } from 'native-base';
 import HeaderTitleSubtitleExample from "../components/Header";
 import FooterTabsExample from "../components/Footer";
-import ListIconExample from "../components/ListExample";
+import ListIconExample from "../components/ListItems";
 
 class FindOrder extends React.Component {
     render() {

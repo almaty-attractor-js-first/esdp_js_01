@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import reducer from './src/store/reducers/reducer';
-import { createStore, applyMiddleware } from 'redux';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { Provider } from 'react-redux';
@@ -9,12 +7,10 @@ import Login from "./src/screens/Login";
 import Order from "./src/screens/Order";
 import QRScreen from "./src/screens/QRScreen";
 import FindOrder from "./src/screens/FindOrder";
-import thunk from 'redux-thunk';
 import { AppLoading } from 'expo';
 import { Router, Scene } from 'react-native-router-flux';
+import store from './src/store/store-config';
 
-
-const store = createStore(reducer, applyMiddleware(thunk));
 
 export default class App extends Component{
 
@@ -38,7 +34,7 @@ export default class App extends Component{
       return <AppLoading />;
     }
     return(
-      <Provider store= {store}>
+      <Provider store={store}>
 	      <Router hideNavBar="false">
 		      <Scene key="root">
                   <Scene key="Login" hideNavBar={true} component={Login} initial={true} />

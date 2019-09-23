@@ -45,6 +45,19 @@ module.exports = {
             console.log(err.stack);
         }
     },
+	fetchBy: async (table, column, value) => {
+        	let sqlString = `SELECT * FROM "${table}"`;
+        	if (column && value) {
+        	    sqlString = `SELECT * FROM "${table}" WHERE ("${table}"."${column}" = '${value}')`;
+        	}
+        	try {
+        	    const res = await pool.query(sqlString);
+        	    return res;
+        	} catch (err) {
+        	    console.log(err.stack);
+        	    return err;
+        	}
+    },
 
     saveUser: async (object) => {
         const bodyKeys = Object.keys(object);

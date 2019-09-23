@@ -7,20 +7,17 @@ import BarcodeScannerExample from "../components/BarCodeScanner";
 class QRScreen extends React.Component {
 
 	render() {
-
-
 		return (
 			<Container>
 				<HeaderTitleSubtitleExample />
 				<Content>
-
+					{this.props.loading
+						?
+						<Spinner color='blue' />
+						:
+						<BarcodeScannerExample />
+					}
 				</Content>
-				{this.props.loading
-					?
-					<Spinner color='blue' />
-					:
-					<BarcodeScannerExample />
-				}
 				<FooterTabsExample/>
 			</Container>
 		);

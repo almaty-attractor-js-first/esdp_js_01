@@ -7,7 +7,7 @@ export default class FooterTabsExample extends Component {
 		return (
 			<Footer>
 				<FooterTab>
-					<Button vertical active onPress= {() => {Actions.Orders(); }}>
+					<Button vertical onPress= {() => {Actions.Orders(); }}>
 						<Icon name="apps" />
 						<Text>Заказы</Text>
 					</Button>

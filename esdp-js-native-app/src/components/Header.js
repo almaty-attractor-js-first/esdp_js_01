@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Header, Left, Body, Right, Title, Subtitle, Button, Text } from 'native-base';
+import { Header, Left, Body, Right, Title, Subtitle, Button, Text, Icon } from 'native-base';
 import {Actions} from "react-native-router-flux";
 
 
@@ -7,7 +7,11 @@ export default class HeaderTitleSubtitleExample extends Component {
   render() {
     return (
           <Header noLeft>
-              <Left />
+              <Left>
+                  <Button transparent onPress = {() => {Actions.pop(); }}>
+                      <Icon name='arrow-back' />
+                  </Button>
+              </Left>
             <Body>
               <Title>Shoeser</Title>
               <Subtitle note numberOfLines={1}>Химчистка кроссовок</Subtitle>
