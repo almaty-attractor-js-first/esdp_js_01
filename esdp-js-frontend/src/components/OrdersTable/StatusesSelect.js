@@ -7,7 +7,8 @@ const StatusesSelect = (props) => {
         <NativeSelect
             data-id={props.index}
             fullWidth
-            value={props.statusId || ''}
+            value={props.statusId}
+            selected={props.statusId}
             onClick={(e) => e.stopPropagation()}
             onChange={props.changeHandler}
             inputProps={{
@@ -15,19 +16,16 @@ const StatusesSelect = (props) => {
                 id: props.name + props.index,
             }}
         >
-            <option value={props.statusId}>
-                {(props.statuses[0]) ?
-                    (props.statuses.find(status => {return props.statusId === status.id}).title) :
-                    null}
-            </option>
             {props.statuses ?
-                props.statuses.map((item, index) => {
-                    return (
-                        <option key={index} value={item.name} style={{background: item.color}}>
-                            {item.title}
+                props.statuses
+                    .filter(status => status.status)
+                    .map((status, index) => (
+                        <option key={index} value={status.id} style={{border: `1px solid ${status.color}`}}>
+                            {status.title}
                         </option>
+                        )
                     )
-                }) : null}
+                : null}
         </NativeSelect>
     )
 };

@@ -7,7 +7,7 @@ const WorkersSelect = (props) => {
             select
             data-id={props.index}
             fullWidth
-            value={props.workerId || ''}
+            defaultValue={props.workerId}
             onClick={(e) => e.stopPropagation()}
             onChange={props.changeHandler}
             inputProps={{
@@ -19,12 +19,9 @@ const WorkersSelect = (props) => {
                 native: true
             }}
         >
-            <option defaultChecked="">
-                {props.value || 'Работник'}
-            </option>
             {props.workers ?
                 props.workers
-                    .filter(worker => worker.role === props.name)
+                    .filter(worker => worker.role === props.workerRole || worker.role === 'nobody')
                     .map((worker, index) => (
                         <option key={index} value={worker.id} style={{minWidth: '130px'}}>
                             {`${worker.firstName} ${worker.lastName}`}

@@ -15,9 +15,11 @@ const AdminFields = props => {
             <TableCell style={{maxWidth: '50px'}}>{order.deliveryType === 'self' ? 'Самовывоз' : 'Доставка'}</TableCell>
             <TableCell style={{maxWidth: '50px'}}>
                 <Checkbox
+                    value={order.paymentStatus}
                     checked={order.paymentStatus}
-                    onClick={(e) => e.stopPropagation()}
-                    value={order.paymentStatus ? 'Оплачен' : 'Не оплачен'}
+                    onClick={e => e.stopPropagation()}
+                    onChange={e => props.handleCheck(e, order.id)}
+                    name='paymentStatus'
                     inputProps={{
                         'aria-label': 'primary checkbox',
                     }} />
@@ -27,7 +29,8 @@ const AdminFields = props => {
                     workerId={order.masterId}
                     index={index}
                     workers={props.workers}
-                    name='master'
+                    name='masterId'
+                    workerRole='master'
                     onClick={(e) => e.stopPropagation()}
                     changeHandler={(e) => {handleChange(e, order.id);}}
 
@@ -38,7 +41,8 @@ const AdminFields = props => {
                     workerId={order.courierId}
                     index={index}
                     workers={props.workers}
-                    name='courier'
+                    name='courierId'
+                    workerRole='courier'
                     onClick={(e) => e.stopPropagation()}
                     changeHandler={(e) => {handleChange(e, order.id);}}
 
@@ -48,7 +52,7 @@ const AdminFields = props => {
                 <StatusesSelect
                     index={index}
                     statusId={order.statusId}
-                    name='status'
+                    name='statusId'
                     onClick={(e) => e.stopPropagation()}
                     changeHandler={(e) => {handleChange(e, order.id);}}
                     statuses={props.statuses}

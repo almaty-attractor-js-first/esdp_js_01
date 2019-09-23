@@ -52,20 +52,55 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const OrderItems = props => {
-  useEffect(() => {
-    props.getOrders();
-  }, []);
+  const [orders, setOrders] = React.useState([]);
+
+  React.useEffect(() => {
+  }, [props.statuses]);
 
   useEffect(() => {
     props.getStatuses();
   }, []);
 
   useEffect(() => {
+    props.getOrders();
+  }, []);
+
+  useEffect(() => {
     props.getWorkers();
   }, []);
 
-  const { className, getOrders, getWorkers, getStatuses, updateOrders, putUpdateOrder, staticContext, ...rest } = props;
+  useEffect(() => {
+    let ordersByRole;
+    switch (props.user.role) {
+      case 'courier':
+        ordersByRole = props.orders
+            .filter(order => order.name === 'new' ||order.name === 'taken' || order.name === 'done');
+        break;
+      case 'master':
+        ordersByRole = props.orders
+            .filter(order => order.name === 'pending' || order.name === 'inWork');
+        break;
+      case 'admin':
+        ordersByRole = props.orders;
+        break;
+    }
+    setOrders(ordersByRole);
+  }, []);
+
+  const {
+    className,
+    getOrders,
+    getWorkers,
+    getStatuses,
+    updateOrders,
+    putUpdateOrder,
+    staticContext,
+    ...rest
+  } = props;
   const classes = useStyles();
+
+
+
 
   return (
     <Card
@@ -124,7 +159,7 @@ const OrderItems = props => {
                 </TableRow>
               </TableHead>
               <AdminOrderRow
-                orders={props.orders}
+                orders={orders}
                 user={props.user}
                 workers={props.workers}
                 statuses={props.statuses}
