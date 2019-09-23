@@ -14,7 +14,7 @@ const ListItems = props => {
 
 		return (
 			<ScrollView>
-                {this.state.orders.map((place, i) => (
+                {state.orders.map((place, i) => (
                     <ListItem
                         id={place.id}
                         key={i}
