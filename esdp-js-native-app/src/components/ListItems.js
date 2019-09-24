@@ -4,6 +4,7 @@ import Order from '../screens/Order';
 import { ScrollView } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import {getOrders} from "../store/actions/ordersActions";
+import {connect} from "react-redux";
 
 
 
@@ -14,7 +15,7 @@ const ListItems = props => {
 
 		return (
 			<ScrollView>
-                {state.orders.map((place, i) => (
+                {props.orders.map((place, i) => (
                     <ListItem
                         id={place.id}
                         key={i}

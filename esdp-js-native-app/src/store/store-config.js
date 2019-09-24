@@ -1,13 +1,11 @@
 import {createStore, applyMiddleware, compose, combineReducers} from 'redux';
 import thunkMiddleware from 'redux-thunk';
-import {createBrowserHistory} from 'history';
 import {routerMiddleware } from 'connected-react-router';
 
 import ordersReducer from './reducers/ordersReducer';
 import usersReducer from "./reducers/usersReducer";
 import axios from '../axios-api';
 
-export const history = createBrowserHistory();
 
 const rootReducer = combineReducers({
     orders: ordersReducer,
@@ -17,7 +15,6 @@ const rootReducer = combineReducers({
 
 const middleware = [
     thunkMiddleware,
-    routerMiddleware(history)
 ];
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

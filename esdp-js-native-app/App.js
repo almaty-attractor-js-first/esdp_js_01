@@ -38,7 +38,10 @@ export default class App extends Component{
 	      <Router hideNavBar="false">
 		      <Scene key="root">
                   <Scene key="Login" hideNavBar={true} component={Login} initial={true} />
-
+			      <Scene key="Orders" hideNavBar={true} component={Main} title="Orders" />
+			      <Scene key="Order" hideNavBar={true} component={Order} title="Order" />
+			      <Scene key="QRScreen" hideNavBar={true} component={QRScreen} title="QRScreen" />
+			      <Scene key="FindOrder" hideNavBar={true} component={FindOrder} title="FindOrder" />
 		      </Scene>
 	      </Router>
       </Provider>
