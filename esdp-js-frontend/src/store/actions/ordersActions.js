@@ -6,7 +6,7 @@ import {openSnack} from "./notificationsActions";
 const setLoading = (loading) => {
     return dispatch => {
         dispatch({type: SET_LOADING, loading});
-        console.log('LOADING');
+        console.log('LOADING...');
     };
 };
 
@@ -29,6 +29,7 @@ export const getOrders = () => {
         return axios.get("/orders").then(response => {
             let data = response.data;
             dispatch(updateOrders(data));
+            return response;
         },error => {
             if (error.response && error.response.data) {
             } else {
@@ -45,6 +46,7 @@ export const putUpdateOrder = (id, order) => {
             .then(res => {
                 dispatch(openSnack(res.data.message, 'info'));
                 dispatch(setLoading(false));
+                dispatch(getOrders());
             }).catch((error) => {
                 dispatch(openSnack(error.message, 'error'));
                 dispatch(setLoading(false));

@@ -3,7 +3,6 @@ const config = require('../config.js');
 
 let auth = (req, res, next) => {
 	let token = req.headers['x-access-token'] || req.headers['authorization']; // Express headers are auto converted to lowercase
-	console.log('TOKEN', token);
 	if (!token) {
 		return res.status(401).send("No token presented");
 	}

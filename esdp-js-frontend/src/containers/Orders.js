@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useLayoutEffect} from 'react';
+import React, {Fragment, useEffect} from 'react';
 import clsx from 'clsx';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
@@ -22,7 +22,7 @@ import {
 } from '@material-ui/core';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import TableRow from "@material-ui/core/TableRow";
-import AdminOrderRow from "../components/OrdersTable/AdminOrderRow";
+import OrdersTable from "../components/OrdersTable/OrdersTable";
 import {getWorkers} from "../store/actions/workersActions";
 
 
@@ -51,7 +51,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const OrderItems = props => {
+const Orders = props => {
   const [orders, setOrders] = React.useState([]);
 
   React.useEffect(() => {
@@ -71,26 +71,8 @@ const OrderItems = props => {
     props.getWorkers();
   }, []);
 
-  useLayoutEffect(() => {
-    console.time('orders');
-    let ordersByRole;
-    switch (props.user.role) {
-      case 'courier':
-        ordersByRole = props.orders
-            .filter(order => order.statusName === 'new' ||order.statusName === 'taken' || order.statusName === 'done');
-        break;
-      case 'master':
-        ordersByRole = props.orders
-            .filter(order => order.statusName === 'pending' || order.statusName === 'inWork');
-        break;
-      case 'admin':
-        ordersByRole = props.orders;
-        break;
-      default:
-        return <p>Ошибка обработки роли</p>;
-    }
-    setOrders(ordersByRole);
-    console.timeEnd('orders');
+  useEffect(() => {
+    setOrders(props.orders);
   }, [props.orders]);
 
   const {
@@ -165,7 +147,7 @@ const OrderItems = props => {
                   : null}
                 </TableRow>
               </TableHead>
-              <AdminOrderRow
+              <OrdersTable
                 loading={loading}
                 orders={orders}
                 user={props.user}
@@ -191,7 +173,7 @@ const OrderItems = props => {
   );
 };
 
-OrderItems.propTypes = {
+Orders.propTypes = {
   className: PropTypes.string
 };
 
@@ -215,4 +197,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrderItems);
+export default connect(mapStateToProps, mapDispatchToProps)(Orders);

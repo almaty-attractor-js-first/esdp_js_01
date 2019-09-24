@@ -8,9 +8,33 @@ const nodemailer = require("nodemailer");
 
 const createRouter = () => {
     router.get('/orders', async (req, res) => {
+        const token = req.get("Authorization");
+        const worker = await db.fetchByToken(token);
+
         let order = await db.fetch('orders_with_status_fields');
         order.rows.sort((a, b) => b.createdAt - a.createdAt);
-        res.send(order.rows);
+        let ordersByRole;
+        let ordersById;
+        switch (worker.rows[0].role) {
+            case 'courier':
+                ordersById = order.rows
+                    .filter(order => order.courierId === worker.rows[0].id || order.courierId === 'ff35c2dd-97bc-44b8-bc25-1d756be13fa7');
+                ordersByRole = ordersById
+                    .filter(order => order.statusName === 'new' || order.statusName === 'taken' || order.statusName === 'done');
+                break;
+            case 'master':
+                ordersById = order.rows
+                    .filter(order => order.masterId === worker.rows[0].id || order.masterId === 'ff35c2dd-97bc-44b8-bc25-1d756be13fa7');
+                ordersByRole = ordersById
+                    .filter(order => order.statusName === 'pending' || order.statusName === 'inWork');
+                break;
+            case 'admin':
+                ordersByRole = order.rows;
+                break;
+            default:
+                throw new Error('Ошибка доступа');
+        }
+        res.send(ordersByRole);
     });
     router.get('/orders/client', async (req, res) => {
 	    if(req.query.phone){
@@ -22,7 +46,6 @@ const createRouter = () => {
 		    }
 	    }
     });
-    
     router.get('/orders/:id', async (req, res) => {
         const orderId = req.params.id;
         let order = await db.fetch('orders', orderId);
@@ -32,7 +55,9 @@ const createRouter = () => {
         let orderData = req.body;
         const orderId = uuid();
         orderData.id = orderId;
-        orderData.statusId = "80659b19-1bf5-466b-8221-bce9ab456efb"; //@TODO Переделать на "name" статуса!!!
+        orderData.statusId = "80659b19-1bf5-466b-8221-bce9ab456efb"; //@TODO Переделать на "name" статуса!!! (statusId = statuses -> '~new' ->  'id')
+        orderData.masterId = "ff35c2dd-97bc-44b8-bc25-1d756be13fa7"; //@TODO Переделать на "name" мастера!!!
+        orderData.courierId = "ff35c2dd-97bc-44b8-bc25-1d756be13fa7"; //@TODO Переделать на "name" курьера!!!
         let clientId;
         //создаем клиента
         const result = await db.fetchByPhone('clients', orderData.phone);
@@ -57,12 +82,12 @@ const createRouter = () => {
         const finalOrder = {
             id: orderId,
             clientId: orderData.clientId || clientId,
-            masterId: null,
-            courierId: null,
+            masterId: orderData.masterId,
+            courierId: orderData.courierId,
             statusId: orderData.statusId,
             createdAt: new Date(),
             description: null,
-            paymentStatus: orderData.paymentStatus,
+            paymentStatus: orderData.paymentStatus || false,
             paymentMethod: orderData.paymentMethod,
             totalPrice: orderData.totalPrice,
             pickupAddress: orderData.address,
@@ -137,7 +162,6 @@ const createRouter = () => {
         }
         
         if (!(completedOrder instanceof Error))  {
-            console.log('No error'); //@TODO Добавить запрос в базу на текущие заказы по номеру клиента
             orderData.createdAt = await db.fetch('orders', orderData.id);
             res.send(orderData);
         } else {
@@ -147,9 +171,18 @@ const createRouter = () => {
         
     });
     router.put('/orders/:id', async (req, res) => {
-        console.log(req.body);
         const orderId = req.params.id;
         let data = req.body;
+        const token = req.get("Authorization");
+        const worker = await db.fetchByToken(token);
+        const workerRole = worker.rows[0].role;
+        //@TODO Добавить проверку на уже взятый заказ
+        if (workerRole === 'master') {
+            data.masterId = worker.rows[0].id;
+        }
+        if (workerRole === 'courier') {
+            data.courierId = worker.rows[0].id;
+        }
         await db.update('orders', data, orderId)
             .then(() => {
                 res.status(200).send({message: `Заказ ${orderId.substring(0, 7)} обновлен`});
@@ -157,7 +190,6 @@ const createRouter = () => {
                 res.status(500).send({message: `Ошибка сервера`});
             });
     });
-
     router.put('/orders/:id/status', async (req, res) => {
         const orderId = req.params.id;
         const status = req.body;
