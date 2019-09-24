@@ -1,4 +1,4 @@
-import {Button, TableBody, TableCell} from "@material-ui/core";
+import {TableBody, TableCell} from "@material-ui/core";
 import TableRow from '@material-ui/core/TableRow';
 import React from "react";
 import {withRouter} from "react-router";
@@ -27,10 +27,12 @@ const TableOrderRow = (props) => {
     props.putUpdateOrder(id, {[event.target.name]: event.target.checked});
   };
 
-  const handleClick = (event, id, newStatusText) => {
+  const handleClick = (event, id, newStatusId) => {
     const _tempOrders = [...props.orders];
     const index = _tempOrders.findIndex(order => {return order.id === id});
-    console.log(id, newStatusText)
+    _tempOrders[index].statusId = newStatusId;
+    props.updateOrders(_tempOrders);
+    props.putUpdateOrder(id, {statusId: newStatusId});
   };
 
 
@@ -49,8 +51,18 @@ const TableOrderRow = (props) => {
             </TableCell>
             {props.user ?
               props.user.role === 'admin' ?
-                  <AdminControls order={order} index={index} handleChange={handleChange} handleCheck={handleCheck} {...props}/>
-              :   <MasterControls order={order} index={index} statuses={props.statuses} handleClick={handleClick} {...props}/>
+                  <AdminControls order={order}
+                                 index={index}
+                                 handleChange={handleChange}
+                                 handleCheck={handleCheck}
+                                 {...props}/>
+              :   <MasterControls order={order}
+                                  index={index}
+                                  statuses={props.statuses}
+                                  getOrders={props.getOrders}
+                                  handleClick={handleClick}
+                                  loading={props.loading}
+                                  {...props}/>
               : null
             }
           </TableRow>

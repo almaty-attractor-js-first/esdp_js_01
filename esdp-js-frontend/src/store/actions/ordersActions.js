@@ -1,8 +1,14 @@
 import axios from '../../axios-api'
-import {UPDATE_CURRENT_ORDER, UPDATE_ORDERS} from "./actionTypes";
+import {SET_LOADING, UPDATE_CURRENT_ORDER, UPDATE_ORDERS} from "./actionTypes";
 import store from "../configureStore";
 import {openSnack} from "./notificationsActions";
 
+const setLoading = (loading) => {
+    return dispatch => {
+        dispatch({type: SET_LOADING, loading});
+        console.log('LOADING');
+    };
+};
 
 export const updateOrders = orders => {
     return dispatch => {
@@ -20,9 +26,8 @@ export const updateCurrentOrder = orderId => {
 
 export const getOrders = () => {
     return dispatch => {
-        axios.get("/orders").then(response => {
+        return axios.get("/orders").then(response => {
             let data = response.data;
-            console.log(data);
             dispatch(updateOrders(data));
         },error => {
             if (error.response && error.response.data) {
@@ -35,11 +40,15 @@ export const getOrders = () => {
 
 export const putUpdateOrder = (id, order) => {
     return dispatch => {
-        console.log('UPDATE_ORDER', order);
+        dispatch(setLoading(true));
         return axios.put(`/orders/${id}`, order )
             .then(res => {
                 dispatch(openSnack(res.data.message, 'info'));
-            }).catch((error) => dispatch(openSnack(error.message, 'error')));
+                dispatch(setLoading(false));
+            }).catch((error) => {
+                dispatch(openSnack(error.message, 'error'));
+                dispatch(setLoading(false));
+            });
     }
 };
 

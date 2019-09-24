@@ -8,7 +8,7 @@ const nodemailer = require("nodemailer");
 
 const createRouter = () => {
     router.get('/orders', async (req, res) => {
-        let order = await db.fetch('orders_with_status_names');
+        let order = await db.fetch('orders_with_status_fields');
         order.rows.sort((a, b) => b.createdAt - a.createdAt);
         res.send(order.rows);
     });

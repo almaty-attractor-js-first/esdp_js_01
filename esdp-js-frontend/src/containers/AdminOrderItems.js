@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {Fragment, useEffect, useLayoutEffect} from 'react';
 import clsx from 'clsx';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
@@ -62,33 +62,40 @@ const OrderItems = props => {
   }, []);
 
   useEffect(() => {
+    console.time('didMountOrders');
     props.getOrders();
+    console.timeEnd('didMountOrders');
   }, []);
 
   useEffect(() => {
     props.getWorkers();
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    console.time('orders');
     let ordersByRole;
     switch (props.user.role) {
       case 'courier':
         ordersByRole = props.orders
-            .filter(order => order.name === 'new' ||order.name === 'taken' || order.name === 'done');
+            .filter(order => order.statusName === 'new' ||order.statusName === 'taken' || order.statusName === 'done');
         break;
       case 'master':
         ordersByRole = props.orders
-            .filter(order => order.name === 'pending' || order.name === 'inWork');
+            .filter(order => order.statusName === 'pending' || order.statusName === 'inWork');
         break;
       case 'admin':
         ordersByRole = props.orders;
         break;
+      default:
+        return <p>Ошибка обработки роли</p>;
     }
     setOrders(ordersByRole);
-  }, []);
+    console.timeEnd('orders');
+  }, [props.orders]);
 
   const {
     className,
+    loading,
     getOrders,
     getWorkers,
     getStatuses,
@@ -159,6 +166,7 @@ const OrderItems = props => {
                 </TableRow>
               </TableHead>
               <AdminOrderRow
+                loading={loading}
                 orders={orders}
                 user={props.user}
                 workers={props.workers}
@@ -166,6 +174,7 @@ const OrderItems = props => {
                 classes={classes}
                 updateOrders={props.updateOrders}
                 putUpdateOrder={props.putUpdateOrder}
+                getOrders={props.getOrders}
               />
             </Table>
           </div>
@@ -188,6 +197,7 @@ OrderItems.propTypes = {
 
 const mapStateToProps = state => {
   return {
+    loading: state.orders.loading,
     user: state.users.user,
     orders: state.orders.orders,
     workers: state.workersReducer.workers,
