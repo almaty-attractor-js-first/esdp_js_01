@@ -17,10 +17,11 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: role; Type: TYPE; Schema: public; Owner: sysadmin
+-- Name: role; Type: TYPE; Schema: public; Owner: admin
 --
 
 CREATE TYPE public.role AS ENUM (
+    'nobody',
     'courier',
     'master',
     'manager',
@@ -28,14 +29,14 @@ CREATE TYPE public.role AS ENUM (
 );
 
 
-ALTER TYPE public.role OWNER TO sysadmin;
+ALTER TYPE public.role OWNER TO admin;
 
 SET default_tablespace = '';
 
 SET default_with_oids = false;
 
 --
--- Name: cleaningTypes; Type: TABLE; Schema: public; Owner: sysadmin
+-- Name: cleaningTypes; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public."cleaningTypes" (
@@ -48,10 +49,10 @@ CREATE TABLE public."cleaningTypes" (
 );
 
 
-ALTER TABLE public."cleaningTypes" OWNER TO sysadmin;
+ALTER TABLE public."cleaningTypes" OWNER TO admin;
 
 --
--- Name: clients; Type: TABLE; Schema: public; Owner: sysadmin
+-- Name: clients; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.clients (
@@ -67,10 +68,10 @@ CREATE TABLE public.clients (
 );
 
 
-ALTER TABLE public.clients OWNER TO sysadmin;
+ALTER TABLE public.clients OWNER TO admin;
 
 --
--- Name: orderItems; Type: TABLE; Schema: public; Owner: sysadmin
+-- Name: orderItems; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public."orderItems" (
@@ -83,10 +84,10 @@ CREATE TABLE public."orderItems" (
 );
 
 
-ALTER TABLE public."orderItems" OWNER TO sysadmin;
+ALTER TABLE public."orderItems" OWNER TO admin;
 
 --
--- Name: orders; Type: TABLE; Schema: public; Owner: sysadmin
+-- Name: orders; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.orders (
@@ -107,26 +108,10 @@ CREATE TABLE public.orders (
 );
 
 
-ALTER TABLE public.orders OWNER TO sysadmin;
+ALTER TABLE public.orders OWNER TO admin;
 
 --
--- Name: pickupPoints; Type: TABLE; Schema: public; Owner: sysadmin
---
-
-CREATE TABLE public."pickupPoints" (
-    id character varying,
-    address character varying,
-    title character varying,
-    status boolean,
-    lat character varying,
-    lng character varying
-);
-
-
-ALTER TABLE public."pickupPoints" OWNER TO sysadmin;
-
---
--- Name: statuses; Type: TABLE; Schema: public; Owner: sysadmin
+-- Name: statuses; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.statuses (
@@ -139,10 +124,53 @@ CREATE TABLE public.statuses (
 );
 
 
-ALTER TABLE public.statuses OWNER TO sysadmin;
+ALTER TABLE public.statuses OWNER TO admin;
 
 --
--- Name: statuses_with_readonly; Type: VIEW; Schema: public; Owner: sysadmin
+-- Name: orders_with_status_fields; Type: VIEW; Schema: public; Owner: admin
+--
+
+CREATE VIEW public.orders_with_status_fields AS
+ SELECT o.id,
+    o."clientId",
+    o."masterId",
+    o."courierId",
+    o."statusId",
+    o."createdAt",
+    o.description,
+    o."paymentStatus",
+    o."paymentMethod",
+    o."totalPrice",
+    o."pickupAddress",
+    o.address,
+    o."deliveryType",
+    o."completedDate",
+    s.name AS "statusName",
+    s.id AS "currentStatus"
+   FROM (public.orders o
+     LEFT JOIN public.statuses s ON (((o."statusId")::text = (s.id)::text)));
+
+
+ALTER TABLE public.orders_with_status_fields OWNER TO admin;
+
+--
+-- Name: pickupPoints; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public."pickupPoints" (
+    id character varying,
+    address character varying,
+    title character varying,
+    status boolean,
+    lat character varying,
+    lng character varying
+);
+
+
+ALTER TABLE public."pickupPoints" OWNER TO admin;
+
+--
+-- Name: statuses_with_readonly; Type: VIEW; Schema: public; Owner: admin
 --
 
 CREATE VIEW public.statuses_with_readonly AS
@@ -161,10 +189,10 @@ CREATE VIEW public.statuses_with_readonly AS
           GROUP BY orders."statusId") o ON (((s.id)::text = (o."statusId")::text)));
 
 
-ALTER TABLE public.statuses_with_readonly OWNER TO sysadmin;
+ALTER TABLE public.statuses_with_readonly OWNER TO admin;
 
 --
--- Name: workers; Type: TABLE; Schema: public; Owner: sysadmin
+-- Name: workers; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.workers (
@@ -186,10 +214,10 @@ CREATE TABLE public.workers (
 );
 
 
-ALTER TABLE public.workers OWNER TO sysadmin;
+ALTER TABLE public.workers OWNER TO admin;
 
 --
--- Data for Name: cleaningTypes; Type: TABLE DATA; Schema: public; Owner: sysadmin
+-- Data for Name: cleaningTypes; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
 COPY public."cleaningTypes" (id, "position", name, title, price, status) FROM stdin;
@@ -199,7 +227,7 @@ ac44a893-56ea-4171-a06b-6aadf9ce5548\n	2	boots	Ботинки	2500	t
 
 
 --
--- Data for Name: clients; Type: TABLE DATA; Schema: public; Owner: sysadmin
+-- Data for Name: clients; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
 COPY public.clients (id, email, "firstName", phone, "lastName", "middleName", address, "createdAt", "birthDate") FROM stdin;
@@ -215,7 +243,7 @@ ef5e86ec-de8b-4cf2-a805-24df4dd4117e	World	James	78888888888	Кабыкенов	
 
 
 --
--- Data for Name: orderItems; Type: TABLE DATA; Schema: public; Owner: sysadmin
+-- Data for Name: orderItems; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
 COPY public."orderItems" (id, "orderId", "cleaningType", qty, price, title) FROM stdin;
@@ -241,33 +269,40 @@ e17a1be9-da2a-4a91-8892-8d5ad985f09c	7ea3450d-3fd2-4de0-95c1-11cf8759aa4d	sneake
 435ef62a-55c4-4a85-bf35-7a0abc4e4caa	7ea3450d-3fd2-4de0-95c1-11cf8759aa4d	sneakers	1	1500	Кроссовки
 c1c63edc-3211-402c-8428-288442c2bc50	7ea3450d-3fd2-4de0-95c1-11cf8759aa4d	sneakers	1	1500	Кроссовки
 ecd79d9f-c9ac-41f3-9402-c74326860596	81b008fe-eeb8-47eb-81fe-7212e2a53d85	sneakers	1	1500	Кроссовки
+88a3ee57-d890-48ac-a006-8fe6d69013d9	4eb7b563-4dc2-4c14-9648-7292c03258f2	sneakers	4	1500	Кроссовки
+ef992ef5-7244-45f7-8644-04fdbc3f3bf4	4eb7b563-4dc2-4c14-9648-7292c03258f2	boots	3	2500	Ботинки
+cd69bfc3-000e-4254-92b7-962dfffa7879	3a7efbaa-2862-4c75-8b8c-5e9ceb4d1e20	sneakers	1	1500	Кроссовки
+292070f8-4773-47bc-8bfa-502e3dd4a580	24e7f777-a0a2-4730-b813-3ac92ca4fc44	boots	1	2500	Ботинки
 \.
 
 
 --
--- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: sysadmin
+-- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
 COPY public.orders (id, "clientId", "masterId", "courierId", "statusId", "createdAt", description, "paymentStatus", "paymentMethod", "totalPrice", "pickupAddress", address, "deliveryType", "completedDate") FROM stdin;
-8aeb0fac-a4cb-4e3e-9d31-1830865abf54	d95b8bb1-cbf5-432a-8b05-c0d0cfdae165	\N	\N	80659b19-1bf5-466b-8221-bce9ab456efb	2019-09-17 20:42:50.61	\N	\N	cash	24000	1 микрорайон д.46	1 микрорайон д.46	delivery	2019-09-22 03:10:00
-d4102c7b-7f49-41c1-b530-0ca17c692042	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	\N	\N	80659b19-1bf5-466b-8221-bce9ab456efb	2019-09-17 20:09:51.231	\N	\N	cash	1500	Достык 111	Достык 111	delivery	2019-09-22 03:10:00
-e5e0788e-df3c-463a-8d05-da1bc16121e1	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	\N	\N	80659b19-1bf5-466b-8221-bce9ab456efb	2019-09-17 20:22:32.442	\N	\N	cash	5500	Достык 111	Достык 111	delivery	2019-09-22 03:10:00
-250d387e-591c-4be3-bef8-ba82923bbb29	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	\N	\N	80659b19-1bf5-466b-8221-bce9ab456efb	2019-09-17 20:51:29.897	\N	\N	cash	2500	Достык 111	Достык 111	delivery	2019-09-22 03:10:00
-6afeb53e-5046-4e09-90a7-24be9e9c3715	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	\N	\N	80659b19-1bf5-466b-8221-bce9ab456efb	2019-09-17 20:55:06.21	\N	\N	cash	2500	Достык 111	Достык 111	delivery	2019-09-22 03:10:00
-9cb6b9be-5a28-47e5-909c-89c9222f8ccd	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	\N	\N	a708c4b0-e3b8-4480-89bf-2ab23fc54f85	2019-09-17 17:51:09.156	\N	\N	cash	2500	Достык 111	Достык 111	delivery	2019-09-22 03:10:00
-61fc0583-5ffa-46e7-b443-225073e64441	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	\N	\N	a708c4b0-e3b8-4480-89bf-2ab23fc54f85	2019-09-17 20:45:13.23	\N	\N	cash	2500	Достык 111	Достык 111	delivery	2019-09-22 03:10:00
-7afdd0a8-a302-4998-a2f4-22aabd9ae9fa	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	\N	\N	a708c4b0-e3b8-4480-89bf-2ab23fc54f85	2019-09-17 19:08:58.538	\N	\N	cash	4000	Достык 111	Достык 111	delivery	2019-09-22 03:10:00
-10da873b-769c-47d6-836f-5cad7f1fd715	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	\N	\N	ab91578d-693b-416f-8e77-9210b347f89a	2019-09-17 20:22:11.608	\N	\N	cash	3000	Достык 111	Достык 111	delivery	2019-09-22 03:10:00
-e69c3dae-21c3-4ad8-87c9-6f9b8a6adb41	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	\N	\N	ab91578d-693b-416f-8e77-9210b347f89a	2019-09-17 19:08:12.592	\N	\N	cash	4000	Достык 111	Достык 111	delivery	2019-09-22 03:10:00
-629b7fb9-9585-45e6-bbf9-c84c4d47f4b8	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	\N	\N	ab91578d-693b-416f-8e77-9210b347f89a	2019-09-17 17:47:58.772	\N	\N	cash	1500	Достык 111	Достык 111	delivery	2019-09-22 03:10:00
-07b77e85-bd0d-4923-b05d-a51bf3a3e14b	d95b8bb1-cbf5-432a-8b05-c0d0cfdae165	\N	\N	a708c4b0-e3b8-4480-89bf-2ab23fc54f85	2019-09-17 20:53:39.264	\N	\N	cash	1500	1 микрорайон д.46	1 микрорайон д.46	delivery	2019-09-22 03:10:00
-7ea3450d-3fd2-4de0-95c1-11cf8759aa4d	1bd27728-11a9-4716-9062-6a91eea1cb99	f7d5b6bc-018e-46c5-9f5e-0857c0da7c42	3e732afb-002d-49cf-9364-6a8bcea92c8a	ab91578d-693b-416f-8e77-9210b347f89a	2019-09-19 01:20:41.156	\N	\N	cash	6000	Lalala st 555	Lalala st 555	delivery	2019-09-28 03:10:00
-81b008fe-eeb8-47eb-81fe-7212e2a53d85	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	\N	\N	80659b19-1bf5-466b-8221-bce9ab456efb	2019-09-19 20:39:01.653	\N	\N	cash	1500	Достык 111	Достык 111	delivery	2019-09-24 10:43:25.716
+9cb6b9be-5a28-47e5-909c-89c9222f8ccd	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	86891450-bf7a-4d9b-bc93-48080069bddd	3e732afb-002d-49cf-9364-6a8bcea92c8a	ab91578d-693b-416f-8e77-9210b347f89a	2019-09-17 17:51:09.156	\N	t	cash	2500	Достык 111	Достык 111	delivery	2019-09-22 03:10:00
+61fc0583-5ffa-46e7-b443-225073e64441	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	f7d5b6bc-018e-46c5-9f5e-0857c0da7c42	3e732afb-002d-49cf-9364-6a8bcea92c8a	7d088a66-ded7-448a-a58a-f4bed44a1433	2019-09-17 20:45:13.23	\N	t	cash	2500	Достык 111	Достык 111	delivery	2019-09-22 03:10:00
+10da873b-769c-47d6-836f-5cad7f1fd715	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	ff35c2dd-97bc-44b8-bc25-1d756be13fa7	3e732afb-002d-49cf-9364-6a8bcea92c8a	ab91578d-693b-416f-8e77-9210b347f89a	2019-09-17 20:22:11.608	\N	t	cash	3000	Достык 111	Достык 111	delivery	2019-09-22 03:10:00
+8aeb0fac-a4cb-4e3e-9d31-1830865abf54	d95b8bb1-cbf5-432a-8b05-c0d0cfdae165	ff35c2dd-97bc-44b8-bc25-1d756be13fa7	ff35c2dd-97bc-44b8-bc25-1d756be13fa7	80659b19-1bf5-466b-8221-bce9ab456efb	2019-09-17 20:42:50.61	\N	t	cash	24000	1 микрорайон д.46	1 микрорайон д.46	delivery	2019-09-22 03:10:00
+e5e0788e-df3c-463a-8d05-da1bc16121e1	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	ff35c2dd-97bc-44b8-bc25-1d756be13fa7	ff35c2dd-97bc-44b8-bc25-1d756be13fa7	80659b19-1bf5-466b-8221-bce9ab456efb	2019-09-17 20:22:32.442	\N	t	cash	5500	Достык 111	Достык 111	delivery	2019-09-22 03:10:00
+07b77e85-bd0d-4923-b05d-a51bf3a3e14b	d95b8bb1-cbf5-432a-8b05-c0d0cfdae165	86891450-bf7a-4d9b-bc93-48080069bddd	3e732afb-002d-49cf-9364-6a8bcea92c8a	7d088a66-ded7-448a-a58a-f4bed44a1433	2019-09-17 20:53:39.264	\N	t	cash	1500	1 микрорайон д.46	1 микрорайон д.46	delivery	2019-09-22 03:10:00
+e69c3dae-21c3-4ad8-87c9-6f9b8a6adb41	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	ff35c2dd-97bc-44b8-bc25-1d756be13fa7	ff35c2dd-97bc-44b8-bc25-1d756be13fa7	ab91578d-693b-416f-8e77-9210b347f89a	2019-09-17 19:08:12.592	\N	t	cash	4000	Достык 111	Достык 111	delivery	2019-09-22 03:10:00
+81b008fe-eeb8-47eb-81fe-7212e2a53d85	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	ff35c2dd-97bc-44b8-bc25-1d756be13fa7	3e732afb-002d-49cf-9364-6a8bcea92c8a	7d088a66-ded7-448a-a58a-f4bed44a1433	2019-09-19 20:39:01.653	\N	t	cash	1500	Достык 111	Достык 111	delivery	2019-09-24 10:43:25.716
+6afeb53e-5046-4e09-90a7-24be9e9c3715	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	f7d5b6bc-018e-46c5-9f5e-0857c0da7c42	3e732afb-002d-49cf-9364-6a8bcea92c8a	7d088a66-ded7-448a-a58a-f4bed44a1433	2019-09-17 20:55:06.21	\N	t	cash	2500	Достык 111	Достык 111	delivery	2019-09-22 03:10:00
+7ea3450d-3fd2-4de0-95c1-11cf8759aa4d	1bd27728-11a9-4716-9062-6a91eea1cb99	ff35c2dd-97bc-44b8-bc25-1d756be13fa7	3e732afb-002d-49cf-9364-6a8bcea92c8a	7d088a66-ded7-448a-a58a-f4bed44a1433	2019-09-19 01:20:41.156	\N	t	cash	6000	Lalala st 555	Lalala st 555	delivery	2019-09-28 03:10:00
+7afdd0a8-a302-4998-a2f4-22aabd9ae9fa	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	ff35c2dd-97bc-44b8-bc25-1d756be13fa7	ff35c2dd-97bc-44b8-bc25-1d756be13fa7	ab91578d-693b-416f-8e77-9210b347f89a	2019-09-17 19:08:58.538	\N	t	cash	4000	Достык 111	Достык 111	delivery	2019-09-22 03:10:00
+d4102c7b-7f49-41c1-b530-0ca17c692042	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	86891450-bf7a-4d9b-bc93-48080069bddd	3e732afb-002d-49cf-9364-6a8bcea92c8a	ab91578d-693b-416f-8e77-9210b347f89a	2019-09-17 20:09:51.231	\N	t	cash	1500	Достык 111	Достык 111	delivery	2019-09-22 03:10:00
+4eb7b563-4dc2-4c14-9648-7292c03258f2	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	ff35c2dd-97bc-44b8-bc25-1d756be13fa7	ff35c2dd-97bc-44b8-bc25-1d756be13fa7	1203a5ac-3fcd-443a-a1c5-cf9de24026c3	2019-09-25 15:16:45.472	\N	t	cash	13500	Достык 111	Достык 111	self	2019-09-30 10:43:25.949
+629b7fb9-9585-45e6-bbf9-c84c4d47f4b8	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	86891450-bf7a-4d9b-bc93-48080069bddd	ff35c2dd-97bc-44b8-bc25-1d756be13fa7	1203a5ac-3fcd-443a-a1c5-cf9de24026c3	2019-09-17 17:47:58.772	\N	t	cash	1500	Достык 111	Достык 111	delivery	2019-09-22 03:10:00
+24e7f777-a0a2-4730-b813-3ac92ca4fc44	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	ff35c2dd-97bc-44b8-bc25-1d756be13fa7	ff35c2dd-97bc-44b8-bc25-1d756be13fa7	1203a5ac-3fcd-443a-a1c5-cf9de24026c3	2019-09-25 15:34:27.586	\N	t	cash	2500	Достык 111	Достык 111	delivery	2019-09-30 10:43:25.949
+3a7efbaa-2862-4c75-8b8c-5e9ceb4d1e20	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	ff35c2dd-97bc-44b8-bc25-1d756be13fa7	ff35c2dd-97bc-44b8-bc25-1d756be13fa7	80659b19-1bf5-466b-8221-bce9ab456efb	2019-09-25 15:24:29.431	\N	t	cash	1500	Достык 111	Достык 111	delivery	2019-09-30 08:39:56.345
+250d387e-591c-4be3-bef8-ba82923bbb29	3b846dda-dbf0-42fa-a0cc-d39e3c3a8704	5ab3229b-3706-47de-a26f-8479904a1a98	3e732afb-002d-49cf-9364-6a8bcea92c8a	a708c4b0-e3b8-4480-89bf-2ab23fc54f85	2019-09-17 20:51:29.897	\N	t	cash	2500	Достык 111	Достык 111	delivery	2019-09-22 03:10:00
 \.
 
 
 --
--- Data for Name: pickupPoints; Type: TABLE DATA; Schema: public; Owner: sysadmin
+-- Data for Name: pickupPoints; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
 COPY public."pickupPoints" (id, address, title, status, lat, lng) FROM stdin;
@@ -275,37 +310,39 @@ COPY public."pickupPoints" (id, address, title, status, lat, lng) FROM stdin;
 
 
 --
--- Data for Name: statuses; Type: TABLE DATA; Schema: public; Owner: sysadmin
+-- Data for Name: statuses; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
 COPY public.statuses (id, name, title, color, status, "position") FROM stdin;
-0e259504-a9e4-4b7a-bc89-1539b85546b5	canceled	Отменен	#9e9e9e	t	7
-f2f2b5cd-efc9-4df3-81ec-f834795b1a36	asdas	asdasd	#282c34	f	1
-1203a5ac-3fcd-443a-a1c5-cf9de24026c3	testStatus	Тестовый статус	#1a237e	t	3
-a708c4b0-e3b8-4480-89bf-2ab23fc54f85	pending	В обработке	#607d8b	t	4
-30a7f022-7e4e-4de9-ad64-788607c09b37	completed	Завершен	#00c853	t	9
-847566a8-7b0b-4903-88b9-fec286195a0e	delivered	Доставлен	#ff80ab	t	8
+847566a8-7b0b-4903-88b9-fec286195a0e	delivered	Доставлен	#ff80ab	f	8
+0e259504-a9e4-4b7a-bc89-1539b85546b5	canceled	Отменен	#9e9e9e	f	7
+80659b19-1bf5-466b-8221-bce9ab456efb	new	Новый	#4caf50	t	1
+a708c4b0-e3b8-4480-89bf-2ab23fc54f85	pending	В обработке	#26a69a	t	2
+7d088a66-ded7-448a-a58a-f4bed44a1433	inWork	В работе	#ffeb3b	t	3
 ab91578d-693b-416f-8e77-9210b347f89a	delivering	В доставке	#00bcd4	t	6
-6f29b666-272d-4192-9e67-fe4b87fd799a	rejected	Отклонен	#d50000	t	10
-7d088a66-ded7-448a-a58a-f4bed44a1433	inWork	В работе	#ffeb3b	t	5
-80659b19-1bf5-466b-8221-bce9ab456efb	new	Новый	#00b8d4	f	2
+30a7f022-7e4e-4de9-ad64-788607c09b37	completed	Завершен	#00c853	f	9
+6f29b666-272d-4192-9e67-fe4b87fd799a	rejected	Отклонен	#d50000	f	10
+f2f2b5cd-efc9-4df3-81ec-f834795b1a36	taken	Принят у клиента	#03a9f4	t	4
+1203a5ac-3fcd-443a-a1c5-cf9de24026c3	done	Готов	#fbc02d	t	5
 \.
 
 
 --
--- Data for Name: workers; Type: TABLE DATA; Schema: public; Owner: sysadmin
+-- Data for Name: workers; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
 COPY public.workers (id, "firstName", "lastName", status, "createdAt", "birthDate", "hireDate", "dismissalDate", "ordersDone", "totalOrdersCost", phone, email, password, token, role) FROM stdin;
 5ab3229b-3706-47de-a26f-8479904a1a98	Vasya	Petkin	t	2019-09-12 21:18:58.86325	\N	\N	\N	\N	\N	77777777777	admin@adminmail.net	$2b$08$gWBanUCjEUx1mVEq4uII.OH7P9aqAexhkMam2wjfo.8.XDCAp9n16	eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YWIzMjI5Yi0zNzA2LTQ3ZGUtYTI2Zi04NDc5OTA0YTFhOTgiLCJpYXQiOjE1Njg5NzcxMDMsImV4cCI6MTU2ODk4MDcwM30.eF-YIol_qb--ZJt9b_GvEPbEAh1BqEiMIFSUBWXBKX8	master
-8d6ced26-273f-4887-ac8c-39e8c563f8d4	Gena	Gareev	t	2019-09-11 18:40:59.22013	\N	\N	\N	\N	\N	77772894350	sgsgen@gmail.com	$2b$08$fOdSjRSuLsSklDImfviLH.rToT6cOvTtI/mab7U.OXYKM3QGZDNKi	eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4ZDZjZWQyNi0yNzNmLTQ4ODctYWM4Yy0zOWU4YzU2M2Y4ZDQiLCJpYXQiOjE1Njg5ODc3NjQsImV4cCI6MTU2ODk5MTM2NH0.k1J0-PXR2hj9fpuDJWq3dJ2OHKoHk2Bwc6xPODOd7oQ	admin
-3e732afb-002d-49cf-9364-6a8bcea92c8a	Forest	Gamp	t	2019-09-19 18:10:02.068332	\N	\N	\N	\N	\N	71231231231	sgsgen@gmail.com	$2b$08$mvTsCcWOMFfC/4z2oHRUDOe6tjsPuNQrd3y.f5D/o3saTD8H9N.vC	eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzZTczMmFmYi0wMDJkLTQ5Y2YtOTM2NC02YThiY2VhOTJjOGEiLCJpYXQiOjE1Njg5ODc4NDcsImV4cCI6MTU2ODk5MTQ0N30.BN7BOQSB41LH_yZn_rA5xLj4lqvX3eywj29ekw5lJb0	courier
-f7d5b6bc-018e-46c5-9f5e-0857c0da7c42	James	Bond	t	2019-09-19 16:26:50.515385	\N	\N	\N	\N	\N	75555555555	sgsgen@gmail.com	$2b$08$g9KCNjEJ3P/F16j4wepXCeTzGNODBbSJnLR7tpwsLgY2hUUKlddya	eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJmN2Q1YjZiYy0wMThlLTQ2YzUtOWY1ZS0wODU3YzBkYTdjNDIiLCJpYXQiOjE1Njg4ODg4MTAsImV4cCI6MTU2ODg5MjQxMH0.Tek7hrnff1kcHJSfQ0gIIMTytTS8D8u-Imh8is3QV-8	master
+ff35c2dd-97bc-44b8-bc25-1d756be13fa7	Не 	назначен	t	2019-09-22 15:08:00.375673	\N	\N	\N	\N	\N	70100101101	nobody@nobody.z	$2b$08$rzo3wfsOiAe8JpxhhBzWU.59NVJ6PKu/U/ibFkeSxoge/2a07TvAi	eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJmZjM1YzJkZC05N2JjLTQ0YjgtYmMyNS0xZDc1NmJlMTNmYTciLCJpYXQiOjE1NjkxNDMyODAsImV4cCI6MTU2OTE0Njg4MH0.DBPs29I9qCjv8km3zv135vnzdQqc2Hr09AU695E_htA	nobody
+3e732afb-002d-49cf-9364-6a8bcea92c8a	Forest	Gamp	t	2018-09-19 18:10:02.068	\N	\N	\N	\N	\N	71231231231	sgsgen@gmail.com	$2b$08$mvTsCcWOMFfC/4z2oHRUDOe6tjsPuNQrd3y.f5D/o3saTD8H9N.vC	eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzZTczMmFmYi0wMDJkLTQ5Y2YtOTM2NC02YThiY2VhOTJjOGEiLCJpYXQiOjE1Njk0MTA0MjQsImV4cCI6MTU2OTQxNDAyNH0.GGxAPpaTW5rQXfb03lmsxRtUhfx6QKo8REslFx_TD5o	courier
+f7d5b6bc-018e-46c5-9f5e-0857c0da7c42	James	Bond	t	2019-09-19 16:26:50.515385	\N	\N	\N	\N	\N	75555555555	sgsgen@gmail.com	$2b$08$g9KCNjEJ3P/F16j4wepXCeTzGNODBbSJnLR7tpwsLgY2hUUKlddya	eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJmN2Q1YjZiYy0wMThlLTQ2YzUtOWY1ZS0wODU3YzBkYTdjNDIiLCJpYXQiOjE1Njk1MDA0ODEsImV4cCI6MTU2OTUwNDA4MX0.wAxHauCUWZZBiUtUBmtRyUkVQMZn4Brqov7fWjgDVe8	master
+8d6ced26-273f-4887-ac8c-39e8c563f8d4	Gena	Gareev	t	2019-09-11 18:40:59.22013	\N	\N	\N	\N	\N	77772894350	sgsgen@gmail.com	$2b$08$fOdSjRSuLsSklDImfviLH.rToT6cOvTtI/mab7U.OXYKM3QGZDNKi	eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4ZDZjZWQyNi0yNzNmLTQ4ODctYWM4Yy0zOWU4YzU2M2Y4ZDQiLCJpYXQiOjE1Njk1ODczNDgsImV4cCI6MTU2OTU5MDk0OH0.gU-swn9gEmRjQ5Z51Gnz_19ScMD1DGZe6cPvNmO1Go4	admin
+86891450-bf7a-4d9b-bc93-48080069bddd	Anthony	Stark	t	2019-09-22 22:24:24.987116	\N	\N	\N	\N	\N	71111111111	master@master.z	$2b$08$1K71bIZ/O61RAmKRb092TuvphvZRXv7KV7t4YF9hM35AcyfBy1vlC	eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4Njg5MTQ1MC1iZjdhLTRkOWItYmM5My00ODA4MDA2OWJkZGQiLCJpYXQiOjE1Njk1OTA4NDcsImV4cCI6MTU2OTU5NDQ0N30.PI2eSU9JEvubddgWfXwsSshSMHcmtoMZsWVidDs82NM	master
 \.
 
 
 --
--- Name: cleaningTypes cleaningTypes_id_key; Type: CONSTRAINT; Schema: public; Owner: sysadmin
+-- Name: cleaningTypes cleaningTypes_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public."cleaningTypes"
@@ -313,7 +350,7 @@ ALTER TABLE ONLY public."cleaningTypes"
 
 
 --
--- Name: clients clients_phone_key; Type: CONSTRAINT; Schema: public; Owner: sysadmin
+-- Name: clients clients_phone_key; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.clients
@@ -321,7 +358,7 @@ ALTER TABLE ONLY public.clients
 
 
 --
--- Name: clients clients_pkey; Type: CONSTRAINT; Schema: public; Owner: sysadmin
+-- Name: clients clients_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.clients
@@ -329,7 +366,7 @@ ALTER TABLE ONLY public.clients
 
 
 --
--- Name: orderItems orderItems_id_key; Type: CONSTRAINT; Schema: public; Owner: sysadmin
+-- Name: orderItems orderItems_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public."orderItems"
@@ -337,7 +374,7 @@ ALTER TABLE ONLY public."orderItems"
 
 
 --
--- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: sysadmin
+-- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.orders
@@ -345,7 +382,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- Name: pickupPoints pickupPoints_id_key; Type: CONSTRAINT; Schema: public; Owner: sysadmin
+-- Name: pickupPoints pickupPoints_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public."pickupPoints"
@@ -353,7 +390,7 @@ ALTER TABLE ONLY public."pickupPoints"
 
 
 --
--- Name: statuses statuses_name_key; Type: CONSTRAINT; Schema: public; Owner: sysadmin
+-- Name: statuses statuses_name_key; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.statuses
@@ -361,7 +398,7 @@ ALTER TABLE ONLY public.statuses
 
 
 --
--- Name: statuses statuses_pkey; Type: CONSTRAINT; Schema: public; Owner: sysadmin
+-- Name: statuses statuses_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.statuses
@@ -369,7 +406,7 @@ ALTER TABLE ONLY public.statuses
 
 
 --
--- Name: statuses statuses_title_key; Type: CONSTRAINT; Schema: public; Owner: sysadmin
+-- Name: statuses statuses_title_key; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.statuses
@@ -377,7 +414,7 @@ ALTER TABLE ONLY public.statuses
 
 
 --
--- Name: workers workers_pkey; Type: CONSTRAINT; Schema: public; Owner: sysadmin
+-- Name: workers workers_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.workers
@@ -385,14 +422,14 @@ ALTER TABLE ONLY public.workers
 
 
 --
--- Name: workers_phone_uindex; Type: INDEX; Schema: public; Owner: sysadmin
+-- Name: workers_phone_uindex; Type: INDEX; Schema: public; Owner: admin
 --
 
 CREATE UNIQUE INDEX workers_phone_uindex ON public.workers USING btree (phone);
 
 
 --
--- Name: orderItems orderItems_orderId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: sysadmin
+-- Name: orderItems orderItems_orderId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public."orderItems"
@@ -400,7 +437,7 @@ ALTER TABLE ONLY public."orderItems"
 
 
 --
--- Name: orders orders_clientId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: sysadmin
+-- Name: orders orders_clientId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.orders
@@ -408,7 +445,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- Name: orders orders_courierId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: sysadmin
+-- Name: orders orders_courierId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.orders
@@ -416,7 +453,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- Name: orders orders_masterId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: sysadmin
+-- Name: orders orders_masterId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.orders
@@ -424,7 +461,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- Name: orders orders_statusId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: sysadmin
+-- Name: orders orders_statusId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.orders
