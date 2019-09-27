@@ -9,12 +9,19 @@ const nodemailer = require("nodemailer");
 const createRouter = () => {
     router.get('/orders', async (req, res) => {
         const token = req.get("Authorization");
+        if (!token) {
+            return res.status(401).send({message: "Ошибка аутентификации"});
+        }
         const worker = await db.fetchByToken(token);
+        if (!worker) {
+            return res.status(401).send({message: "Пользователь не найден"});
+        }
 
         let order = await db.fetch('orders_with_status_fields');
         order.rows.sort((a, b) => b.createdAt - a.createdAt);
         let ordersByRole;
         let ordersById;
+
         switch (worker.rows[0].role) {
             case 'courier':
                 ordersById = order.rows
@@ -175,11 +182,22 @@ const createRouter = () => {
         let data = req.body;
         const token = req.get("Authorization");
         const worker = await db.fetchByToken(token);
+        const order = await db.fetch('orders', orderId);
         const workerRole = worker.rows[0].role;
-        //@TODO Добавить проверку на уже взятый заказ
-        if (workerRole === 'master') {
-            data.masterId = worker.rows[0].id;
-        }
+        const workerId = worker.rows[0].id;
+        const defaultWorkerId = 'ff35c2dd-97bc-44b8-bc25-1d756be13fa7';
+        console.log(workerId);
+        console.log(workerId === order.rows[0].masterId);
+        console.log(order.rows[0].masterId);
+        // if (workerRole === 'master') {
+        //     if (order.rows[0].masterId !== defaultWorkerId) {
+        //         return res.status(403).send({message: `Заказ ${orderId.substring(0, 7)} уже взят в работу`});
+        //     }
+        //     if (order.rows[0].masterId !== workerId) {
+        //         return res.status(403).send({message: `Заказ ${orderId.substring(0, 7)} уже взят в работу`});
+        //     }
+        //     data.masterId = worker.rows[0].id;
+        // }
         if (workerRole === 'courier') {
             data.courierId = worker.rows[0].id;
         }

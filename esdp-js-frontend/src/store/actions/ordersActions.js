@@ -29,6 +29,7 @@ export const getOrders = () => {
         return axios.get("/orders").then(response => {
             let data = response.data;
             dispatch(updateOrders(data));
+            console.log('ORDERS UPDATED');
             return response;
         },error => {
             if (error.response && error.response.data) {
@@ -48,6 +49,7 @@ export const putUpdateOrder = (id, order) => {
                 dispatch(setLoading(false));
                 dispatch(getOrders());
             }).catch((error) => {
+                console.log(error);
                 dispatch(openSnack(error.message, 'error'));
                 dispatch(setLoading(false));
             });

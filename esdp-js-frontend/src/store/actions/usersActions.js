@@ -7,17 +7,19 @@ import {
     LOGIN_USER_SUCCESS,
     LOGOUT_USER,
     REGISTER_USER_ERROR,
-    REGISTER_USER_SUCCESS
+    REGISTER_USER_SUCCESS,
+    CONNECTED_USERS,
+    USER_LOGGED_IN,
+    USER_LOGGED_OUT
+
 } from "./actionTypes";
 
 const registerUserSuccess = () => {
     return {type: REGISTER_USER_SUCCESS};
 };
-
 const registerUserError = error => {
     return {type: REGISTER_USER_ERROR, error};
 };
-
 export const registerUser = userData => {
     userData.phone = userData.phone.replace(/[^0-9]/g, '');
     return dispatch => {
@@ -41,14 +43,12 @@ export const registerUser = userData => {
             )
     }
 };
-
 const loginUserSuccess = (user) => {
     return {type: LOGIN_USER_SUCCESS, user};
 };
 const loginUserError = (error) => {
     return {type: LOGIN_USER_ERROR, error};
 };
-
 export const loginUser = userData => {
     userData.phone = userData.phone.replace(/[^0-9]/g, '');
     return dispatch => {
@@ -76,6 +76,16 @@ export const loginUser = userData => {
             ).catch((err) => console.log('err', err));
     }
 };
+
+export const fetchConnectedUsers = users => ({
+    type: CONNECTED_USERS, users
+});
+export const loggedIn = user => ({
+    type: USER_LOGGED_IN, user
+});
+export const loggedOut = (users) => ({
+    type: USER_LOGGED_OUT, users
+});
 
 export const logoutUser = () => {
     return (dispatch, getState) => {

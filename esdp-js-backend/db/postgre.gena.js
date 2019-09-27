@@ -8,7 +8,7 @@ const pool = new Pool({
     port: 5432,
 });
 pool.on('connect', () => {
-    console.log('connected to the Shoeser');
+    console.log('connected to the DB Shoeser');
 });
 
 module.exports = {
@@ -36,7 +36,8 @@ module.exports = {
     fetch: async (table, id) => {
         let sqlString = `SELECT * FROM "${table}"`;
         if (id) {
-            sqlString = `SELECT * FROM "${table}" WHERE ("${table}".id = ${id})`;
+            sqlString = `SELECT * FROM "${table}" WHERE ("${table}".id = '${id}')`;
+            console.log(sqlString);
         }
         try {
             const res = await pool.query(sqlString);
