@@ -24,6 +24,8 @@ import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import TableRow from "@material-ui/core/TableRow";
 import OrdersTable from "../components/OrdersTable/OrdersTable";
 import {getWorkers} from "../store/actions/workersActions";
+import {fetchConnectedUsers, loggedIn, loggedOut} from "../store/actions/usersActions";
+import Box from "@material-ui/core/Box";
 
 
 const useStyles = makeStyles(theme => ({
@@ -57,6 +59,7 @@ const Orders = props => {
   React.useEffect(() => {
   }, [props.statuses]);
 
+
   useEffect(() => {
     props.getStatuses();
   }, []);
@@ -84,6 +87,9 @@ const Orders = props => {
     updateOrders,
     putUpdateOrder,
     staticContext,
+    onLoggedIn,
+    onLoggedOut,
+    onFetchConnectedUsers,
     ...rest
   } = props;
   const classes = useStyles();
@@ -110,7 +116,7 @@ const Orders = props => {
       <Divider />
       <CardContent className={classes.content}>
         <PerfectScrollbar>
-          <div className={classes.inner}>
+          <Box className={classes.inner}>
             <Table>
               <TableHead>
                 <TableRow>
@@ -157,9 +163,12 @@ const Orders = props => {
                 updateOrders={props.updateOrders}
                 putUpdateOrder={props.putUpdateOrder}
                 getOrders={props.getOrders}
+                onLoggedIn={props.onLoggedIn}
+                onLoggedOut={props.onLoggedOut}
+                onFetchConnectedUsers={props.onFetchConnectedUsers}
               />
             </Table>
-          </div>
+          </Box>
         </PerfectScrollbar>
       </CardContent>
       <Divider />
@@ -193,7 +202,10 @@ const mapDispatchToProps = dispatch => {
     getWorkers: () => dispatch(getWorkers()),
     getStatuses: () => dispatch(getStatuses()),
     updateOrders: (order) => dispatch(updateOrders(order)),
-    putUpdateOrder: (id, order) => dispatch(putUpdateOrder(id, order))
+    putUpdateOrder: (id, order) => dispatch(putUpdateOrder(id, order)),
+    onLoggedIn: (user) => dispatch(loggedIn(user)),
+    onLoggedOut: (users) => dispatch(loggedOut(users)),
+    onFetchConnectedUsers: users => dispatch(fetchConnectedUsers(users)),
   };
 };
 

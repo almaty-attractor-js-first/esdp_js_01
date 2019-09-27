@@ -4,6 +4,11 @@ const db = require("../db/postgre");
 
 
 const createRouter = () => {
+    router.get('/', async (req, res) => {
+        let clients = await db.fetch('clients');
+        clients.rows.sort((a, b) => a.createdAt - b.createdAt);
+        res.send(clients.rows);
+    });
     router.post('/', async (req, res) => {
         const phone = req.body.phone;
         try {
