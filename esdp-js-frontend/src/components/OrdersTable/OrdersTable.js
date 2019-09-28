@@ -20,6 +20,7 @@ class OrdersTable extends Component {
     if (this.websocket) {
       this.websocket && this.websocket.close();
     }
+    console.log('stop');
   };
 
   start = (token) => {
@@ -70,6 +71,7 @@ class OrdersTable extends Component {
         this.props.history.push('/login')
       } else {
         const token = this.props.user.token;
+        console.log('start');
 
         this.start(token);
       }

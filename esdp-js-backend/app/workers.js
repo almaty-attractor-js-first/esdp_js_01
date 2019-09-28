@@ -37,17 +37,17 @@ const createRouter = () => {
         if (req.body.phone.length > 0) phone = req.body.phone;
         try {
             if (!phone) {
-                res.status(400).send({message: 'Введите номер телефона'});
+                return res.status(400).send({message: 'Введите номер телефона'});
             }
             const data = await db.fetchByPhone('workers', phone);
             const user = data.rows[0];
             if (!user) {
-                res.status(400).send({message: 'Пользователь не найден'});
+                return res.status(400).send({message: 'Пользователь не найден'});
             }
             const password = user.password;
             const isMatch = await Helper.comparePassword(password, req.body.password);
             if (!isMatch) {
-                res.status(400).send({message: "Неверный пароль"});
+                return res.status(400).send({message: "Неверный пароль"});
             }
             user.token = Helper.generateToken(user.id);
             const token = {token: user.token};
