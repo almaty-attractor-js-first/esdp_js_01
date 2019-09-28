@@ -1,7 +1,7 @@
 import {TableBody, TableCell} from "@material-ui/core";
 import TableRow from '@material-ui/core/TableRow';
 import React, {Component} from "react";
-import config from '../../config.gena'
+import config from '../../config'
 import {withRouter} from "react-router";
 import AdminControls from "./AdminControls";
 import MasterControls from "./MasterControls";
@@ -68,6 +68,7 @@ class OrdersTable extends Component {
         this.props.history.push('/login')
       } else {
         const token = this.props.user.token;
+
         this.start(token);
       }
     };
