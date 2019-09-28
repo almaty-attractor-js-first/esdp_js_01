@@ -5,9 +5,10 @@ const QRCode = require('qrcode');
 const db = require("../db/postgre");
 const fs = require('fs');
 const nodemailer = require("nodemailer");
+const auth = require('../middleware/auth');
 
 const createRouter = () => {
-    router.get('/orders', async (req, res) => {
+    router.get('/orders', auth, async (req, res) => {
         const token = req.get("Authorization");
         if (!token) {
             return res.status(401).send({message: "Ошибка аутентификации"});
@@ -16,31 +17,33 @@ const createRouter = () => {
         if (!worker) {
             return res.status(401).send({message: "Пользователь не найден"});
         }
-
         let order = await db.fetch('orders_with_status_fields');
         order.rows.sort((a, b) => b.createdAt - a.createdAt);
         let ordersByRole;
         let ordersById;
 
-        switch (worker.rows[0].role) {
-            case 'courier':
-                ordersById = order.rows
-                    .filter(order => order.courierId === worker.rows[0].id || order.courierId === 'ff35c2dd-97bc-44b8-bc25-1d756be13fa7');
-                ordersByRole = ordersById
-                    .filter(order => order.statusName === 'new' || order.statusName === 'taken' || order.statusName === 'done');
-                break;
-            case 'master':
-                ordersById = order.rows
-                    .filter(order => order.masterId === worker.rows[0].id || order.masterId === 'ff35c2dd-97bc-44b8-bc25-1d756be13fa7');
-                ordersByRole = ordersById
-                    .filter(order => order.statusName === 'pending' || order.statusName === 'inWork');
-                break;
-            case 'admin':
-                ordersByRole = order.rows;
-                break;
-            default:
-                throw new Error('Ошибка доступа');
+        if (worker.rows[0]) {
+            switch (worker.rows[0].role) {
+                case 'courier':
+                    ordersById = order.rows
+                        .filter(order => order.courierId === worker.rows[0].id || order.courierId === 'ff35c2dd-97bc-44b8-bc25-1d756be13fa7');
+                    ordersByRole = ordersById
+                        .filter(order => order.statusName === 'new' || order.statusName === 'taken' || order.statusName === 'done');
+                    break;
+                case 'master':
+                    ordersById = order.rows
+                        .filter(order => order.masterId === worker.rows[0].id || order.masterId === 'ff35c2dd-97bc-44b8-bc25-1d756be13fa7');
+                    ordersByRole = ordersById
+                        .filter(order => order.statusName === 'pending' || order.statusName === 'inWork');
+                    break;
+                case 'admin':
+                    ordersByRole = order.rows;
+                    break;
+                default:
+                    throw new Error('Ошибка доступа');
+            }
         }
+
         res.send(ordersByRole);
     });
     router.get('/orders/client', async (req, res) => {
@@ -177,7 +180,7 @@ const createRouter = () => {
         
         
     });
-    router.put('/orders/:id', async (req, res) => {
+    router.put('/orders/:id', auth, async (req, res) => {
         const orderId = req.params.id;
         let data = req.body;
         const token = req.get("Authorization");
@@ -186,9 +189,6 @@ const createRouter = () => {
         const workerRole = worker.rows[0].role;
         const workerId = worker.rows[0].id;
         const defaultWorkerId = 'ff35c2dd-97bc-44b8-bc25-1d756be13fa7';
-        console.log(workerId);
-        console.log(workerId === order.rows[0].masterId);
-        console.log(order.rows[0].masterId);
         // if (workerRole === 'master') {
         //     if (order.rows[0].masterId !== defaultWorkerId) {
         //         return res.status(403).send({message: `Заказ ${orderId.substring(0, 7)} уже взят в работу`});

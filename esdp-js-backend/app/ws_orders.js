@@ -30,7 +30,7 @@ const createRouter = () => {
 
         const id = req.get('sec-websocket-key');
         activeConnections[id] = ws;
-        activeConnections[id].connectedUser = worker;
+        activeConnections[id].connectedUser = worker.rows[0];
         console.log('ACTIVE_CONNECTIONS', Object.keys(activeConnections));
         //
         Object

@@ -65,9 +65,7 @@ const Orders = props => {
   }, []);
 
   useEffect(() => {
-    console.time('didMountOrders');
     props.getOrders();
-    console.timeEnd('didMountOrders');
   }, []);
 
   useEffect(() => {
@@ -157,6 +155,7 @@ const Orders = props => {
                 loading={loading}
                 orders={orders}
                 user={props.user}
+                users={props.users}
                 workers={props.workers}
                 statuses={props.statuses}
                 classes={classes}
@@ -190,6 +189,7 @@ const mapStateToProps = state => {
   return {
     loading: state.orders.loading,
     user: state.users.user,
+    users: state.users.users,
     orders: state.orders.orders,
     workers: state.workersReducer.workers,
     statuses: state.statusesReducer.statuses

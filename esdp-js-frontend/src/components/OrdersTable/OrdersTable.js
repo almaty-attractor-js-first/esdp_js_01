@@ -1,6 +1,7 @@
 import {TableBody, TableCell} from "@material-ui/core";
 import TableRow from '@material-ui/core/TableRow';
 import React, {Component} from "react";
+import config from '../../config.gena'
 import {withRouter} from "react-router";
 import AdminControls from "./AdminControls";
 import MasterControls from "./MasterControls";
@@ -16,11 +17,13 @@ class OrdersTable extends Component {
   };
 
   componentWillUnmount() {
-    this.websocket && this.websocket.close();
+    if (this.websocket) {
+      this.websocket && this.websocket.close();
+    }
   };
 
   start = (token) => {
-    this.websocket = new WebSocket(`ws://localhost:8000/?token=${token}`);
+    this.websocket = new WebSocket(`${config.wsURL}/?token=${token}`);
 
     this.websocket.onmessage = (message) => {
       const decodedMessage = JSON.parse(message.data);
@@ -31,6 +34,7 @@ class OrdersTable extends Component {
           console.log(decodedMessage.message);
           break;
         case USER_LOGGED_IN:
+          console.log('USER', decodedMessage.user);
           this.props.onLoggedIn(decodedMessage.user);
           break;
         case USER_LOGGED_OUT:
@@ -42,6 +46,10 @@ class OrdersTable extends Component {
         default:
           return {error: 'Unknown message type'}
       }
+    };
+
+    this.websocket.onerror = (error) => {
+      console.log('ERROR', error);
     };
 
     this.websocket.onopen = () => {
@@ -60,7 +68,6 @@ class OrdersTable extends Component {
         this.props.history.push('/login')
       } else {
         const token = this.props.user.token;
-
         this.start(token);
       }
     };

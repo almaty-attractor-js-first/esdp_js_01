@@ -96,7 +96,8 @@ module.exports = {
 
     fetchByToken: async (token) => {
         let sqlString = `SELECT * FROM "workers" WHERE ("workers".token = '${token}')`;
-        console.log(sqlString);
+        console.log('token >>>>>>', token);
+        console.log('sqlString >>>>>>> ', sqlString);
         try {
             const res = await pool.query(sqlString);
             return res;
