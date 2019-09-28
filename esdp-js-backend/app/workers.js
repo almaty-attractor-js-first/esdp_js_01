@@ -66,10 +66,14 @@ const createRouter = () => {
         const token = req.get("Authorization");
         const success = {message: "Logged out!"};
         if(!token) return res.send(success);
-        const user = await db.fetchByToken(token);
+        const user = await db.fetchBy('workers', 'id', token);
         if(!user) return res.send(success);
-        const newToken = {token: Helper.generateToken(user.id)};
-        db.update('workers', newToken, user.rows[0].id).then(() => {
+        let userId;
+        if (user.rows[0]) {
+            userId = user.rows[0].id;
+        }
+        const newToken = {token: uuid()};
+        db.update('workers', newToken, userId).then(() => {
             res.send(success);
         });
     });

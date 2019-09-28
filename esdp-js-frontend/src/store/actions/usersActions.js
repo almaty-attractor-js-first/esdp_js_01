@@ -88,12 +88,8 @@ export const loggedOut = (users) => ({
 });
 
 export const logoutUser = () => {
-    return (dispatch, getState) => {
-        const token = getState().users.user.token;
-        const headers = {
-            Authorization: token
-        };
-        axios.delete("/workers/sessions", {headers}).then(response => {
+    return (dispatch) => {
+        axios.delete("/workers/sessions").then(response => {
             dispatch({type: LOGOUT_USER});
             dispatch(openSnack('Сессия завершена', 'info'));
             dispatch(push("/"));

@@ -69,7 +69,7 @@ axios.interceptors.response.use(
 
 axios.interceptors.request.use(config => {
   try {
-    // config.headers.authorization = store.getState().users.user.token;
+      config.headers['authorization'] = store.getState().users.user.token;
   } catch {
     // do nothing
   }

@@ -34,14 +34,16 @@ class OrdersTable extends Component {
           console.log(decodedMessage.message);
           break;
         case USER_LOGGED_IN:
-          console.log('USER', decodedMessage.user);
+          console.log('LOGGED_IN', decodedMessage.user);
           this.props.onLoggedIn(decodedMessage.user);
           break;
         case USER_LOGGED_OUT:
-          this.props.onLoggedOut(decodedMessage.connectedUsers);
+            console.log('LOGGED_OUT', decodedMessage.connectedUsers);
+            this.props.onLoggedOut(decodedMessage.connectedUsers);
           break;
         case CONNECTED_USERS:
-          this.props.onFetchConnectedUsers(decodedMessage.connectedUsers);
+            console.log('CONNECTED_USERS', decodedMessage.connectedUsers);
+            this.props.onFetchConnectedUsers(decodedMessage.connectedUsers);
           break;
         default:
           return {error: 'Unknown message type'}

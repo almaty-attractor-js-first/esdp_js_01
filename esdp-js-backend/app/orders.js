@@ -8,15 +8,20 @@ const nodemailer = require("nodemailer");
 const auth = require('../middleware/auth');
 
 const createRouter = () => {
-    router.get('/orders', auth, async (req, res) => {
+    router.get('/orders', async (req, res) => {
         const token = req.get("Authorization");
+
         if (!token) {
+            console.log('TOKEN>>>', token);
             return res.status(401).send({message: "Ошибка аутентификации"});
         }
         const worker = await db.fetchByToken(token);
+
         if (!worker) {
+            console.log('WORKER>>>', worker);
             return res.status(401).send({message: "Пользователь не найден"});
         }
+
         let order = await db.fetch('orders_with_status_fields');
         order.rows.sort((a, b) => b.createdAt - a.createdAt);
         let ordersByRole;

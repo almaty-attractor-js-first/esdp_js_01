@@ -14,7 +14,6 @@ pool.on('connect', () => {
 module.exports = {
     save: async (object, table) => {
         const bodyKeys = Object.keys(object);
-        console.log(bodyKeys);
         const bodyValues = Object.values(object);
         const bodyKeysWithRegistr = bodyKeys.map((key, index) => {
             return `"${key}"`;
@@ -24,7 +23,6 @@ module.exports = {
         });
         const sqlString = `INSERT INTO "${table}"(${bodyKeysWithRegistr.join(', ')}) VALUES(${VALUES.join(', ')}) RETURNING *`;
         try {
-            console.log(sqlString);
             const res = await pool.query(sqlString, bodyValues);
             return (res.rows[0]);
         } catch (err) {
@@ -37,7 +35,6 @@ module.exports = {
         let sqlString = `SELECT * FROM "${table}"`;
         if (id) {
             sqlString = `SELECT * FROM "${table}" WHERE ("${table}".id = '${id}')`;
-            console.log(sqlString);
         }
         try {
             const res = await pool.query(sqlString);
@@ -63,7 +60,6 @@ module.exports = {
 
     saveUser: async (object) => {
         const bodyKeys = Object.keys(object);
-        console.log(bodyKeys);
         const bodyValues = Object.values(object);
         const bodyKeysWithRegister = bodyKeys.map((key) => {
             return `"${key}"`;
@@ -73,7 +69,6 @@ module.exports = {
         });
         const sql = `INSERT INTO "workers"(${bodyKeysWithRegister.join(', ')}) VALUES(${VALUES.join(', ')}) RETURNING *`;
         try {
-            console.log(sql);
             const res = await pool.query(sql, bodyValues);
         } catch (err) {
             console.log(err.stack);
@@ -84,7 +79,6 @@ module.exports = {
 
     fetchByPhone: async (table, phone) => {
         let sqlString = `SELECT * FROM "${table}" WHERE ("${table}".phone = '${phone}')`;
-        console.log(sqlString);
         try {
             const res = await pool.query(sqlString);
             return res;
@@ -96,8 +90,7 @@ module.exports = {
 
     fetchByToken: async (token) => {
         let sqlString = `SELECT * FROM "workers" WHERE ("workers".token = '${token}')`;
-        console.log('token >>>>>>', token);
-        console.log('sqlString >>>>>>> ', sqlString);
+
         try {
             const res = await pool.query(sqlString);
             return res;
@@ -115,7 +108,6 @@ module.exports = {
         }
         str = str.join(", ");
         let sqlString = `UPDATE "${table}" SET ${str} WHERE "${table}".id = '${id}' RETURNING *`;
-        console.log(sqlString);
         try {
             return res = await pool.query(sqlString);
         } catch (err) {

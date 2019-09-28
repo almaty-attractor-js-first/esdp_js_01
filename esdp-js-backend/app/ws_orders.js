@@ -8,7 +8,6 @@ let connectedUsers;
 const createRouter = () => {
     router.ws('/', async function(ws, req) {
         const token = req.query.token;
-        console.log('TOKEN', token);
         if (!token) {
             console.log('NO TOKEN');
             ws.send(JSON.stringify({
@@ -30,7 +29,7 @@ const createRouter = () => {
 
         const id = req.get('sec-websocket-key');
         activeConnections[id] = ws;
-        activeConnections[id].connectedUser = worker.rows[0];
+        activeConnections[id].connectedUser = worker.rows[0].firstName;
         console.log('ACTIVE_CONNECTIONS', Object.keys(activeConnections));
         //
         Object
@@ -54,49 +53,54 @@ const createRouter = () => {
 
 
         ws.on('message', function(msg) {
-            console.log('msg', msg);
-            let decodedMessage;
             try {
-                decodedMessage = JSON.parse(msg);
-            } catch (e) {
-                return ws.send(JSON.stringify({
-                    type: 'ERROR',
-                    message: 'Message is not JSON'
-                }));
+                console.log('msg', msg);
+                let decodedMessage;
+                try {
+                    decodedMessage = JSON.parse(msg);
+                } catch (e) {
+                    return ws.send(JSON.stringify({
+                        type: 'ERROR',
+                        message: 'Message is not JSON'
+                    }));
+                }
+                console.log('DECODED MESSAGE', decodedMessage);
+                if (decodedMessage.type === 'WS_TEST_CLIENT') {
+                    Object
+                        .values(activeConnections)
+                        .forEach(client => (
+                            client.send(JSON.stringify({
+                                type: 'WS_TEST_SERVER',
+                                message: 'TESTING_SUCCESS'
+                            }))
+                        ));
+
+                }
+            } catch {
+                console.log('MESSAGE_ERROR')
             }
-            console.log('DECODED MESSAGE', decodedMessage);
-            if (decodedMessage.type === 'WS_TEST_CLIENT') {
+        });
+
+        ws.on('close', () => {
+            try {
+                delete activeConnections[id];
+                connectedUsers =
+                    Object
+                        .keys(activeConnections)
+                        .map(key => (activeConnections[key].connectedUser));
+
                 Object
                     .values(activeConnections)
                     .forEach(client => (
                         client.send(JSON.stringify({
-                            type: 'WS_TEST_SERVER',
-                            message: 'TESTING_SUCCESS'
+                            type: 'USER_LOGGED_OUT',
+                            connectedUsers
                         }))
                     ));
-
+                console.log('NEW_ACTIVE_CONNECTION', Object.keys(activeConnections));
+            } catch {
+                console.log('LOGOUT_ERROR')
             }
-
-
-        });
-
-        ws.on('close', () => {
-            delete activeConnections[id];
-            connectedUsers =
-                Object
-                    .keys(activeConnections)
-                    .map(key => (activeConnections[key].connectedUser));
-
-            Object
-                .values(activeConnections)
-                .forEach(client => (
-                    client.send(JSON.stringify({
-                        type: 'USER_LOGGED_OUT',
-                        connectedUsers
-                    }))
-                ));
-            console.log('NEW_ACTIVE_CONNECTION', Object.keys(activeConnections));
-
         });
 });
 
