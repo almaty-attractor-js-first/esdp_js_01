@@ -16,15 +16,13 @@ class OrdersTable extends Component {
     isPrivateMessage: false
   };
 
-  componentWillUnmount() {
-    if (this.websocket) {
-      this.websocket && this.websocket.close();
-    }
-    console.log('stop');
-  };
+  readyState;
+
 
   start = (token) => {
+    console.log('token', token);
     this.websocket = new WebSocket(`${config.wsURL}/?token=${token}`);
+    this.readyState = this.websocket.readyState;
 
     this.websocket.onmessage = (message) => {
       const decodedMessage = JSON.parse(message.data);
@@ -32,14 +30,17 @@ class OrdersTable extends Component {
       switch (decodedMessage.type) {
         case WS_TEST_SERVER:
           this.props.getOrders();
+          console.log('WS_TEST_SERVER', decodedMessage.message);
+          break;
+        case 'ERROR':
           console.log(decodedMessage.message);
           break;
         case USER_LOGGED_IN:
-          console.log('LOGGED_IN', decodedMessage.user);
+          console.log('USER_LOGGED_IN', decodedMessage.user);
           this.props.onLoggedIn(decodedMessage.user);
           break;
         case USER_LOGGED_OUT:
-            console.log('LOGGED_OUT', decodedMessage.connectedUsers);
+            console.log('USER_LOGGED_OUT', decodedMessage.connectedUsers);
             this.props.onLoggedOut(decodedMessage.connectedUsers);
           break;
         case CONNECTED_USERS:
@@ -51,31 +52,42 @@ class OrdersTable extends Component {
       }
     };
 
-    this.websocket.onerror = (error) => {
-      console.log('ERROR', error);
-    };
-
     this.websocket.onopen = () => {
       console.log('connected');
+      console.log('READYSTATE', this.readyState);
     };
 
-    this.websocket.onclose = () => {
-      console.log('connection lost');
-      setTimeout(() => {this.start(token)}, 5000);
+    this.websocket.onclose = (event) => {
+      console.log('connection lost', event.reason);
+      setTimeout(() => {this.start(token)}, 3000);
+      console.log('READYSTATE', this.readyState);
+    };
 
-    }
+    this.websocket.onerror = (err) => {
+      console.error('Socket encountered error: ', err.message, 'Closing socket');
+      this.websocket.close();
+      console.log('READYSTATE', this.readyState);
+    };
   };
 
   componentDidMount() {
-      if (!this.props.user) {
-        this.props.history.push('/login')
-      } else {
+    if (!this.props.user) {
+
+      this.props.history.push('/login')
+    } else {
         const token = this.props.user.token;
         console.log('start');
-
         this.start(token);
       }
-    };
+  };
+
+  componentWillUnmount() {
+    if (this.websocket) {
+      this.websocket && this.websocket.close();
+    }
+    console.log('stop');
+    this.props.onFetchConnectedUsers([]);
+  };
 
   handleChange = (event, id) => {
     const _tempOrders = [...this.props.orders];
@@ -94,14 +106,16 @@ class OrdersTable extends Component {
     this.props.putUpdateOrder(id, {[event.target.name]: event.target.checked});
   };
   handleClick = (id, newStatusId) => {
-    this.props.putUpdateOrder(id, {statusId: newStatusId});
-    let message = JSON.stringify({
-      type: 'WS_TEST_CLIENT',
-      message: 'TESTING...'
-    });
-
-    this.websocket.send(message);
-    this.setState({message: ''});
+    this.props.putUpdateOrder(id, {statusId: newStatusId})
+        .then(res => console.log('SUCCESS', res))
+        .then(() => {
+          let message = JSON.stringify({
+            type: 'WS_TEST_CLIENT',
+            message: 'TESTING...'
+          });
+          this.websocket.send(message);
+          this.setState({message: ''});
+        });
     //@TODO Повесить на промис
   };
 

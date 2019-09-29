@@ -26,18 +26,20 @@ const createRouter = () => {
             }));
             return ws.close();
         }
-        console.log(worker.rows);
-        const id = req.get('sec-websocket-key');
-        activeConnections[id] = ws;
-        activeConnections[id].connectedUser = worker.rows;
-        // console.log('ACTIVE_CONNECTIONS', Object.keys(activeConnections));
+        if (token) {
+            if (!(token in activeConnections)) {
+                activeConnections[token] = ws;
+                activeConnections[token].connectedUser = worker.rows;
+                console.log('ACTIVE_CONNECTIONS', Object.keys(activeConnections));
+            }
+        }
         //
         Object
             .values(activeConnections)
             .forEach(client => (
                 client.send(JSON.stringify({
                     type: 'USER_LOGGED_IN',
-                    user: activeConnections[id].connectedUser
+                    user: activeConnections[token].connectedUser
                 }))
             ));
 
@@ -69,11 +71,12 @@ const createRouter = () => {
                     Object
                         .values(activeConnections)
                         .forEach(client => {
-                            console.log(client);
+                            console.log(client.connectedUser);
                             client.send(JSON.stringify({
                                 type: 'WS_TEST_SERVER',
                                 message: 'TESTING_SUCCESS'
-                            }))
+                            }));
+                            console.log('SENDING');
                         });
 
                 }
@@ -83,25 +86,25 @@ const createRouter = () => {
         });
 
         ws.on('close', () => {
-            // try {
-            //     delete activeConnections[id];
-            //     connectedUsers =
-            //         Object
-            //             .keys(activeConnections)
-            //             .map(key => (activeConnections[key].connectedUser));
-            //
-            //     Object
-            //         .values(activeConnections)
-            //         .forEach(client => (
-            //             client.send(JSON.stringify({
-            //                 type: 'USER_LOGGED_OUT',
-            //                 connectedUsers
-            //             }))
-            //         ));
-            //     console.log('NEW_ACTIVE_CONNECTION', Object.keys(activeConnections));
-            // } catch {
-            //     console.log('LOGOUT_ERROR')
-            // }
+            try {
+                delete activeConnections[token];
+                connectedUsers =
+                    Object
+                        .keys(activeConnections)
+                        .map(key => (activeConnections[key].connectedUser));
+
+                Object
+                    .values(activeConnections)
+                    .forEach(client => (
+                        client.send(JSON.stringify({
+                            type: 'USER_LOGGED_OUT',
+                            connectedUsers
+                        }))
+                    ));
+                console.log('NEW_ACTIVE_CONNECTION', Object.keys(activeConnections));
+            } catch {
+                console.log('LOGOUT_ERROR')
+            }
         });
 });
 

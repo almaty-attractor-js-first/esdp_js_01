@@ -26,11 +26,12 @@ export const updateCurrentOrder = orderId => {
 
 export const getOrders = () => {
     return dispatch => {
-        return axios.get("/orders").then(response => {
-            let data = response.data;
-            dispatch(updateOrders(data));
-            console.log('ORDERS UPDATED');
-            return response;
+        return axios.get("/orders")
+            .then(response => {
+                let data = response.data;
+                dispatch(updateOrders(data));
+                console.log('ORDERS UPDATED');
+                return response;
         },error => {
             if (error.response && error.response.data) {
             } else {
@@ -44,10 +45,11 @@ export const putUpdateOrder = (id, order) => {
     return dispatch => {
         dispatch(setLoading(true));
         return axios.put(`/orders/${id}`, order )
-            .then(res => {
-                dispatch(openSnack(res.data.message, 'info'));
+            .then(response => {
+                dispatch(openSnack(response.data.message, 'info'));
                 dispatch(setLoading(false));
                 dispatch(getOrders());
+                return response;
             }).catch((error) => {
                 console.log(error);
                 dispatch(openSnack(error.message, 'error'));
