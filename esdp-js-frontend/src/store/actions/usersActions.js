@@ -77,16 +77,6 @@ export const loginUser = userData => {
     }
 };
 
-export const fetchConnectedUsers = users => ({
-    type: CONNECTED_USERS, users
-});
-export const loggedIn = user => ({
-    type: USER_LOGGED_IN, user
-});
-export const loggedOut = (users) => ({
-    type: USER_LOGGED_OUT, users
-});
-
 export const logoutUser = () => {
     return (dispatch) => {
         axios.delete("/workers/sessions").then(response => {

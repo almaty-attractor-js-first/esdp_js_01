@@ -6,7 +6,7 @@ import {withRouter} from "react-router";
 import AdminControls from "./AdminControls";
 import MasterControls from "./MasterControls";
 import Tooltip from "@material-ui/core/Tooltip";
-import {CONNECTED_USERS, USER_LOGGED_IN, USER_LOGGED_OUT, WS_TEST_SERVER} from "../../store/actions/actionTypes";
+import {WS_TEST_SERVER} from "../../store/actions/actionTypes";
 
 class OrdersTable extends Component {
 
@@ -15,12 +15,11 @@ class OrdersTable extends Component {
     author: null,
     isPrivateMessage: false
   };
-
+  interval;
   readyState;
 
 
   start = (token) => {
-    console.log('token', token);
     this.websocket = new WebSocket(`${config.wsURL}/?token=${token}`);
     this.readyState = this.websocket.readyState;
 
@@ -35,31 +34,20 @@ class OrdersTable extends Component {
         case 'ERROR':
           console.log(decodedMessage.message);
           break;
-        case USER_LOGGED_IN:
-          console.log('USER_LOGGED_IN', decodedMessage.user);
-          this.props.onLoggedIn(decodedMessage.user);
-          break;
-        case USER_LOGGED_OUT:
-            console.log('USER_LOGGED_OUT', decodedMessage.connectedUsers);
-            this.props.onLoggedOut(decodedMessage.connectedUsers);
-          break;
-        case CONNECTED_USERS:
-            console.log('CONNECTED_USERS', decodedMessage.connectedUsers);
-            this.props.onFetchConnectedUsers(decodedMessage.connectedUsers);
-          break;
         default:
           return {error: 'Unknown message type'}
       }
     };
 
     this.websocket.onopen = () => {
+      clearInterval(this.interval);
       console.log('connected');
       console.log('READYSTATE', this.readyState);
     };
 
     this.websocket.onclose = (event) => {
+      this.interval = setInterval(() => {this.start(token); console.log('restart')}, 1000);
       console.log('connection lost', event.reason);
-      setTimeout(() => {this.start(token)}, 3000);
       console.log('READYSTATE', this.readyState);
     };
 
@@ -82,11 +70,9 @@ class OrdersTable extends Component {
   };
 
   componentWillUnmount() {
-    if (this.websocket) {
-      this.websocket && this.websocket.close();
-    }
+    clearInterval(this.interval);
+    this.websocket && this.websocket.close();
     console.log('stop');
-    this.props.onFetchConnectedUsers([]);
   };
 
   handleChange = (event, id) => {
@@ -124,7 +110,7 @@ class OrdersTable extends Component {
 
     return (
         <TableBody >
-          {
+          {this.props.orders ?
             this.props.orders.map((order, index) => (
                 <TableRow
                     hover
@@ -154,7 +140,7 @@ class OrdersTable extends Component {
                       : null
                   }
                 </TableRow>
-            ))
+            )) : null
           }
         </TableBody>
 

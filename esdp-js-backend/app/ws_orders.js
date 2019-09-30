@@ -3,7 +3,6 @@ const router = express.Router();
 const db = require("../db/postgre");
 
 let activeConnections = {};
-let connectedUsers;
 
 const createRouter = () => {
     router.ws('/', async function(ws, req) {
@@ -34,23 +33,6 @@ const createRouter = () => {
             }
         }
         //
-        Object
-            .values(activeConnections)
-            .forEach(client => (
-                client.send(JSON.stringify({
-                    type: 'USER_LOGGED_IN',
-                    user: activeConnections[token].connectedUser
-                }))
-            ));
-
-        connectedUsers = Object
-            .keys(activeConnections)
-            .map(key => (activeConnections[key].connectedUser));
-
-        ws.send(JSON.stringify({
-            type: 'CONNECTED_USERS',
-            connectedUsers
-        }));
 
 
 
@@ -88,19 +70,6 @@ const createRouter = () => {
         ws.on('close', () => {
             try {
                 delete activeConnections[token];
-                connectedUsers =
-                    Object
-                        .keys(activeConnections)
-                        .map(key => (activeConnections[key].connectedUser));
-
-                Object
-                    .values(activeConnections)
-                    .forEach(client => (
-                        client.send(JSON.stringify({
-                            type: 'USER_LOGGED_OUT',
-                            connectedUsers
-                        }))
-                    ));
                 console.log('NEW_ACTIVE_CONNECTION', Object.keys(activeConnections));
             } catch (e) {
                 console.log('LOGOUT_ERROR')

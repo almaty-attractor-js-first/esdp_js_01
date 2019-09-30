@@ -203,9 +203,6 @@ const mapDispatchToProps = dispatch => {
     getStatuses: () => dispatch(getStatuses()),
     updateOrders: (order) => dispatch(updateOrders(order)),
     putUpdateOrder: (id, order) => dispatch(putUpdateOrder(id, order)),
-    onLoggedIn: (user) => dispatch(loggedIn(user)),
-    onLoggedOut: (users) => dispatch(loggedOut(users)),
-    onFetchConnectedUsers: users => dispatch(fetchConnectedUsers(users)),
   };
 };
 
