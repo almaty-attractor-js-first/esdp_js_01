@@ -75,10 +75,18 @@ const createRouter = () => {
         orderData.courierId = "ff35c2dd-97bc-44b8-bc25-1d756be13fa7"; //@TODO Переделать на "name" курьера!!!
         let clientId;
         //создаем клиента
-        const result = await db.fetchByPhone('clients', orderData.phone);
-        if (result.rows[0]) {
+        const client = await db.fetchByPhone('clients', orderData.phone);
+        if (client.rows[0]) {
             console.log("Client already exists, it's ok, creating new order for him");
-            clientId = result.rows[0].id;
+            clientId = client.rows[0].id;
+            const clientData = {
+                address: orderData.address,
+                email: orderData.email,
+                firstName: orderData.firstName,
+                lastName: orderData.lastName,
+                middleName: orderData.middleName,
+            };
+            await db.update('clients', clientData, clientId);
         } else {
             const clientData = {
                 id: uuid(),
@@ -142,7 +150,6 @@ const createRouter = () => {
                 console.log(`file ${orderId}file.png удалён`);
             });
         });
-
         async function mailer(){
             let transporter = nodemailer.createTransport({
                 host: "smtp.yandex.com",
@@ -175,7 +182,6 @@ const createRouter = () => {
             console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
             // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
         }
-        
         if (!(completedOrder instanceof Error))  {
             orderData.createdAt = await db.fetch('orders', orderData.id);
             res.send(orderData);
