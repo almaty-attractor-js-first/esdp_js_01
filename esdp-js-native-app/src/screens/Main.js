@@ -1,8 +1,7 @@
 import React from 'react';
 import { Container, Spinner, Content } from 'native-base';
-import HeaderTitleSubtitleExample from "../components/Header";
+import HeaderApp from "../components/Header";
 import FooterTabsExample from "../components/Footer";
-import FABExample from "../components/FloatingButton";
 import ListItems from "../components/ListItems";
 
 class Main extends React.Component {
@@ -12,7 +11,7 @@ class Main extends React.Component {
 
     return (
       <Container>
-        <HeaderTitleSubtitleExample />
+        <HeaderApp/>
         <Content>
 
         {this.props.loading
@@ -23,7 +22,6 @@ class Main extends React.Component {
         }
         </Content>
 
-        {/*<FABExample/>*/}
         <FooterTabsExample/>
       </Container>
     );

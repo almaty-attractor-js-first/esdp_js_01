@@ -25,7 +25,6 @@ app.use('/statuses', statuses());
 app.use('/workers', workers());
 app.use('/clients', clients());
 app.use('/cleaning-items', cleaningTypes());
-
 app.use('/', ws_orders());
 
 app.listen(8000, () => console.log('Example app listening on port 8000'));

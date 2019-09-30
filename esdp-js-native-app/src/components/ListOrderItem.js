@@ -6,9 +6,9 @@ import {Body, Button, Left, ListItem, Right} from "native-base";
 
 const ListOrderItem = props => {
     return (
-        <ListItem icon onPress={() => {Actions.Order(); }} title={Order}>
+        <ListItem icon onPress={() => {Actions.Order({id: props.id}); }} title={Order}>
             <Left>
-                <Text>{props.id}</Text>
+                <Text>{props.id.substr(0, 6)}</Text>
             </Left>
             <Body>
                 <Text>{props.address}</Text>
@@ -16,7 +16,7 @@ const ListOrderItem = props => {
             <Right>
                 <Button bordered success>
                     <Text>
-                        Позвонить
+                        Позвонить {props.tel}
                     </Text>
                 </Button>
             </Right>

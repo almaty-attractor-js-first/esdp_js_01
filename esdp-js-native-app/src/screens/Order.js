@@ -1,36 +1,59 @@
-import React, { Component } from "react";
-import { Container, Content, Card, CardItem, Text, Body } from "native-base";
+import React, { useEffect, Component } from "react";
+import { Container, Content, Card, CardItem, Text, Body, Spinner, Button } from "native-base";
 import FooterTabsExample from "../components/Footer";
-import HeaderTitleSubtitleExample from "../components/Header";
+import HeaderApp from "../components/Header";
+import {getOrder, putUpdateOrder} from "../store/actions/ordersActions";
+import {connect} from "react-redux";
 
 class Order extends Component {
+    // handleClick(id, newStatusId) => {
+    //     this.props.putUpdateOrder(id, {statusId: newStatusId});
+    //     let message = JSON.stringify({
+    //         type: 'WS_TEST_CLIENT',
+    //         message: 'TESTING...'
+    //     });
+    //     this.websocket.send(message);
+    //     setState({message: ''});
+    // };
+
+    componentDidMount(){
+        this.props.getOrder(this.props.id);
+        console.log('orderById fetch');
+        console.log(this.props.order);
+    };
     render() {
         return (
             <Container>
-                <HeaderTitleSubtitleExample />
+                <HeaderApp/>
                 <Content padder>
 
                     {this.props.loading
                         ?
-                        <Spinner color='blue' />
+                        <Spinner color='blue'/>
                         :
                         <Card>
                             <CardItem header bordered>
-                                <Text>NativeBase</Text>
+                                <Text>Заказ № {this.props.id}</Text>
                             </CardItem>
                             <CardItem bordered>
                                 <Body>
-                                    <Text>
-                                    Order info
-                                    Order info
-                                    Order info
-                                    Order info
-                                    Order info
-                                    </Text>
+                                    <Text>Адрес: {this.props.order.address}</Text>
+                                    <Text>Доставить к: {this.props.order.completedDate}</Text>
+                                    <Text>Тип доставки: {this.props.order.deliveryType}</Text>
+                                    <Text>Метод оплаты: {this.props.order.paymentMethod}</Text>
+                                    <Text>Стоимость: {this.props.order.totalPrice}</Text>
                                 </Body>
                             </CardItem>
                             <CardItem footer bordered>
-                                <Text>GeekyAnts</Text>
+                                <Text>Замечания: {this.props.order.description}</Text>
+                            </CardItem>
+                            <CardItem footer bordered>
+                                <Button
+                                    onPress={() => {this.handleClick()}}
+                                    success
+                                >
+                                    <Text> Success </Text>
+                                </Button>
                             </CardItem>
                         </Card>
                     }
@@ -42,5 +65,18 @@ class Order extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        user: state.users.user,
+        order: state.orders.currentOrder
+    };
+};
 
-export default Order;
+const mapDispatchToProps = dispatch => {
+    return {
+        getOrder: (id) => dispatch(getOrder(id)),
+        putUpdateOrder: (data) => dispatch(putUpdateOrder(data))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Order);

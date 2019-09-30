@@ -1,60 +1,27 @@
-import React, { Component, useEffect } from 'react';
-import { Button, ListItem, Text, Left, Body, Right, Switch, Icon } from 'native-base';
+import React, { useEffect } from 'react';
 import Order from '../screens/Order';
 import { ScrollView } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import {getOrders} from "../store/actions/ordersActions";
 import {connect} from "react-redux";
-
-
+import ListOrderItem from "./ListOrderItem";
 
 const ListItems = props => {
     useEffect(() => {
         props.getOrders();
+        console.log('orders fetch');
     }, []);
 
 		return (
 			<ScrollView>
                 {props.orders.map((place, i) => (
-                    <ListItem
+                    <ListOrderItem
                         id={place.id}
                         key={i}
-                        address={place.deliveryAddress}
+                        address={place.address}
                         onPress={() => {Actions.Order(); }} title={Order}
                     />
                 ))}
-
-                <ListItem icon onPress={() => {Actions.Order(); }} title={Order}>
-					<Left>
-							<Text>#24145</Text>
-					</Left>
-					<Body>
-						<Text>Satpaeva 32a</Text>
-					</Body>
-					<Right>
-						<Button bordered success>
-							<Text>
-								Позвонить
-							</Text>
-						</Button>
-					</Right>
-				</ListItem>
-
-				<ListItem icon onPress={() => {Actions.Order(); }} title={Order}>
-					<Left>
-						<Text>#34456</Text>
-					</Left>
-					<Body >
-						<Text>Djandosova 3</Text>
-					</Body>
-					<Right>
-						<Button bordered success>
-							<Text>
-								Позвонить
-							</Text>
-						</Button>
-					</Right>
-				</ListItem>
 			</ScrollView>
 		);
 
