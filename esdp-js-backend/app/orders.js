@@ -197,8 +197,12 @@ const createRouter = () => {
         const token = req.get("Authorization");
         const worker = await db.fetchByToken(token);
         const order = await db.fetch('orders', orderId);
-        const workerRole = worker.rows[0].role;
-        const workerId = worker.rows[0].id;
+        let workerRole;
+        let workerId;
+        if (worker.role) {
+            workerRole = worker.rows[0].role;
+            workerId = worker.rows[0].id;
+        }
         const defaultWorkerId = 'ff35c2dd-97bc-44b8-bc25-1d756be13fa7';
         // if (workerRole === 'master') {
         //     if (order.rows[0].masterId !== defaultWorkerId) {

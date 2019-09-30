@@ -6,30 +6,26 @@ import {withRouter} from "react-router";
 import AdminControls from "./AdminControls";
 import MasterControls from "./MasterControls";
 import Tooltip from "@material-ui/core/Tooltip";
-import {WS_TEST_SERVER} from "../../store/actions/actionTypes";
 
 class OrdersTable extends Component {
 
   state = {
     message: '',
     author: null,
-    isPrivateMessage: false
+    isPrivateMessage: false,
   };
-  interval;
-  readyState;
-
+  timeout = null;
 
   start = (token) => {
     this.websocket = new WebSocket(`${config.wsURL}/?token=${token}`);
-    this.readyState = this.websocket.readyState;
 
     this.websocket.onmessage = (message) => {
       const decodedMessage = JSON.parse(message.data);
 
       switch (decodedMessage.type) {
-        case WS_TEST_SERVER:
+        case 'UPDATED_ORDERS_FROM_SERVER':
           this.props.getOrders();
-          console.log('WS_TEST_SERVER', decodedMessage.message);
+          console.log('UPDATED_ORDERS_FROM_SERVER');
           break;
         case 'ERROR':
           console.log(decodedMessage.message);
@@ -40,21 +36,21 @@ class OrdersTable extends Component {
     };
 
     this.websocket.onopen = () => {
-      clearInterval(this.interval);
+      clearTimeout(this.timeout);
       console.log('connected');
-      console.log('READYSTATE', this.readyState);
     };
 
     this.websocket.onclose = (event) => {
-      this.interval = setInterval(() => {this.start(token); console.log('restart')}, 1000);
       console.log('connection lost', event.reason);
-      console.log('READYSTATE', this.readyState);
+      console.log('timeout', this.timeout);
+      if (this.timeout !== 'unmounted') {
+        this.timeout = setTimeout(() => this.start(token), 3000);
+      }
     };
 
     this.websocket.onerror = (err) => {
       console.error('Socket encountered error: ', err.message, 'Closing socket');
       this.websocket.close();
-      console.log('READYSTATE', this.readyState);
     };
   };
 
@@ -70,7 +66,7 @@ class OrdersTable extends Component {
   };
 
   componentWillUnmount() {
-    clearInterval(this.interval);
+    this.timeout = 'unmounted';
     this.websocket && this.websocket.close();
     console.log('stop');
   };
@@ -93,16 +89,14 @@ class OrdersTable extends Component {
   };
   handleClick = (id, newStatusId) => {
     this.props.putUpdateOrder(id, {statusId: newStatusId})
-        .then(res => console.log('SUCCESS', res))
-        .then(() => {
-          let message = JSON.stringify({
-            type: 'WS_TEST_CLIENT',
-            message: 'TESTING...'
-          });
-          this.websocket.send(message);
-          this.setState({message: ''});
+      .then(() => {
+        console.log('readyState',this.websocket.readyState);
+        let message = JSON.stringify({
+          type: 'STATUS_CHANGED'
         });
-    //@TODO Повесить на промис
+        this.websocket.send(message);
+        this.setState({message: ''});
+      });
   };
 
   render() {

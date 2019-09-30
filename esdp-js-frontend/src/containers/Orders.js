@@ -24,7 +24,6 @@ import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import TableRow from "@material-ui/core/TableRow";
 import OrdersTable from "../components/OrdersTable/OrdersTable";
 import {getWorkers} from "../store/actions/workersActions";
-import {fetchConnectedUsers, loggedIn, loggedOut} from "../store/actions/usersActions";
 import Box from "@material-ui/core/Box";
 
 
@@ -85,9 +84,6 @@ const Orders = props => {
     updateOrders,
     putUpdateOrder,
     staticContext,
-    onLoggedIn,
-    onLoggedOut,
-    onFetchConnectedUsers,
     ...rest
   } = props;
   const classes = useStyles();

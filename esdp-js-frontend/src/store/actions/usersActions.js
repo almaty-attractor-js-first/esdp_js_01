@@ -8,10 +8,6 @@ import {
     LOGOUT_USER,
     REGISTER_USER_ERROR,
     REGISTER_USER_SUCCESS,
-    CONNECTED_USERS,
-    USER_LOGGED_IN,
-    USER_LOGGED_OUT
-
 } from "./actionTypes";
 
 const registerUserSuccess = () => {

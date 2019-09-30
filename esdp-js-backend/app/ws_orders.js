@@ -49,14 +49,13 @@ const createRouter = () => {
                     }));
                 }
                 console.log('DECODED MESSAGE', decodedMessage);
-                if (decodedMessage.type === 'WS_TEST_CLIENT') {
+                if (decodedMessage.type === 'STATUS_CHANGED') {
                     Object
                         .values(activeConnections)
                         .forEach(client => {
                             console.log(client.connectedUser);
                             client.send(JSON.stringify({
-                                type: 'WS_TEST_SERVER',
-                                message: 'TESTING_SUCCESS'
+                                type: 'UPDATED_ORDERS_FROM_SERVER'
                             }));
                             console.log('SENDING');
                         });
