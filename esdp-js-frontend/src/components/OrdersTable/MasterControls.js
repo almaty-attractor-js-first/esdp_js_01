@@ -3,11 +3,6 @@ import {TableCell} from "@material-ui/core";
 import moment from "moment";
 import DynamicStatusButton from "./DynamicStatusButton";
 
-
-    let currentStatus;
-    let newStatus;
-    let text;
-
 const MasterControls = props => {
     const { order } = props;
     return (

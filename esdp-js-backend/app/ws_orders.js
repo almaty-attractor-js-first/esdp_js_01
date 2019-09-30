@@ -80,7 +80,7 @@ const createRouter = () => {
                         });
 
                 }
-            } catch {
+            } catch (e) {
                 console.log('MESSAGE_ERROR')
             }
         });
@@ -102,7 +102,7 @@ const createRouter = () => {
                         }))
                     ));
                 console.log('NEW_ACTIVE_CONNECTION', Object.keys(activeConnections));
-            } catch {
+            } catch (e) {
                 console.log('LOGOUT_ERROR')
             }
         });
