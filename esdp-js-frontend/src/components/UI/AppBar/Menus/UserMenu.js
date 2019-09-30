@@ -53,6 +53,20 @@ export default function UserMenu(props) {
             <Button color="primary"
                     variant={"text"}
                     component={Link}
+                    to='/workers'
+                    className={classes.link}>
+              сотрудники
+            </Button>
+            <Button color="primary"
+                    variant={"text"}
+                    component={Link}
+                    to='/clients'
+                    className={classes.link}>
+              клиенты
+            </Button>
+            <Button color="primary"
+                    variant={"text"}
+                    component={Link}
                     to='/types/edit'
                     className={classes.link}>
               чистки
