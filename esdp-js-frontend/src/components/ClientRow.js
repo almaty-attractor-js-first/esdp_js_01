@@ -1,33 +1,30 @@
 import React, {Fragment} from 'react';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
+import moment from "moment";
+import Link from "@material-ui/core/Link";
+import {Link as RouterLink} from "react-router-dom";
 
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
-export default function ClientRow() {
+export default function ClientRow(props) {
     return (
         <Fragment>
-            {rows.map(row => (
-                <TableRow key={row.name} hover>
+            {props.clients.map(client => (
+                <TableRow key={client.id} hover>
+                    <TableCell align="right">{client.id.substring(0, 7)}</TableCell>
                     <TableCell component="th" scope="row">
-                        {row.name}
+                        <Link component={RouterLink} to={`/clients/${client.id}`}>
+                            {`${client.firstName} ${client.lastName}`}
+                        </Link>
                     </TableCell>
-                    <TableCell align="right">{row.name}</TableCell>
-                    <TableCell align="right">{row.fat}</TableCell>
-                    <TableCell align="right">{row.name}</TableCell>
-                    <TableCell align="right">{row.protein}</TableCell>
-                    <TableCell align="right">{row.name}</TableCell>
-                    <TableCell align="right">{row.fat}</TableCell>
+                    <TableCell align="right">{client.email}</TableCell>
+                    <TableCell align="right">{`+${client.phone}`}</TableCell>
+                    <TableCell align="right">{client.address}</TableCell>
+                    <TableCell align="right">
+                        <Link component={RouterLink} to={`/orders/`}>
+                            {'Список заказов'}
+                        </Link>
+                    </TableCell>
+                    <TableCell align="right">{moment(client.createdAt).format('DD.MM.YYYY HH:mm')}</TableCell>
                 </TableRow>
                 )
             )}

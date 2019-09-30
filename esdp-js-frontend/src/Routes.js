@@ -12,6 +12,7 @@ import Statuses from "./containers/Statuses";
 import CleaningTypes from "./containers/CleaningTypes";
 import SavedOrder from "./containers/SavedOrder";
 import CurrentOrders from "./containers/CurrentOrders";
+import Workers from "./containers/Workers";
 
 const Routes = () => {
     return (
@@ -28,6 +29,7 @@ const Routes = () => {
             <Route exact path="/statuses/edit" component={Statuses}/>
             <Route exact path="/types/edit" component={CleaningTypes}/>
             <Route exact path="/clients" component={Clients}/>
+            <Route exact path="/workers" component={Workers}/>
         </Switch>
     )
 };

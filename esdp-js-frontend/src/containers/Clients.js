@@ -2,7 +2,6 @@ import React, {Fragment, useEffect} from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
-import makeStyles from "@material-ui/core/styles/makeStyles";
 import {
     Card,
     CardActions,
@@ -20,18 +19,12 @@ import TableBody from "@material-ui/core/TableBody";
 import ClientRow from "../components/ClientRow";
 import {getClients} from "../store/actions/clientsActions";
 
-
-const useStyles = makeStyles(theme => ({
-    root: {}
-}));
-
 const Clients = props => {
 
     useEffect(() => {
         props.getClients();
     }, []);
 
-    const classes = useStyles();
     return (
         <Card
         >
@@ -57,7 +50,7 @@ const Clients = props => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                <ClientRow/>
+                                <ClientRow clients={props.clients}/>
                             </TableBody>
                         </Table>
                     </div>
