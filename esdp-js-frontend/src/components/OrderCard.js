@@ -2,9 +2,7 @@ import React, {Fragment} from 'react';
 import { makeStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
-import image from '../assets/images/6dbd75cb-3029-4490-8215-0a3fe18250b4file.png'
 
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -17,7 +15,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import moment from "moment";
-
+var QRCode = require('qrcode.react');
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -58,6 +56,9 @@ const useStyles = makeStyles(theme => ({
 		fontSize: theme.typography.pxToRem(15),
 		color: theme.palette.text.secondary,
 	},
+	qr: {
+		padding: theme.spacing(1)
+	}
 }));
 
 export default function OrderCard({order, statuses, defaultExpanded}) {
@@ -93,11 +94,9 @@ export default function OrderCard({order, statuses, defaultExpanded}) {
 									</Typography>
 								</CardContent>
 							</div>
-							<CardMedia
-								className={classes.cover}
-								image={image}
-								title={order.id}
-							/>
+							<div className={classes.qr}>
+								<QRCode size={200} value={order.id} />
+							</div>
 						</div>
 						<ExpansionPanel defaultExpanded={defaultExpanded}>
 							<ExpansionPanelSummary
