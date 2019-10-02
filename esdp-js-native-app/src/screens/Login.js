@@ -1,9 +1,9 @@
-import React, { useEffect }from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Container, Spinner, Content, Form, Item, Input, Text, Button, StyleProvider, Icon } from 'native-base';
 import HeaderApp from "../components/Header";
-import FooterTabsExample from "../components/Footer";
 import {loginUser} from "../store/actions/usersActions";
+import QRCode from 'qrcode';
 
 class Login extends React.Component {
     state = {
@@ -43,7 +43,6 @@ class Login extends React.Component {
                 }
             </Content>
 
-            <FooterTabsExample/>
         </Container>
     );
     };

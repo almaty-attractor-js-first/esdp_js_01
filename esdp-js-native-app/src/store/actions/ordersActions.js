@@ -26,7 +26,7 @@ export const getOrder = (id) => {
     return dispatch => {
         axios.get('/orders').then(response => {
             let data = response.data;
-            console.log(data);
+            //console.log(data);
             dispatch(updateCurrentOrder(id));
         },error => {
             if (error.response && error.response.data) {

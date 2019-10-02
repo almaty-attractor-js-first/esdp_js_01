@@ -1,9 +1,10 @@
 import React, { useEffect, Component } from "react";
-import { Container, Content, Card, CardItem, Text, Body, Spinner, Button } from "native-base";
+import { Container, Content, Card, CardItem, Text, Body, Spinner, Button, Image } from "native-base"
 import FooterTabsExample from "../components/Footer";
 import HeaderApp from "../components/Header";
 import {getOrder, putUpdateOrder} from "../store/actions/ordersActions";
 import {connect} from "react-redux";
+import QRCode from 'qrcode';
 
 class Order extends Component {
     // handleClick(id, newStatusId) => {
@@ -16,11 +17,25 @@ class Order extends Component {
     //     setState({message: ''});
     // };
 
+
+
     componentDidMount(){
-        this.props.getOrder(this.props.id);
-        console.log('orderById fetch');
         console.log(this.props.order);
+        this.props.getOrder(this.props.id);
+        //this.renderQR();
+        // QRCode.toFile(`src/images/qrcode.png`, orderId, {
+        //     scale: 10,
+        //     color: {
+        //         dark: '#000000',  //
+        //         light: '#0000' // Transparent background
+        //     }
+        // }, function (err) {
+        //     if (err) throw err;
+        //     console.log('done')
+        // });
     };
+
+
     render() {
         return (
             <Container>

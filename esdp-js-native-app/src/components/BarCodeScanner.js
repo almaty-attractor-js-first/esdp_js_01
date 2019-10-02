@@ -4,8 +4,6 @@ import Constants from 'expo-constants';
 import { Actions } from 'react-native-router-flux';
 import * as Permissions from 'expo-permissions';
 import { Content } from 'native-base';
-
-
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
 export default class BarcodeScannerExample extends React.Component {
@@ -47,10 +45,10 @@ export default class BarcodeScannerExample extends React.Component {
 	}
 
 	handleBarCodeScanned = ({ type, data }) => {
-		Actions.Order();
 		this.setState({ scanned: true });
 		console.log(data, type);
-		//alert(`Bar code with type ${type} and data ${data} has been scanned!`);
-
+		data.toString();
+		Actions.Order({id: data});
+		// alert(`Bar code with type ${type} and data ${data} has been scanned!`);
 	}
 }

@@ -7,6 +7,8 @@ const db = require("../db/postgre");
 const knex = require("../db/knexBuilder");
 const fs = require('fs');
 const nodemailer = require("nodemailer");
+const auth = require('../middleware/auth');
+const moment = require('moment');
 const setupPaginator = require('knex-paginator');
 setupPaginator(knex);
 
@@ -208,14 +210,32 @@ const createRouter = () => {
                     pass: 'shoeser2019' // generated ethereal password
                 }
             });
+            let substrId = orderData.id.substring(1,8);
+            let htmlstring = `<h2>Здравствуйте, ${orderData.firstName}</h2>
+                       <p>Ваш заказ № ${substrId} оформлен</p>
+                       <p>Вы заказали:</p>
+                       <div> <ul>`;
+            let itemString = "";
+                orderData.orderItems.forEach((item) => {
+                itemString += `<li>
+                           <span>${item.title}</span>
+                           <span>${item.price} тг.</span>
+                           <span>${item.qty} шт.</span>
+                        </li>`
+            });
+                let qrString =  `</li> </div> 
+                        <p>Общая сумма заказа: ${orderData.totalPrice}</p>
+                        <p>Адрес указанный в заказе: ${orderData.address}</p>
+                        <p>Тип оплаты: ${(orderData.paymentMethod === 'cash')?'Оплата наличными':'Онлайн оплата'}</p>
+                        <p>Дата доставки: ${moment(orderData.completedDate, 'YYYY-MM-DD-HH:mm')}</p>
+                       <img src="cid:${orderData.email}" alt="qr" />`;
+                let string = htmlstring+itemString+qrString;
             let info = await transporter.sendMail({
                 from: 'shoeserkz@yandex.kz', // sender address
                 to: orderData.email, // list of receivers
                 subject: "Здравствуйте, " + orderData.firstName + " ваш заказ оформлен", // Subject line
                 text: "Ваш заказ № " + orderData.id + " оформлен", // plain text body
-                html: `<h2>Здравствуйте, ${orderData.firstName}</h2>
-                       <p>Ваш заказ № ${orderData.id} оформлен</p>
-                       <img src="cid:${orderData.email}" alt="qr" />`,// html body
+                html: string,// html body
                 attachments: [{
                     filename: `${orderId}file.png`,
                     path: `src/assets/images/${orderId}file.png`,
@@ -236,8 +256,8 @@ const createRouter = () => {
         } else {
             res.status(500).send({message: 'Internal error'});
         }
-        
-        
+
+
     });
     router.put('/orders/:id', auth, async (req, res) => {
         const orderId = req.params.id;
