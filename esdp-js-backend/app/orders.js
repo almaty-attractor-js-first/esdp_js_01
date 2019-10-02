@@ -63,10 +63,6 @@ const createRouter = () => {
                         .orderBy('createdAt', 'desc').paginate(perPage, page, false)
                         .then(paginator => {return paginator.data})
                         .then((rows) => {
-                            for (row of rows) {
-                                console.log('KNEX BUILDER >>>>>>>>>>>>>>>>>>>');
-                                console.table(`${row['id']} ${row['masterId']} ${row['statusId']}`);
-                            }
                             return res.send(rows);
                         }).catch((err) => { console.log( err); throw err });
                     break;
@@ -86,10 +82,6 @@ const createRouter = () => {
                         .orderBy('createdAt', 'desc').paginate(perPage, page, false)
                         .then(paginator => {return paginator.data})
                         .then((rows) => {
-                            for (row of rows) {
-                                console.log('KNEX BUILDER >>>>>>>>>>>>>>>>>>>');
-                                console.table(`${row['id']} ${row['masterId']} ${row['statusId']}`);
-                            }
                             return res.send(rows);
                         }).catch((err) => { console.log( err); throw err });
                     break;
@@ -99,10 +91,6 @@ const createRouter = () => {
                         .orderBy('createdAt', 'desc').paginate(perPage, page, false)
                         .then(paginator => {return paginator.data})
                         .then((rows) => {
-                            for (row of rows) {
-                                console.log('KNEX BUILDER >>>>>>>>>>>>>>>>>>>');
-                                console.table(`${row['id']}`);
-                            }
                             return res.send(rows);
                         }).catch((err) => { console.log( err); throw err });
                     break;
