@@ -1,55 +1,115 @@
 const express = require('express');
 const router = express.Router();
 const uuid = require('uuid');
+const auth = require('../middleware/auth');
 const QRCode = require('qrcode');
 const db = require("../db/postgre");
+const knex = require("../db/knexBuilder");
 const fs = require('fs');
 const nodemailer = require("nodemailer");
-const auth = require('../middleware/auth');
+const setupPaginator = require('knex-paginator');
+setupPaginator(knex);
 
 const createRouter = () => {
+    router.get('/orders/total', async (req, res) => {
+        const total = await knex('orders')
+            .select("*")
+            .paginate(5, 1, true)
+            .then(result => {return result.total})
+            .catch((err) => {console.log(err)});
+        return res.send(total);
+    });
     router.get('/orders', async (req, res) => {
         const token = req.get("Authorization");
-
-        if (!token) {
-            console.log('TOKEN>>>', token);
-            return res.status(401).send({message: "Ошибка аутентификации"});
+        let perPage;
+        let page;
+        if (req.query) {
+            perPage = req.query.perPage;
+            page = req.query.page;
         }
-        const worker = await db.fetchByToken(token);
+        console.log('OFFSET', page);
+        console.log('LIMIT', perPage);
+
+        if (!token)  return res.status(401).send({message: "Ошибка аутентификации"});
+        const worker = await knex('workers')
+            .select("*")
+            .where("token", `${token}`)
+            .then((result) => {return result})
+            .catch((err) => {console.log(err)});
 
         if (!worker) {
-            console.log('WORKER>>>', worker);
             return res.status(401).send({message: "Пользователь не найден"});
         }
+        let workerId;
+        if (worker) {
+            console.log(worker[0].role);
+            workerId = worker[0].id;
+        }
 
-        let order = await db.fetch('orders_with_status_fields');
-        order.rows.sort((a, b) => b.createdAt - a.createdAt);
-        let ordersByRole;
-        let ordersById;
-
-        if (worker.rows[0]) {
-            switch (worker.rows[0].role) {
-                case 'courier':
-                    ordersById = order.rows
-                        .filter(order => order.courierId === worker.rows[0].id || order.courierId === 'ff35c2dd-97bc-44b8-bc25-1d756be13fa7');
-                    ordersByRole = ordersById
-                        .filter(order => order.statusName === 'new' || order.statusName === 'taken' || order.statusName === 'done');
-                    break;
+        if (worker) {
+            switch (worker[0].role) {
                 case 'master':
-                    ordersById = order.rows
-                        .filter(order => order.masterId === worker.rows[0].id || order.masterId === 'ff35c2dd-97bc-44b8-bc25-1d756be13fa7');
-                    ordersByRole = ordersById
-                        .filter(order => order.statusName === 'pending' || order.statusName === 'inWork');
+                    knex('orders')
+                        .select("*")
+                        .where(function() {
+                            this.whereIn('masterId', ['ff35c2dd-97bc-44b8-bc25-1d756be13fa7', `${workerId}`])
+                        })
+                        .andWhere(function() {
+                            this.whereIn('statusId', [
+                                'a708c4b0-e3b8-4480-89bf-2ab23fc54f85', // pending
+                                '7d088a66-ded7-448a-a58a-f4bed44a1433', // inWork
+                            ])
+                        })
+                        .orderBy('createdAt', 'desc').paginate(perPage, page, false)
+                        .then(paginator => {return paginator.data})
+                        .then((rows) => {
+                            for (row of rows) {
+                                console.log('KNEX BUILDER >>>>>>>>>>>>>>>>>>>');
+                                console.table(`${row['id']} ${row['masterId']} ${row['statusId']}`);
+                            }
+                            return res.send(rows);
+                        }).catch((err) => { console.log( err); throw err });
+                    break;
+                case 'courier':
+                    knex('orders')
+                        .select("*")
+                        .where(function() {
+                            this.whereIn('courierId', ['ff35c2dd-97bc-44b8-bc25-1d756be13fa7', `${workerId}`])
+                        })
+                        .andWhere(function() {
+                            this.whereIn('statusId', [
+                                '80659b19-1bf5-466b-8221-bce9ab456efb', // new
+                                'f2f2b5cd-efc9-4df3-81ec-f834795b1a36', // taken
+                                '1203a5ac-3fcd-443a-a1c5-cf9de24026c3', // done
+                            ])
+                        })
+                        .orderBy('createdAt', 'desc').paginate(perPage, page, false)
+                        .then(paginator => {return paginator.data})
+                        .then((rows) => {
+                            for (row of rows) {
+                                console.log('KNEX BUILDER >>>>>>>>>>>>>>>>>>>');
+                                console.table(`${row['id']} ${row['masterId']} ${row['statusId']}`);
+                            }
+                            return res.send(rows);
+                        }).catch((err) => { console.log( err); throw err });
                     break;
                 case 'admin':
-                    ordersByRole = order.rows;
+                    knex('orders')
+                        .select("*")
+                        .orderBy('createdAt', 'desc').paginate(perPage, page, false)
+                        .then(paginator => {return paginator.data})
+                        .then((rows) => {
+                            for (row of rows) {
+                                console.log('KNEX BUILDER >>>>>>>>>>>>>>>>>>>');
+                                console.table(`${row['id']}`);
+                            }
+                            return res.send(rows);
+                        }).catch((err) => { console.log( err); throw err });
                     break;
                 default:
                     throw new Error('Ошибка доступа');
             }
         }
-
-        res.send(ordersByRole);
     });
     router.get('/orders/client', async (req, res) => {
 	    if(req.query.phone){
@@ -157,7 +217,7 @@ const createRouter = () => {
                 secure: true, // true for 465, false for other ports
                 auth: {
                     user: 'shoeserkz@yandex.kz', // generated ethereal user
-                    pass: 'TfJsh8fwAGX6nhS' // generated ethereal password
+                    pass: 'shoeser2019' // generated ethereal password
                 }
             });
             let info = await transporter.sendMail({
@@ -195,39 +255,14 @@ const createRouter = () => {
         const orderId = req.params.id;
         let data = req.body;
         const token = req.get("Authorization");
-        const worker = await db.fetchByToken(token);
-        const order = await db.fetch('orders', orderId);
-        let workerRole;
-        let workerId;
-        if (worker.role) {
-            workerRole = worker.rows[0].role;
-            workerId = worker.rows[0].id;
-        }
-        const defaultWorkerId = 'ff35c2dd-97bc-44b8-bc25-1d756be13fa7';
-        // if (workerRole === 'master') {
-        //     if (order.rows[0].masterId !== defaultWorkerId) {
-        //         return res.status(403).send({message: `Заказ ${orderId.substring(0, 7)} уже взят в работу`});
-        //     }
-        //     if (order.rows[0].masterId !== workerId) {
-        //         return res.status(403).send({message: `Заказ ${orderId.substring(0, 7)} уже взят в работу`});
-        //     }
-        //     data.masterId = worker.rows[0].id;
-        // }
-        if (workerRole === 'courier') {
-            data.courierId = worker.rows[0].id;
-        }
-        await db.update('orders', data, orderId)
+        if (!token)  return res.status(401).send({message: "Ошибка аутентификации"});
+        await knex('orders')
+            .where('id', `${orderId}`)
+            .update(data)
             .then(() => {
-                res.status(200).send({message: `Заказ ${orderId.substring(0, 7)} обновлен`});
-            }).catch(() => {
-                res.status(500).send({message: `Ошибка сервера`});
-            });
-    });
-    router.put('/orders/:id/status', async (req, res) => {
-        const orderId = req.params.id;
-        const status = req.body;
-        db.updateOrderStatusById(orderId, status);
-        res.send({message: 'OK'});
+                return res.status(200).send({message: `Заказ ${orderId.substring(0, 7)} обновлен`});
+            })
+            .catch((err) => { console.log( err); throw err });
     });
 
     return router;

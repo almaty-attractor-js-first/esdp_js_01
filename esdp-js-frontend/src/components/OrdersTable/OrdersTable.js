@@ -44,7 +44,7 @@ class OrdersTable extends Component {
       console.log('connection lost', event.reason);
       console.log('timeout', this.timeout);
       if (this.timeout !== 'unmounted') {
-        this.timeout = setTimeout(() => this.start(token), 3000);
+        this.timeout = setTimeout(() => this.start(token), 6000);
       }
     };
 
@@ -88,7 +88,13 @@ class OrdersTable extends Component {
     this.props.putUpdateOrder(id, {[event.target.name]: event.target.checked});
   };
   handleClick = (id, newStatusId) => {
-    this.props.putUpdateOrder(id, {statusId: newStatusId})
+    let valuesToChange = {statusId: newStatusId, };
+    if (this.props.user.role === 'master') {
+      valuesToChange.masterId = this.props.user.id;
+    } else {
+      valuesToChange.courierId = this.props.user.id;
+    }
+    this.props.putUpdateOrder(id, valuesToChange)
       .then(() => {
         console.log('readyState',this.websocket.readyState);
         let message = JSON.stringify({
@@ -96,7 +102,7 @@ class OrdersTable extends Component {
         });
         this.websocket.send(message);
         this.setState({message: ''});
-      });
+      }).catch(error => console.log(error)); //@TODO Добавить обработку ошибок
   };
 
   render() {

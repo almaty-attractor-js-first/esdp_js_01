@@ -3,13 +3,12 @@ import clsx from 'clsx';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
-import {getOrders, putUpdateOrder, updateOrders} from "../store/actions/ordersActions";
+import {getOrders, getTotalOrders, putUpdateOrder, updateOrders} from "../store/actions/ordersActions";
 import {getStatuses} from "../store/actions/statusesActions";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Card,
-  CardActions,
   CardHeader,
   CardContent,
   Button,
@@ -18,13 +17,13 @@ import {
   TableCell,
   TableHead,
   Tooltip,
-  TableSortLabel
+  TableSortLabel,
 } from '@material-ui/core';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import TableRow from "@material-ui/core/TableRow";
 import OrdersTable from "../components/OrdersTable/OrdersTable";
 import {getWorkers} from "../store/actions/workersActions";
 import Box from "@material-ui/core/Box";
+import TablePagination from "@material-ui/core/TablePagination";
 
 
 const useStyles = makeStyles(theme => ({
@@ -54,10 +53,21 @@ const useStyles = makeStyles(theme => ({
 
 const Orders = props => {
   const [orders, setOrders] = React.useState([]);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+    props.getOrders(rowsPerPage, newPage);
+  };
+  const handleChangeRowsPerPage = event => {
+    setRowsPerPage(+ event.target.value);
+    setPage(0);
+    props.getOrders(event.target.value, page);
+  };
 
   React.useEffect(() => {
   }, [props.statuses]);
-
 
   useEffect(() => {
     props.getStatuses();
@@ -65,6 +75,7 @@ const Orders = props => {
 
   useEffect(() => {
     props.getOrders();
+    props.getTotalOrdersCount();
   }, []);
 
   useEffect(() => {
@@ -84,12 +95,11 @@ const Orders = props => {
     updateOrders,
     putUpdateOrder,
     staticContext,
+    totalOrdersCount,
+    getTotalOrdersCount,
     ...rest
   } = props;
   const classes = useStyles();
-
-
-
 
   return (
     <Card
@@ -158,21 +168,27 @@ const Orders = props => {
                 updateOrders={props.updateOrders}
                 putUpdateOrder={props.putUpdateOrder}
                 getOrders={props.getOrders}
-                onLoggedIn={props.onLoggedIn}
-                onLoggedOut={props.onLoggedOut}
-                onFetchConnectedUsers={props.onFetchConnectedUsers}
               />
             </Table>
           </Box>
         </PerfectScrollbar>
       </CardContent>
       <Divider />
-      <CardActions className={classes.actions}>
-        <Button color="primary" size="small" variant="text">
-          Показать все
-          <ArrowRightIcon />
-        </Button>
-      </CardActions>
+      <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={props.totalOrdersCount}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          backIconButtonProps={{
+            'aria-label': 'previous page',
+          }}
+          nextIconButtonProps={{
+            'aria-label': 'next page',
+          }}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+      />
     </Card>
   );
 };
@@ -187,6 +203,7 @@ const mapStateToProps = state => {
     user: state.users.user,
     users: state.users.users,
     orders: state.orders.orders,
+    totalOrdersCount: state.orders.totalOrdersCount,
     workers: state.workersReducer.workers,
     statuses: state.statusesReducer.statuses
   };
@@ -194,7 +211,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    getOrders: () => dispatch(getOrders()),
+    getOrders: (perPage, page) => dispatch(getOrders(perPage, page)),
+    getTotalOrdersCount: () => dispatch(getTotalOrders()),
     getWorkers: () => dispatch(getWorkers()),
     getStatuses: () => dispatch(getStatuses()),
     updateOrders: (order) => dispatch(updateOrders(order)),

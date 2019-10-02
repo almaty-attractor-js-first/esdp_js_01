@@ -1,5 +1,5 @@
 import axios from '../../axios-api'
-import {SET_LOADING, UPDATE_CURRENT_ORDER, UPDATE_ORDERS} from "./actionTypes";
+import {GET_TOTAL_ORDERS_COUNT, SET_LOADING, UPDATE_CURRENT_ORDER, UPDATE_ORDERS} from "./actionTypes";
 import store from "../configureStore";
 import {openSnack} from "./notificationsActions";
 
@@ -24,13 +24,23 @@ export const updateCurrentOrder = orderId => {
     };
 };
 
-export const getOrders = () => {
+export const getTotalOrders = () => {
     return dispatch => {
-        return axios.get("/orders")
+        return axios.get('/orders/total')
+            .then(res => {
+                const total = res.data;
+                dispatch({type: GET_TOTAL_ORDERS_COUNT, total});
+            })
+    }
+};
+
+export const getOrders = (perPage, page) => {
+    console.log(perPage, page);
+    return dispatch => {
+        return axios.get(perPage || page ? `/orders/?perPage=${perPage}&page=${page}` : '/orders/?perPage=5&page=0')
             .then(response => {
                 let data = response.data;
                 dispatch(updateOrders(data));
-                console.log('ORDERS UPDATED');
                 return response;
         },error => {
             if (error.response && error.response.data) {
@@ -55,17 +65,6 @@ export const putUpdateOrder = (id, order) => {
                 dispatch(openSnack(error.message, 'error'));
                 dispatch(setLoading(false));
             });
-    }
-};
-
-export const changeStatus = (id, status) => {
-    return dispatch => {
-        axios.put(`/status/${id}`, {status: status})
-            .then((res)=>{
-                dispatch(getOrders());
-                dispatch(openSnack(res.message, 'info'));
-            })
-            .catch((error) => dispatch(openSnack(error.message, 'error')));
     }
 };
 

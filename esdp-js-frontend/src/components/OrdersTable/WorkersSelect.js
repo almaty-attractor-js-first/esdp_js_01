@@ -7,7 +7,7 @@ const WorkersSelect = (props) => {
             select
             data-id={props.index}
             fullWidth
-            defaultValue={props.workerId}
+            value={props.workerId}
             onClick={(e) => e.stopPropagation()}
             onChange={props.changeHandler}
             inputProps={{

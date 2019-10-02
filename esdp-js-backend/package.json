@@ -28,5 +28,9 @@
     "pg-cursor": "^2.0.0",
     "qrcode": "^1.4.1",
     "uuid": "^3.3.3"
+  },
+  "devDependencies": {
+    "knex": "^0.19.4",
+    "knex-paginator": "^2.0.0"
   }
 }

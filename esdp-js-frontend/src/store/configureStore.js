@@ -57,14 +57,14 @@ axios.interceptors.response.use(
       return response;
     },
     (error) => {
-  const errorResponse = error.response.data;
-  const user = store.getState().users.user;
-  if (user && errorResponse.message === "Token is not valid") {
-      console.log(error.response);
-      store.dispatch(logoutUser());
-      // @TODO Переводить на страницу логина, добавить отметку оставаться онлайн. Реализовать с помощью jwt
-  }
-  return Promise.reject(error);
+    const errorResponse = error.response.data;
+    const user = store.getState().users.user;
+    if (user && errorResponse.message === "Token is not valid") {
+        console.log(error.response);
+        store.dispatch(logoutUser());
+        // @TODO Переводить на страницу логина, добавить отметку оставаться онлайн. Реализовать с помощью jwt
+    }
+    return Promise.reject(error);
 });
 
 axios.interceptors.request.use(config => {
