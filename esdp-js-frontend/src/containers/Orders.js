@@ -54,11 +54,11 @@ const useStyles = makeStyles(theme => ({
 const Orders = props => {
   const [orders, setOrders] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    props.getOrders(rowsPerPage, newPage);
+    props.getOrders(rowsPerPage, newPage + 1);
   };
   const handleChangeRowsPerPage = event => {
     setRowsPerPage(+ event.target.value);

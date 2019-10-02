@@ -24,7 +24,7 @@ class OrdersTable extends Component {
 
       switch (decodedMessage.type) {
         case 'UPDATED_ORDERS_FROM_SERVER':
-          this.props.getOrders();
+          this.props.getOrders(this.props.rowsPerPage, this.props.page + 1);
           console.log('UPDATED_ORDERS_FROM_SERVER');
           break;
         case 'ERROR':

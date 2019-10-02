@@ -7,7 +7,6 @@ const db = require("../db/postgre");
 const knex = require("../db/knexBuilder");
 const fs = require('fs');
 const nodemailer = require("nodemailer");
-const auth = require('../middleware/auth');
 const moment = require('moment');
 const setupPaginator = require('knex-paginator');
 setupPaginator(knex);

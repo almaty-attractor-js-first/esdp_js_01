@@ -37,7 +37,7 @@ export const getTotalOrders = () => {
 export const getOrders = (perPage, page) => {
     console.log(perPage, page);
     return dispatch => {
-        return axios.get(perPage || page ? `/orders/?perPage=${perPage}&page=${page}` : '/orders/?perPage=5&page=0')
+        return axios.get(perPage || page ? `/orders/?perPage=${perPage}&page=${page}` : '/orders/?perPage=10&page=0')
             .then(response => {
                 let data = response.data;
                 dispatch(updateOrders(data));
