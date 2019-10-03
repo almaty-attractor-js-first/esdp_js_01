@@ -14,6 +14,8 @@ import Grid from "@material-ui/core/Grid";
 import Reviews from "../../components/NewOrderItem/Reviews";
 import RadioButtonsGroup from "../../components/NewOrderItem/RadioButtons";
 import {addOrder, updateOrderItems, updateUserData} from "../../store/actions/newOrderActions";
+import config from "../../config";
+import {withRouter} from "react-router";
 
 const useStyles = makeStyles(theme => ({
   layout: {
@@ -74,6 +76,29 @@ function Checkout(props) {
   const [deliveryType, setDeliveryType] = React.useState('delivery');
   const lastStep = activeStep === steps.length - 1;
   const isCash = paymentMethod === 'cash';
+  const [websocket, setWs] = React.useState(new WebSocket(`${config.wsURL}/new`));
+
+  React.useEffect(() => {
+    // setWs(new WebSocket(`${config.wsURL}/new`));
+    console.log(websocket);
+    return (() => {
+      websocket && websocket.close();
+    })
+  }, []);
+
+  React.useEffect(() => {
+    console.log(websocket)
+  }, [websocket]);
+
+  websocket.onopen = () => {
+    console.log('connected');
+  };
+
+  websocket.onclose = () => {
+    console.log('disconnected');
+  };
+
+
 
   const handleChangePaymentMethod = (event) => {
     setPaymentMethod(event.target.value);
@@ -103,7 +128,17 @@ function Checkout(props) {
       deliveryType : deliveryType,
       totalPrice: props.totalPrice
     };
-    props.addOrder(order);
+    props.addOrder(order)
+      .then(() => {
+        console.log('readyState', websocket);
+        let message = JSON.stringify({
+          type: 'NEW_ORDER'
+        });
+        if (websocket.readyState === 1) {
+          websocket.send(message);
+        }
+      }).then(() => props.history.push("/orders/saved"))
+        .catch(error => console.log(error));
   };
 
   useEffect(() => {
@@ -242,4 +277,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Checkout)
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Checkout))

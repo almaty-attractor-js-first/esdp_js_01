@@ -75,6 +75,34 @@ const createRouter = () => {
             }
         });
 });
+    router.ws('/new', async function(ws, req) {
+        ws.on('message', function(msg) {
+            try {
+                let decodedMessage;
+                try {
+                    decodedMessage = JSON.parse(msg);
+                } catch (e) {
+                    return ws.send(JSON.stringify({
+                        type: 'ERROR',
+                    }));
+                }
+                console.log('DECODED MESSAGE', decodedMessage);
+                if (decodedMessage.type === 'NEW_ORDER') {
+                    Object
+                        .values(activeConnections)
+                        .forEach(client => {
+                            console.log(client.connectedUser);
+                            client.send(JSON.stringify({
+                                type: 'UPDATED_ORDERS_FROM_SERVER'
+                            }));
+                        });
+
+                }
+            } catch (e) {
+                console.log('MESSAGE_ERROR')
+            }
+        });
+});
 
 return router;
 };

@@ -57,7 +57,7 @@ const useStyles = makeStyles(theme => ({
 		color: theme.palette.text.secondary,
 	},
 	qr: {
-		padding: theme.spacing(1)
+		padding: theme.spacing(2)
 	}
 }));
 

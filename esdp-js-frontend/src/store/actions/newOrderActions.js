@@ -61,12 +61,15 @@ export const getCleaningItems = () => {
 export const addOrder = (order) => {
   order.phone = order.phone.replace(/[^0-9]/g, '');
   return dispatch => {
-    axios.post('/orders', order)
-        .then(res => {
-          dispatch(updateSavedOrder(res.data));
-        })
-        .then(() => {dispatch(push("/orders/saved"));
+    return axios.post('/orders', order)
+    .then(res => {
+      dispatch(updateSavedOrder(res.data));
+      return res;
     })
+    // .then((res) => {
+    //     dispatch(push("/orders/saved"));
+    //     return res;
+    // })
   }
 };
 

@@ -56,7 +56,6 @@ class OrdersTable extends Component {
 
   componentDidMount() {
     if (!this.props.user) {
-
       this.props.history.push('/login')
     } else {
         const token = this.props.user.token;
