@@ -6,7 +6,6 @@ import {
   UPDATE_ORDER_ITEMS, UPDATE_SAVED_ORDER,
   UPDATE_USER_DATA
 } from "./actionTypes";
-import {push} from "connected-react-router";
 
 const setLoading = (loading) => {
     return dispatch => {
@@ -66,10 +65,6 @@ export const addOrder = (order) => {
       dispatch(updateSavedOrder(res.data));
       return res;
     })
-    // .then((res) => {
-    //     dispatch(push("/orders/saved"));
-    //     return res;
-    // })
   }
 };
 

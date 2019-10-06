@@ -1,6 +1,13 @@
-import React, {useEffect} from 'react';
+import React, {Fragment, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {updateCurrentOrder} from "../../store/actions/ordersActions";
+import {
+  clearItemsToDelete,
+  getOrderItems,
+  putUpdateOrder, setItemsToDelete,
+  setOrderItems,
+  updateCurrentOrder,
+  updateCurrentOrderItems
+} from "../../store/actions/ordersActions";
 import {getStatuses} from "../../store/actions/statusesActions";
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
@@ -19,10 +26,15 @@ import {
 import { Link as RouterLink } from 'react-router-dom';
 import Link from '@material-ui/core/Link';
 import PerfectScrollbar from "react-perfect-scrollbar";
-import Button from "@material-ui/core/Button";
 import CardActions from "@material-ui/core/CardActions";
-import Box from "@material-ui/core/Box";
-import SvgIcon from "@material-ui/core/SvgIcon";
+import StatusesSelect from "../OrdersTable/StatusesSelect";
+import TextField from "@material-ui/core/TextField";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import AddIcon from '@material-ui/icons/PlusOne';
+import {getCleaningItems} from "../../store/actions/newOrderActions";
+import * as uuid from "uuid";
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -82,53 +94,114 @@ const useStyles = makeStyles(theme => ({
     textDecoration: 'none',
     '&:hover': {
       textDecoration: 'none',
-    },
-  }
+    }
+  },
+  bottomIcon: {
+    marginTop: theme.spacing(3),
+  },
+  select: {
+    marginTop: theme.spacing(2),
+    '&:disabled': {
+      color: '#000'
+    }
+  },
+  noPadding: {
+    paddingTop: 0,
+    paddingBottom: 0
+  },
+  margin: {
+    margin: theme.spacing(1),
+    marginTop: theme.spacing(2),
+  },
+  cardTitle: {
+    margin: theme.spacing(1),
+  },
 }));
 
 const OrderItems = props => {
   const classes = useStyles();
-  const [currentOrder, setCurrentOrder] = React.useState(props.currentOrder);
+  const [isChanged, setIsChanged] = React.useState(false);
 
   useEffect(() => {
-    props.updateCurrentOrder(props.match.params.id);
+    props.getCleaningItems();
+    return () => {
+    }
   }, []);
 
   useEffect(() => {
-    setCurrentOrder(props.currentOrder);
-  }, [props.currentOrder]);
+    props.updateCurrentOrder(props.match.params.id);
+    return () => {
+      props.updateCurrentOrder({});
+    }
+  }, []);
+
+  useEffect(() => {
+    props.getOrderItems(props.match.params.id);
+    return () => {
+      props.setOrderItems([]);
+    }
+  }, []);
 
   useEffect(() => {
     props.getStatuses();
   }, []);
 
+  const handleChange = (event, id) => {
+    const currentOrder = {...props.currentOrder};
+    currentOrder[event.target.name] = event.target.value;
+    const key = event.target.name;
+    const value = currentOrder[event.target.name];
+    props.putUpdateOrder(id, {[key]: value})
+        .then(() => {
+      props.updateCurrentOrder(props.match.params.id);
+    });
+  };
+
+  const handleOrderItemsChange = (event) => {
+    const _tempOrderItems = [...props.currentOrderItems];
+    _tempOrderItems[event.target.dataset.id][event.target.name] = event.target.value;
+    const orderItem = props.cleaningItems.find(item => {
+      return item.name === _tempOrderItems[event.target.dataset.id].cleaningType
+    });
+    if (orderItem) {
+      _tempOrderItems[event.target.dataset.id].orderId = props.currentOrder.id;
+      _tempOrderItems[event.target.dataset.id].id = uuid.v4();
+      _tempOrderItems[event.target.dataset.id].price = orderItem.price;
+      _tempOrderItems[event.target.dataset.id].title = orderItem.title;
+    }
+    props.setOrderItems(_tempOrderItems);
+    const newOrderItems = JSON.stringify(_tempOrderItems);
+    setIsChanged(props.changedOrderItems !== newOrderItems);
+  };
+
+  const addNewOrderItem= () => {
+    const newItem = { cleaningType: '', qty: 1, price: null, id: uuid.v4()};
+    const _tempOrderItems = [...props.currentOrderItems];
+    _tempOrderItems.push(newItem);
+    props.setOrderItems(_tempOrderItems);
+    const newOrderItems = JSON.stringify(_tempOrderItems);
+    setIsChanged(props.changedOrderItems !== newOrderItems);
+  };
+
+  const removeOrderItem = (i) => {
+    const _tempOrderItems = [...props.currentOrderItems];
+    _tempOrderItems.splice(i, 1);
+    props.setOrderItems(_tempOrderItems);
+    const newOrderItems = JSON.stringify(_tempOrderItems);
+    setIsChanged(props.changedOrderItems !== newOrderItems);
+  };
+
+  const handleDiscardChanges = () => {
+    const prevItems = JSON.parse(props.changedOrderItems);
+    props.setOrderItems(prevItems);
+    setIsChanged(false);
+  };
+
   return (
     <div>
-        <div style={{ width: '100%' }}>
-            <Box display="flex" p={1} >
-                <Box p={1} flexGrow={1} >
-                    <Button
-                        color='primary'
-                        variant='outlined'
-                        component={RouterLink}
-                        className={classes.link}
-                        to={`/edit-order/${props.match.params.id}`}
-
-                    >
-                        <SvgIcon >
-                            <path d="M3 17.25 V 21 h 3.75 L 17.81 9.94 l -3.75 -3.75 L 3
-                            17.25 Z M 20.71 7.04 c 0.39 -0.39 0.39 -1.02 0 -1.41 l -2.34
-                            -2.34 a 0.9959 0.9959 0 0 0 -1.41 0 l -1.83 1.83 l 3.75 3.75 l 1.83 -1.83 Z"/>
-                        </SvgIcon>
-                        Редактировать
-                    </Button>
-                </Box>
-            </Box>
-        </div>
-
-      {currentOrder ?
+      {props.currentOrder && props.currentOrderItems ?
         <Grid container spacing={3}>
-          <Grid item xs={12} md={5}>
+          <Grid item xs={12} md={6}>
             <Card>
               <CardHeader title="Информация о заказе"/>
               <Divider className={classes.divider} />
@@ -139,47 +212,56 @@ const OrderItems = props => {
                     <TableRow>
                       <TableCell align="left">ID заказа</TableCell>
                       <TableCell align="left">
-                        {currentOrder.id}
+                        {props.currentOrder.id}
                       </TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell align="left">Клиент</TableCell>
                       <TableCell align="left">
                         <div>
-                          <Link component={RouterLink} to={`/order/${props.match.params.id}`}>
-                            {`${currentOrder.firstName} ${currentOrder.lastName}` || 'Информация отсутствует'}
+                          <Link component={RouterLink} to={`/clients/${props.currentOrder.clientId}`}>
+                            {`${props.currentOrder.clientId}` || 'Информация отсутствует'}
                           </Link>
                         </div>
-                        <span>{currentOrder.phone}</span>
-                        <div>{currentOrder.address}</div>
+                        <span>{props.currentOrder.phone}</span>
+                        <div>{props.currentOrder.address}</div>
                       </TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell align="left">Master</TableCell>
+                      <TableCell align="left">Мастер</TableCell>
                       <TableCell align="left">
-                        Олежка
+                        {props.currentOrder.clientId}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell align="left">Курьер</TableCell>
+                      <TableCell align="left">
+                        {props.currentOrder.courierId}
                       </TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell align="left">Дата заказа</TableCell>
                       <TableCell align="left">
                         {
-                          moment(currentOrder.createdAt).format('DD.MM.YYYY HH:mm')
+                          moment(props.currentOrder.createdAt).format('DD.MM.YYYY HH:mm')
                         }
                       </TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell align="left">Сумма заказа</TableCell>
                       <TableCell align="left">
-                        {currentOrder.totalPrice}
+                        <b>{props.currentOrder.totalPrice}</b>
                       </TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell align="left">Статус заказа</TableCell>
                       <TableCell align="left">
-                        {(props.statuses.find(status => {return currentOrder.status === status.name})) ?
-                          (props.statuses.find(status => {return currentOrder.status === status.name}).title) :
-                          null}
+                        <StatusesSelect
+                            statusId={props.currentOrder.statusId}
+                            name='statusId'
+                            changeHandler={(e) => {handleChange(e, props.currentOrder.id);}}
+                            statuses={props.statuses}
+                        />
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -191,40 +273,135 @@ const OrderItems = props => {
               </CardActions>
             </Card>
           </Grid>
-          <Grid item xs={12} md={7}>
+          <Grid item xs={12} md={6}>
             <Card>
-              <CardHeader title="Лоты заказа"/>
+              <CardHeader
+                title={
+                  <Typography variant={"h5"} className={classes.cardTitle}>
+                    Позиции заказа
+                  </Typography>}
+                action={
+                  <div>
+                    {isChanged ?
+                      <Fragment>
+                        <Button variant="contained"
+                                size="small"
+                                color="secondary"
+                                className={classes.margin}
+                                onClick={handleDiscardChanges}>
+                          Отменить
+                        </Button>
+                        <Button variant="contained"
+                                size="small"
+                                color="primary"
+                                className={classes.margin}
+                                onClick={() => props.updateCurrentOrderItems(props.match.params.id, props.currentOrderItems)}>
+                          Сохранить
+                        </Button>
+                      </Fragment>
+                    : null}
+                    {!props.currentOrderItems.length ?
+                        <Fragment>
+                          <Button variant="contained"
+                                  size="small"
+                                  color="primary"
+                                  className={classes.margin}
+                                  onClick={addNewOrderItem}>
+                            Добавить
+                          </Button>
+                        </Fragment>
+                        : null}
+                  </div>
+                }
+              />
+
               <Divider className={classes.divider} />
               <CardContent>
-                <PerfectScrollbar>
-                <div className={classes.inner}>
-                <Table>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell align="left">Тип чистки</TableCell>
-                      <TableCell align="left">Количество</TableCell>
-                      <TableCell align="left">Стоимость</TableCell>
-                    </TableRow>
-                    {currentOrder.orderItems ?
-                      currentOrder.orderItems.map((orderItem, index) => (
-                        <TableRow key={index}>
-                          <TableCell align="left">
-                            {orderItem.title}
-                          </TableCell>
-                          <TableCell align="left">
-                            {orderItem.qty}
-                          </TableCell>
-                          <TableCell align="left">
-                            {orderItem.price}
-                          </TableCell>
-                        </TableRow>
-                      ))
-                      : null
-                    }
-                  </TableBody>
-                </Table>
-                </div>
-                </PerfectScrollbar>
+                <Grid container spacing={3}>
+                  <Fragment>
+                  {props.currentOrderItems.map((item, index) => (
+                      <Fragment key={index}>
+                        <Grid item xs={6} sm={6} style={{padding: '0 12px'}}>
+                          <TextField
+                              disabled={!(props.user && (props.user.role === 'admin'))}
+                              select
+                              className={classes.select}
+                              data-id={index}
+                              fullWidth
+                              value={item.cleaningType}
+                              onChange={handleOrderItemsChange}
+                              inputProps={{
+                                name: 'cleaningType',
+                                id: 'cleaningType' + index,
+                                'data-id': index
+                              }}
+                              SelectProps={{
+                                native: true,
+                              }}
+                              helperText="Тип чистки"
+                          >
+                            <option value="" disabled>
+                              Не выбран
+                            </option>
+                            {props.cleaningItems ?
+                                props.cleaningItems.map((item, index) => {
+                                  return (
+                                      <option key={index} value={item.name}>
+                                        {item.title}
+                                      </option>
+                                  )
+                                }) : null}
+                          </TextField>
+                        </Grid>
+                        <Grid item xs={3} style={{padding: '0 12px'}}>
+                          {props.currentOrderItems[index].cleaningType &&
+                            <TextField
+                                disabled={!((props.user) && (props.user.role === 'admin'))}
+                                className={classes.select}
+                                data-id={index}
+                                onChange={handleOrderItemsChange}
+                                type="number"
+                                inputProps={{
+                                  min: "1", max: "10", step: "1",
+                                  id: 'cleaningQty' + index,
+                                  'data-id': index,
+                                  'name': 'qty'
+                                }}
+                                value={item.qty}
+                                required
+                                id="qty"
+                                name="qty"
+                                helperText="Сколько пар?"
+                                fullWidth
+                            />
+                          }
+                        </Grid>
+                        <Grid item xs={1} style={{padding: '0 12px'}}>
+                          <IconButton
+                              disabled={!((props.user) && (props.user.role === 'admin'))}
+                             data-delete-id={index}
+                             size="small"
+                             className={classes.bottomIcon}
+                             color="secondary"
+                             onClick={() => removeOrderItem(index, item.id)}>
+                            <DeleteIcon fontSize="small"/>
+                          </IconButton>
+                        </Grid>
+                        <Grid item xs={1} style={{padding: '0 12px'}}>
+                          <IconButton
+                              disabled={!((props.user) && (props.user.role === 'admin'))}
+                              data-id={index}
+                              size="small"
+                              className={classes.bottomIcon}
+                              color="primary"
+                              onClick={addNewOrderItem}>
+                            <AddIcon fontSize="small"/>
+                          </IconButton>
+                        </Grid>
+                      </Fragment>
+                  ))}
+                </Fragment>
+                </Grid>
               </CardContent>
             </Card>
           </Grid>
@@ -237,14 +414,24 @@ const OrderItems = props => {
 const mapStateToProps = state => {
   return {
     currentOrder: state.orders.currentOrder,
-    statuses: state.orders.statuses,
+    statuses: state.statusesReducer.statuses,
+    defaultOrderItemFields: state.newOrder.orderItems,
+    currentOrderItems: state.orders.currentOrderItems,
+    changedOrderItems: state.orders.changedOrderItems,
+    cleaningItems: state.newOrder.cleaningItems,
+    user: state.users.user,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     updateCurrentOrder: (orderId) => dispatch(updateCurrentOrder(orderId)),
+    getOrderItems: (orderId) => dispatch(getOrderItems(orderId)),
+    putUpdateOrder: (orderId, order) => dispatch(putUpdateOrder(orderId, order)),
     getStatuses: () => dispatch(getStatuses()),
+    updateCurrentOrderItems: (id, data) => dispatch(updateCurrentOrderItems(id, data)),
+    setOrderItems: (order) => dispatch(setOrderItems(order)),
+    getCleaningItems: () => dispatch(getCleaningItems()),
   };
 };
 export default connect(mapStateToProps , mapDispatchToProps)(OrderItems);

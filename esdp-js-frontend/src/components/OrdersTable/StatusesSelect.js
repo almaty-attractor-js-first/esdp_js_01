@@ -2,7 +2,6 @@ import React from "react";
 import NativeSelect from "@material-ui/core/NativeSelect";
 
 const StatusesSelect = (props) => {
-
     return (
         <NativeSelect
             data-id={props.index}
@@ -13,7 +12,6 @@ const StatusesSelect = (props) => {
             onChange={props.changeHandler}
             inputProps={{
                 name: props.name,
-                id: props.name + props.index,
             }}
         >
             {props.statuses ?

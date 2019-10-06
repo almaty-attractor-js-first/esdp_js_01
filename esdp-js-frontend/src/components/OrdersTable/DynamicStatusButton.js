@@ -33,6 +33,10 @@ const DynamicStatusButton = ({statusId, order, ...props}) => {
             text = 'Взять в доставку';
             newStatus = 'delivering';
             break;
+        case 'delivering':
+            text = 'Завершить заказ';
+            newStatus = 'closed';
+            break;
         default:
             return <p>Ошибка обработки статуса...</p>;
     }

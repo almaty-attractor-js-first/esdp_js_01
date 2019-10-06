@@ -2,10 +2,12 @@ import {TableBody, TableCell} from "@material-ui/core";
 import TableRow from '@material-ui/core/TableRow';
 import React, {Component} from "react";
 import config from '../../config'
-import {withRouter} from "react-router";
+import {Redirect, withRouter} from "react-router";
 import AdminControls from "./AdminControls";
 import MasterControls from "./MasterControls";
 import Tooltip from "@material-ui/core/Tooltip";
+import Link from "@material-ui/core/Link";
+import {Link as RouterLink} from "react-router-dom";
 
 class OrdersTable extends Component {
 
@@ -24,6 +26,7 @@ class OrdersTable extends Component {
 
       switch (decodedMessage.type) {
         case 'UPDATED_ORDERS_FROM_SERVER':
+          console.log(this.props.page);
           this.props.getOrders(this.props.rowsPerPage, this.props.page + 1);
           console.log('UPDATED_ORDERS_FROM_SERVER');
           break;
@@ -77,14 +80,30 @@ class OrdersTable extends Component {
     this.props.updateOrders(_tempOrders);
     const key = event.target.name;
     const value = _tempOrders[index][event.target.name];
-    this.props.putUpdateOrder(id, {[key]: value});
+    this.props.putUpdateOrder(id, {[key]: value})
+      .then(() => {
+        console.log('readyState',this.websocket.readyState);
+        let message = JSON.stringify({
+          type: 'STATUS_CHANGED'
+        });
+        this.websocket.send(message);
+        this.setState({message: ''});
+      }).catch(error => console.log(error)); //@TODO Добавить обработку ошибок;
   };
   handleCheck = (event, id) => {
     const _tempOrders = [...this.props.orders];
     const index = _tempOrders.findIndex(order => {return order.id === id});
     _tempOrders[index][event.target.name] = event.target.checked;
     this.props.updateOrders(_tempOrders);
-    this.props.putUpdateOrder(id, {[event.target.name]: event.target.checked});
+    this.props.putUpdateOrder(id, {[event.target.name]: event.target.checked})
+      .then(() => {
+        console.log('readyState',this.websocket.readyState);
+        let message = JSON.stringify({
+          type: 'STATUS_CHANGED'
+        });
+        this.websocket.send(message);
+        this.setState({message: ''});
+      }).catch(error => console.log(error)); //@TODO Добавить обработку ошибок;
   };
   handleClick = (id, newStatusId) => {
     let valuesToChange = {statusId: newStatusId, };
@@ -105,7 +124,6 @@ class OrdersTable extends Component {
   };
 
   render() {
-    const { history } = this.props;
 
     return (
         <TableBody >
@@ -115,11 +133,13 @@ class OrdersTable extends Component {
                     hover
                     id={`tableRow${index}`}
                     key={index}
-                    onClick={() => history.push(`order/${order.id}`)}
+                    // onClick={() => history.push(`order/${order.id}`)}
                 >
                   <Tooltip title={order.id} placement="top-start">
                     <TableCell style={{maxWidth: '75px'}}>
-                      {order.id.substring(0, 8)}
+                      <Link component={RouterLink} to={`orders/${order.id}`}>
+                        {order.id.substring(0, 8)}
+                      </Link>
                     </TableCell>
                   </Tooltip>
                   {this.props.user ?

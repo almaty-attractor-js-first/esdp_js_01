@@ -28,8 +28,6 @@ const createRouter = () => {
             perPage = req.query.perPage;
             page = req.query.page;
         }
-        console.log('OFFSET', page);
-        console.log('LIMIT', perPage);
 
         if (!token)  return res.status(401).send({message: "Ошибка аутентификации"});
         const worker = await knex('workers')
@@ -110,11 +108,40 @@ const createRouter = () => {
 		    }
 	    }
     });
-    router.get('/orders/:id', async (req, res) => {
+    router.get('/orders/:id/items', async (req, res) => {
         const orderId = req.params.id;
-        let order = await db.fetch('orders', orderId);
-        res.send(order.rows[0]);
+        const orderItems = await knex("orderItems")
+            .select("*")
+            .where("orderId", `${orderId}`)
+            .then((result) => {return result})
+            .catch((err) => {console.log(err)});
+        return res.send(orderItems);
     });
+    router.delete('/orders/:id/items', async (req, res) => {
+        const id = req.params.id;
+        const orderItems = await knex("orderItems")
+            .delete("*")
+            .where("id", `${id}`)
+            .then((result) => {return result})
+            .catch((err) => {console.log(err)});
+        return res.send(orderItems);
+    });
+    router.put('/orders/:id/items', async (req, res) => {
+        const data = req.body;
+        const orderId = req.params.id;
+        console.log(orderId);
+        console.table(data);
+        await knex("orderItems")
+            .delete("*")
+            .where("orderId", `${orderId}`)
+            .then(async () => {
+                await knex("orderItems").insert(data)
+            })
+            .then((result) => {return res.send(result)})
+            .catch((err) => {console.log(err)});
+
+    });
+
     router.post('/orders', async (req, res) => {
         let orderData = req.body;
         const orderId = uuid();

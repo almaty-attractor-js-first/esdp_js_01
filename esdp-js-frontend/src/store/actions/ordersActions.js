@@ -1,5 +1,12 @@
 import axios from '../../axios-api'
-import {GET_TOTAL_ORDERS_COUNT, SET_LOADING, UPDATE_CURRENT_ORDER, UPDATE_ORDERS} from "./actionTypes";
+import {
+    SET_ORDER_ITEMS,
+    GET_TOTAL_ORDERS_COUNT,
+    SET_LOADING,
+    UPDATE_CURRENT_ORDER,
+    UPDATE_ORDERS,
+    SET_CHANGED_ORDER_ITEMS
+} from "./actionTypes";
 import store from "../configureStore";
 import {openSnack} from "./notificationsActions";
 
@@ -13,6 +20,12 @@ const setLoading = (loading) => {
 export const updateOrders = orders => {
     return dispatch => {
         dispatch({type: UPDATE_ORDERS, orders});
+    };
+};
+
+export const setOrderItems = orders => {
+    return dispatch => {
+        dispatch({type: SET_ORDER_ITEMS, orders});
     };
 };
 
@@ -34,6 +47,12 @@ export const getTotalOrders = () => {
     }
 };
 
+export const setChangedOrderItems = (JSONString) => {
+    return dispatch => {
+        dispatch({type: SET_CHANGED_ORDER_ITEMS, JSONString});
+    }
+};
+
 export const getOrders = (perPage, page) => {
     return dispatch => {
         return axios.get(perPage || page ? `/orders/?perPage=${perPage}&page=${page}` : '/orders/?perPage=10&page=0')
@@ -50,16 +69,54 @@ export const getOrders = (perPage, page) => {
     }
 };
 
+export const getOrderItems = (id) => {
+    return dispatch => {
+        return axios.get(`/orders/${id}/items`)
+            .then(response => {
+                let data = response.data;
+                dispatch(setOrderItems(data));
+                const JSONString = JSON.stringify(data);
+                dispatch(setChangedOrderItems(JSONString));
+                return response;
+        },error => {
+            if (error.response && error.response.data) {
+            } else {
+                dispatch(console.log("No internet connection"));
+            }
+        })
+    }
+};
+
+export const updateCurrentOrderItems = (id, data) => {
+    return dispatch => {
+        return axios.put(`/orders/${id}/items`, data)
+            .then(response => {
+                let data = response.data;
+                // dispatch(setOrderItems(data));
+                return response;
+        }
+        ,error => {
+            if (error.response && error.response.data) {
+            } else {
+                dispatch(console.log("No internet connection"));
+            }
+        })
+    }
+};
+
 export const putUpdateOrder = (id, order) => {
     return dispatch => {
         dispatch(setLoading(true));
         return axios.put(`/orders/${id}`, order )
             .then(response => {
                 dispatch(openSnack(response.data.message, 'info'));
+                dispatch(getOrders()).then(() => {
+                    dispatch(updateCurrentOrder(id));
+                });
                 dispatch(setLoading(false));
-                dispatch(getOrders());
                 return response;
-            }).catch((error) => {
+            })
+            .catch((error) => {
                 console.log(error);
                 dispatch(openSnack(error.message, 'error'));
                 dispatch(setLoading(false));

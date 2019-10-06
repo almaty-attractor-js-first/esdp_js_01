@@ -113,22 +113,22 @@ function OrderForm(props) {
                 <Grid item xs={3}>
                   {orderItems[index].cleaningType ?
                     <TextField
-                    className={classes.select}
-                    data-id={index}
-                    onChange={handleOrderItemsChange}
-                    type="number"
-                    inputProps={{
-                      min: "1", max: "10", step: "1",
-                      id: 'cleaningQty' + index,
-                      'data-id': index
-                    }}
-                    value={item.qty}
-                    required
-                    id="qty"
-                    name="qty"
-                    helperText="Сколько пар?"
-                    fullWidth
-                  />
+                      className={classes.select}
+                      data-id={index}
+                      onChange={handleOrderItemsChange}
+                      type="number"
+                      inputProps={{
+                        min: "1", max: "10", step: "1",
+                        id: 'cleaningQty' + index,
+                        'data-id': index
+                      }}
+                      value={item.qty}
+                      required
+                      id="qty"
+                      name="qty"
+                      helperText="Сколько пар?"
+                      fullWidth
+                    />
                   : null}
                 </Grid>
 

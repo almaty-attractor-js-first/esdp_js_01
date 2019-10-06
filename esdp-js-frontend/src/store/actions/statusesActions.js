@@ -47,7 +47,6 @@ export const getStatuses = () => {
 
 export const updateStatuses = (statuses) => {
 	return dispatch => {
-		console.log('updated');
 		axios.put('/statuses', statuses).then(() => {
 			dispatch(openSnack(('Статус успешно обновлен'), 'info'));
 		});
@@ -56,7 +55,6 @@ export const updateStatuses = (statuses) => {
 
 export const saveStatus = (status) => {
 	return dispatch => {
-		console.log('saved');
 		axios.post('/statuses', status).then(() => {
 			dispatch(openSnack(('Статус успешно сохранен'), 'success'));
 		});
@@ -65,7 +63,6 @@ export const saveStatus = (status) => {
 
 export const updateStatus = (status) => {
 	return dispatch => {
-		console.log('updatetOne');
 		axios.put(`/statuses/${status.id}`, status).then(() => {
 			dispatch(openSnack(('Статус успешно обновлен'), 'info'));
 		});

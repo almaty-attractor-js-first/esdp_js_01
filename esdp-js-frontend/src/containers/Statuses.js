@@ -103,7 +103,7 @@ const Statuses = (props) => {
 	};
 	return (
 		<EditableStatuses statuses={props.statuses}
-											handleAddNewStatus={handleAddNewStatus}
+						  handleAddNewStatus={handleAddNewStatus}
 		                  handleSetEditable={handleSetEditable}
 		                  handleSubmitChanges={handleSubmitChanges}
 		                  handleDiscardChanges={handleDiscardChanges}

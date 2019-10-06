@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
-import {getOrders, getTotalOrders, putUpdateOrder, updateOrders} from "../store/actions/ordersActions";
+import {getOrderItems, getOrders, getTotalOrders, putUpdateOrder, updateOrders} from "../store/actions/ordersActions";
 import {getStatuses} from "../store/actions/statusesActions";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Link as RouterLink } from 'react-router-dom';
@@ -165,6 +165,8 @@ const Orders = props => {
                 workers={props.workers}
                 statuses={props.statuses}
                 classes={classes}
+                rowsPerPage={rowsPerPage}
+                page={page}
                 updateOrders={props.updateOrders}
                 putUpdateOrder={props.putUpdateOrder}
                 getOrders={props.getOrders}
