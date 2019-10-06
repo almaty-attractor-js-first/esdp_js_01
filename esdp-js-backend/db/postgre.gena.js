@@ -30,7 +30,6 @@ module.exports = {
             return err;
         }
     },
-
     fetch: async (table, id) => {
         let sqlString = `SELECT * FROM "${table}"`;
         if (id) {
@@ -43,7 +42,14 @@ module.exports = {
             console.log(err.stack);
         }
     },
-
+    nativeFetch: async (sqlString) => {
+        try {
+            const res = await pool.query(sqlString);
+            return res;
+        } catch (err) {
+            console.log(err.stack);
+        }
+    },
     fetchBy: async (table, column, value) => {
         let sqlString = `SELECT * FROM "${table}"`;
         if (column && value) {
@@ -57,7 +63,6 @@ module.exports = {
             return err;
         }
     },
-
     saveUser: async (object) => {
         const bodyKeys = Object.keys(object);
         const bodyValues = Object.values(object);
@@ -75,8 +80,6 @@ module.exports = {
             return err;
         }
     },
-
-
     fetchByPhone: async (table, phone) => {
         let sqlString = `SELECT * FROM "${table}" WHERE ("${table}".phone = '${phone}')`;
         try {
@@ -87,7 +90,6 @@ module.exports = {
             return err;
         }
     },
-
     fetchByToken: async (token) => {
         let sqlString = `SELECT * FROM "workers" WHERE ("workers".token = '${token}')`;
         console.log(sqlString);

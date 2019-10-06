@@ -72,7 +72,6 @@ export const loginUser = userData => {
             ).catch((err) => console.log('err', err));
     }
 };
-
 export const logoutUser = () => {
     return (dispatch) => {
         axios.delete("/workers/sessions").then(response => {
@@ -80,6 +79,14 @@ export const logoutUser = () => {
             dispatch(openSnack('Сессия завершена', 'info'));
             dispatch(push("/"));
         });
+    }
+};
+export const getSystemRoles = () => {
+    return dispatch => {
+        axios.get("/workers/roles").then((roles) => {
+            let data = roles.data;
+            dispatch({type: 'FETCH_ROLES', data});
+        })
     }
 };
 

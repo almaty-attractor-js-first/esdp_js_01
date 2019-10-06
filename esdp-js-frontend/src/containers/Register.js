@@ -8,9 +8,10 @@ import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
-import {registerUser} from "../store/actions/usersActions";
+import {getSystemRoles, registerUser} from "../store/actions/usersActions";
 import {TextField} from "@material-ui/core";
 import InputMask from "react-input-mask";
+import MenuItem from "@material-ui/core/MenuItem";
 const styles = theme => ({
   '@global': {
     body: {
@@ -40,6 +41,14 @@ const styles = theme => ({
   text: {
     color: theme.palette.text.primary,
   },
+  menu: {
+    width: 400,
+  },
+  textField: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    width: 200,
+  },
 });
 
 class SignUp extends React.Component {
@@ -48,8 +57,24 @@ class SignUp extends React.Component {
     lastName: '',
     password: '',
     phone: '',
-    email: ''
+    email: '',
+    role: ''
   };
+
+  rolesRu = {
+    courier: 'Курьер',
+    master: 'Мастер',
+    manager: 'Менеджер',
+    admin: 'Администратор',
+  };
+
+  componentDidMount() {
+    this.props.getSystemRoles();
+    this.props.roles.map(role => {
+      return console.log(role.enumlabel);
+    })
+  }
+
   inputChangeHandler = e => {
     this.setState({
       [e.target.name]: e.target.value
@@ -129,6 +154,29 @@ class SignUp extends React.Component {
               value={this.state.lastName}
               onChange={this.inputChangeHandler}
             />
+            <TextField
+                id="standard-select-role"
+                select
+                label="Роль"
+                className={classes.textField}
+                name="role"
+                value={this.state.role}
+                onChange={this.inputChangeHandler}
+                SelectProps={{
+                  MenuProps: {
+                    className: classes.menu,
+                  },
+                }}
+                margin="normal"
+            >
+              {this.props.roles
+                  .filter(role => role.enumlabel !== "nobody")
+                  .map(role => (
+                  <MenuItem key={role.enumlabel} value={role.enumlabel}>
+                    {this.rolesRu[role.enumlabel]}
+                  </MenuItem>
+              ))}
+            </TextField>
             <Button
               type="submit"
               variant='contained'
@@ -152,12 +200,14 @@ SignUp.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    error: state.users.registerError
+    error: state.users.registerError,
+    roles: state.users.roles
   }
 };
 const mapDispatchToProps = dispatch => {
   return {
     registerUser: (userData) => dispatch(registerUser(userData)),
+    getSystemRoles: () => dispatch(getSystemRoles()),
   };
 };
 

@@ -14,7 +14,6 @@ pool.on('connect', () => {
 module.exports = {
     save: async (object, table) => {
         const bodyKeys = Object.keys(object);
-        console.log(bodyKeys);
         const bodyValues = Object.values(object);
         const bodyKeysWithRegistr = bodyKeys.map((key, index) => {
             return `"${key}"`;
@@ -24,7 +23,6 @@ module.exports = {
         });
         const sqlString = `INSERT INTO "${table}"(${bodyKeysWithRegistr.join(', ')}) VALUES(${VALUES.join(', ')}) RETURNING *`;
         try {
-            console.log(sqlString);
             const res = await pool.query(sqlString, bodyValues);
             return (res.rows[0]);
         } catch (err) {
@@ -32,11 +30,10 @@ module.exports = {
             return err;
         }
     },
-
     fetch: async (table, id) => {
         let sqlString = `SELECT * FROM "${table}"`;
         if (id) {
-            sqlString = `SELECT * FROM "${table}" WHERE ("${table}".id = ${id})`;
+            sqlString = `SELECT * FROM "${table}" WHERE ("${table}".id = '${id}')`;
         }
         try {
             const res = await pool.query(sqlString);
@@ -45,7 +42,14 @@ module.exports = {
             console.log(err.stack);
         }
     },
-
+    nativeFetch: async (sqlString) => {
+        try {
+            const res = await pool.query(sqlString);
+            return res;
+        } catch (err) {
+            console.log(err.stack);
+        }
+    },
     fetchBy: async (table, column, value) => {
         let sqlString = `SELECT * FROM "${table}"`;
         if (column && value) {
@@ -59,10 +63,8 @@ module.exports = {
             return err;
         }
     },
-
     saveUser: async (object) => {
         const bodyKeys = Object.keys(object);
-        console.log(bodyKeys);
         const bodyValues = Object.values(object);
         const bodyKeysWithRegister = bodyKeys.map((key) => {
             return `"${key}"`;
@@ -72,18 +74,14 @@ module.exports = {
         });
         const sql = `INSERT INTO "workers"(${bodyKeysWithRegister.join(', ')}) VALUES(${VALUES.join(', ')}) RETURNING *`;
         try {
-            console.log(sql);
             const res = await pool.query(sql, bodyValues);
         } catch (err) {
             console.log(err.stack);
             return err;
         }
     },
-
-
     fetchByPhone: async (table, phone) => {
         let sqlString = `SELECT * FROM "${table}" WHERE ("${table}".phone = '${phone}')`;
-        console.log(sqlString);
         try {
             const res = await pool.query(sqlString);
             return res;
@@ -92,7 +90,6 @@ module.exports = {
             return err;
         }
     },
-
     fetchByToken: async (token) => {
         let sqlString = `SELECT * FROM "workers" WHERE ("workers".token = '${token}')`;
         console.log(sqlString);
@@ -113,7 +110,6 @@ module.exports = {
         }
         str = str.join(", ");
         let sqlString = `UPDATE "${table}" SET ${str} WHERE "${table}".id = '${id}' RETURNING *`;
-        console.log(sqlString);
         try {
             return res = await pool.query(sqlString);
         } catch (err) {
@@ -122,3 +118,4 @@ module.exports = {
         }
     }
 };
+

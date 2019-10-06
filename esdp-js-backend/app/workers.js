@@ -10,6 +10,13 @@ const createRouter = () => {
         workers.rows.sort((a, b) => a.createdAt - b.createdAt);
         res.send(workers.rows);
     });
+    router.get('/roles', async (req, res) => {
+        const sqlString = 'select e.enumLabel \n' +
+            ' from pg_type t, pg_enum e \n' +
+            ' where t.oid = e.enumtypid and typname = \'role\';';
+        let roles = await db.nativeFetch(sqlString);
+        res.send(roles.rows);
+    });
     router.post('/', (req, res) => {
         const id = uuid.v4();
         const token = Helper.generateToken(id);
@@ -19,6 +26,7 @@ const createRouter = () => {
             password: req.body.password,
             firstName: req.body.firstName,
             lastName: req.body.lastName,
+            role: req.body.role,
             id,
             token
         };
@@ -61,7 +69,6 @@ const createRouter = () => {
         }
 
     });
-
     router.delete('/sessions', async (req, res) => {
         const token = req.get("Authorization");
         const success = {message: "Logged out!"};

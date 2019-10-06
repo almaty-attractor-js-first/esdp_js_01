@@ -11,7 +11,7 @@ const initialState = {
     registerError: null,
     loginError: null,
     user: null,
-    users: []
+    roles: []
 };
 
 const reducer = (state = initialState, action) => {
@@ -22,6 +22,8 @@ const reducer = (state = initialState, action) => {
             return {...state, registerError: action.error};
         case LOGIN_USER_SUCCESS:
             return {...state, user: action.user, loginError: null};
+        case 'FETCH_ROLES':
+            return {...state, roles: action.data};
         case LOGIN_USER_ERROR:
             return {...state, loginError: action.error};
         case LOGOUT_USER:
