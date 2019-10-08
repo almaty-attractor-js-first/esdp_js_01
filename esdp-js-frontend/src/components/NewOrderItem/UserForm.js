@@ -58,7 +58,7 @@ const UserForm = props => {
         if (response) {
           setUserInput(response.data);
         }
-      });
+      }).catch(e => console.log('error', e));
     }
   };
 
@@ -91,11 +91,11 @@ const UserForm = props => {
             {(inputProps) => <TextField {...inputProps}
                                         type="tel" value={userInput.phone} />}
           </InputMask>
-          {props.loading && <CircularProgress size={20} className={classes.progress}/>}
+          {props.isQuery && <CircularProgress size={20} className={classes.progress}/>}
         </Grid>
         <Grid item xs={12}>
           <TextField
-            disabled={props.loading}
+            disabled={props.isQuery}
             value={userInput.email}
             required
             id="email"
@@ -107,7 +107,7 @@ const UserForm = props => {
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            disabled={props.loading}
+            disabled={props.isQuery}
             value={userInput.firstName}
             required
             id="firsName"
@@ -119,7 +119,7 @@ const UserForm = props => {
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            disabled={props.loading}
+            disabled={props.isQuery}
             value={userInput.lastName}
             required
             id="lastName"
@@ -133,7 +133,7 @@ const UserForm = props => {
         <Fragment>
           <Grid item xs={props.deliveryType === 'delivery' ? 8 : 12}>
             <TextField
-              disabled={props.loading}
+              disabled={props.isQuery}
               value={userInput.address}
               required
               id="address"
@@ -160,7 +160,7 @@ const mapStateToProps = state => {
   return {
     userData: state.newOrder.userData,
     autocomplete: state.newOrder.autocomplete,
-    loading: state.newOrder.loading,
+    isQuery: state.newOrder.isQuery,
   };
 };
 

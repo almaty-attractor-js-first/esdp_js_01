@@ -41,11 +41,10 @@ const Workers = props => {
                                     <Fragment>
                                         <TableCell>ID сотрудника</TableCell>
                                         <TableCell>ФИО</TableCell>
-                                        <TableCell>email</TableCell>
-                                        <TableCell>Телефон</TableCell>
-                                        <TableCell>Должность</TableCell>
-                                        <TableCell>Количество заказов</TableCell>
-                                        <TableCell>Статус</TableCell>
+                                        <TableCell align='right'>email</TableCell>
+                                        <TableCell align='right'>Телефон</TableCell>
+                                        <TableCell align='right'>Должность</TableCell>
+                                        <TableCell align='right'>Статус</TableCell>
                                     </Fragment>
                                 </TableRow>
                             </TableHead>
@@ -56,13 +55,6 @@ const Workers = props => {
                     </div>
                 </PerfectScrollbar>
             </CardContent>
-            <Divider />
-            <CardActions>
-                <Button color="primary" size="small" variant="text">
-                    Показать всех
-                    <ArrowRightIcon />
-                </Button>
-            </CardActions>
         </Card>
     );
 };

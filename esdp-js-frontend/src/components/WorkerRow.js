@@ -4,6 +4,7 @@ import TableRow from '@material-ui/core/TableRow';
 import moment from "moment";
 import Link from "@material-ui/core/Link";
 import {Link as RouterLink} from "react-router-dom";
+import Switch from "@material-ui/core/Switch";
 
 export default function ClientRow(props) {
     const translateRole = (role) => {
@@ -32,11 +33,16 @@ export default function ClientRow(props) {
                         <TableCell align="right">{`+${worker.phone}`}</TableCell>
                         <TableCell align="right">{translateRole(worker.role)}</TableCell>
                         <TableCell align="right">
-                            <Link component={RouterLink} to={`/orders/`}>
-                                {'Список заказов'}
-                            </Link>
+                            <div>
+                                <Switch
+                                    checked={worker.status}
+                                    // onChange={e => props.handleOnOffStatus(e, props.row.id)}
+                                    value={worker.status}
+                                    color="primary"
+                                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                                />
+                            </div>
                         </TableCell>
-                        <TableCell align="right">{moment(worker.createdAt).format('DD.MM.YYYY HH:mm')}</TableCell>
                     </TableRow>
                 )
             )}

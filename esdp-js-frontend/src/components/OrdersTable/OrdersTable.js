@@ -137,7 +137,7 @@ class OrdersTable extends Component {
                 >
                   <Tooltip title={order.id} placement="top-start">
                     <TableCell style={{maxWidth: '75px'}}>
-                      <Link component={RouterLink} to={`orders/${order.id}`}>
+                      <Link component={RouterLink} to={`/orders/${order.id}`}>
                         {order.id.substring(0, 8)}
                       </Link>
                     </TableCell>

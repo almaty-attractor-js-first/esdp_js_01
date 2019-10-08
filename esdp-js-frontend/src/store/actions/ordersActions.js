@@ -30,11 +30,18 @@ export const setOrderItems = orders => {
 };
 
 export const updateCurrentOrder = orderId => {
-    const orders = store.getState().orders.orders;
-    const currentOrder = orders.find(order => {return order.id === orderId});
     return dispatch => {
-        dispatch({type: UPDATE_CURRENT_ORDER, currentOrder});
-    };
+        return axios.get(`/orders/${orderId}`)
+        .then(res => {
+            const currentOrder = res.data;
+            dispatch({type: UPDATE_CURRENT_ORDER, currentOrder});
+        },error => {
+            if (error.response && error.response.data) {
+            } else {
+                dispatch(console.log("No internet connection"));
+            }
+        })
+    }
 };
 
 export const getTotalOrders = () => {
@@ -43,6 +50,11 @@ export const getTotalOrders = () => {
             .then(res => {
                 const total = res.data;
                 dispatch({type: GET_TOTAL_ORDERS_COUNT, total});
+            },error => {
+                if (error.response && error.response.data) {
+                } else {
+                    dispatch(console.log("No internet connection"));
+                }
             })
     }
 };

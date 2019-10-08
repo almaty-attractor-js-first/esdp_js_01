@@ -37,23 +37,54 @@ const queryError = error => {
 	return {type: QUERY_ERROR, error};
 };
 
-export const getClientOrders = (phone) => {
-	phone = phone.replace(/[^0-9]/g, '');
+export const getClientOrders = phone => {
+	if (phone) {
+		phone = phone.replace(/[^0-9]/g, '');
+		return dispatch => {
+			axios.post('/clients', {phone})
+				.then((response) => {
+					if (response) {
+						let data = response.data.orders;
+						dispatch(updateClientOrders(data));
+					}
+				})
+				.then(() => {
+					const user = store.getState().users.user;
+					if (!user) {
+						dispatch(push("/orders/current"))
+					}
+				})
+				.catch(error => {
+					dispatch(queryError(error.response.data));
+					let errorMessage = store.getState().clientsReducer.queryError.message;
+					dispatch(openSnack((errorMessage), 'warning'));
+				})
+	}}
+};
+
+export const getClientOrdersById = id => {
 	return dispatch => {
-		axios.post('/clients', {phone})
+		axios.get(`/clients/${id}`)
 			.then((response) => {
 				if (response) {
 					let data = response.data.orders;
 					dispatch(updateClientOrders(data));
 				}
 			})
-			.then(() => dispatch(push("/orders/current")))
+			.then(() => {
+				const user = store.getState().users.user;
+				if (!user) {
+					dispatch(push("/orders/current"))
+				}
+			})
 			.catch(error => {
 				dispatch(queryError(error.response.data));
 				let errorMessage = store.getState().clientsReducer.queryError.message;
 				dispatch(openSnack((errorMessage), 'warning'));
 			})
-	}};
+	}
+};
+
 
 
 

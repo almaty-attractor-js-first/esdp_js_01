@@ -5,19 +5,19 @@ import Button from "@material-ui/core/Button";
 import {Link} from "react-router-dom";
 import {makeStyles} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
-import indigo from '@material-ui/core/colors/indigo';
 import {darken} from "@material-ui/core/styles";
+import {red} from "@material-ui/core/colors";
 
 const useStyles = makeStyles(theme => ({
   grow: {
     flexGrow: 1,
   },
   link: {
-    color: "#fff",
+    color: theme.palette.getContrastText(red[700]),
     '&:hover': {
       textDecoration: 'none',
-      color: '#fff',
-      background: darken(indigo[500], 0.07),
+      color: theme.palette.getContrastText(red[700]),
+      background: darken(red[700], 0.07),
     },
   },
   avatar: {

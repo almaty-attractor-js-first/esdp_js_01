@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import IndeterminateLinearProgress from "../components/UI/Preloader.js";
+import {red} from "@material-ui/core/colors";
 
 const withLoadingHandler = (WrappedComponent, axios) => {
 	return class extends Component {
@@ -38,7 +39,7 @@ const withLoadingHandler = (WrappedComponent, axios) => {
 					{this.state.loading ? <IndeterminateLinearProgress /> :
 						<div style={{
 							height: "4px",
-							background: "#4758bb",
+							backgroundColor: red[700],
 							position: "fixed",
 							top: 0,
 							left: 0,

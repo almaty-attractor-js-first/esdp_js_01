@@ -24,7 +24,7 @@ const initialState = {
   totalPrice: 0,
   completedDate: d.setDate(d.getDate() + 5),
   cleaningItems: [],
-  loading: false,
+  isQuery: false,
   savedOrder: []
 };
 
@@ -32,7 +32,7 @@ const reducer = (state = initialState, action) => {
   switch(action.type) {
     case CALCULATE_TOTAL:
       const total = action.cleaningFields.reduce(
-        (accumulator, cleaningField) => accumulator + (cleaningField.price * cleaningField.qty),
+        (accumulator, orderItem) => accumulator + (orderItem.price * orderItem.qty),
         0
       );
       return {...state, totalPrice: total};
@@ -47,7 +47,7 @@ const reducer = (state = initialState, action) => {
     case UPDATE_SAVED_ORDER:
       return {...state, savedOrder: action.savedOrder};
     case SET_LOADING:
-      return {...state, loading: action.loading};
+      return {...state, isQuery: action.loading};
     default:
       return state;
   }

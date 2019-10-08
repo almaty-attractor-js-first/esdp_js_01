@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import {red} from "@material-ui/core/colors";
 
 
 const styles = {
@@ -13,7 +14,7 @@ const styles = {
 		top: 0,
 		left: 0,
 		width: '100%',
-		zIndex: '999'
+		zIndex: '999',
 	},
 };
 
@@ -21,7 +22,7 @@ function IndeterminateLinearProgress (props) {
 	const { classes } = props;
 	return (
 		<div>
-			<LinearProgress className={classes.preloader} color="primary" />
+			<LinearProgress className={classes.preloader} color="secondary" />
 		</div>
 	);
 }

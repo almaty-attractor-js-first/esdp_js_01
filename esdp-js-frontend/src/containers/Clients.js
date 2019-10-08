@@ -4,16 +4,13 @@ import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import {
     Card,
-    CardActions,
     CardHeader,
     CardContent,
-    Button,
     Divider,
     Table,
     TableCell,
     TableHead,
 } from '@material-ui/core';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import ClientRow from "../components/ClientRow";
@@ -41,11 +38,10 @@ const Clients = props => {
                                     <Fragment>
                                         <TableCell>ID клиента</TableCell>
                                         <TableCell>ФИО</TableCell>
-                                        <TableCell>email</TableCell>
-                                        <TableCell>Телефон</TableCell>
-                                        <TableCell>Адрес</TableCell>
-                                        <TableCell>Количество заказов</TableCell>
-                                        <TableCell>Дата регистрации</TableCell>
+                                        <TableCell align='right'>email</TableCell>
+                                        <TableCell align='right'>Телефон</TableCell>
+                                        <TableCell align='right'>Адрес</TableCell>
+                                        <TableCell align='right'>Дата регистрации</TableCell>
                                     </Fragment>
                                 </TableRow>
                             </TableHead>
@@ -56,13 +52,6 @@ const Clients = props => {
                     </div>
                 </PerfectScrollbar>
             </CardContent>
-            <Divider />
-            <CardActions>
-                <Button color="primary" size="small" variant="text">
-                    Показать всех
-                    <ArrowRightIcon />
-                </Button>
-            </CardActions>
         </Card>
     );
 };

@@ -72,12 +72,12 @@ export const getUserByPhoneNumber = (phoneNumber) => {
   return dispatch => {
     phoneNumber = phoneNumber.replace(/[^0-9]/g, '');
     dispatch(setLoading(true));
-    return axios.get(`/orders/client?phone=${phoneNumber}`).then(response => {
-      if (response.data) {
-        dispatch(setLoading(false));
-        return response;
-      }
-      
+    return axios.get(`/orders/client?phone=${phoneNumber}`)
+      .then(response => {
+        if (response.data) {
+          dispatch(setLoading(false));
+          return response;
+        }
     }).catch(() => dispatch(setLoading(false)))}
 };
 

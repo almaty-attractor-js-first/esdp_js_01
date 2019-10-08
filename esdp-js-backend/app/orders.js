@@ -20,6 +20,31 @@ const createRouter = () => {
             .catch((err) => {console.log(err)});
         return res.send(total);
     });
+    router.get('/orders/client', async (req, res) => {
+        if(req.query.phone){
+            const result = await knex('clients')
+                .select("*")
+                .where('phone', req.query.phone)
+                .then(result => {return result})
+                .catch((err) => {console.log(err)});
+
+            if (result[0]) {
+                return res.send(result[0]);
+            } else {
+                return res.status(404).send({message: "Number not found"});
+            }
+        }
+    });
+
+    router.get('/orders/:id', async (req, res) => {
+        const orderId = req.params.id;
+        const currentOrder = await knex('orders_with_status_fields')
+            .select("*")
+            .where("id", `${orderId}`)
+            .then(result => {return result[0]})
+            .catch((err) => {console.log(err)});
+        return res.send(currentOrder);
+    });
     router.get('/orders', async (req, res) => {
         const token = req.get("Authorization");
         let perPage;
@@ -98,16 +123,6 @@ const createRouter = () => {
             }
         }
     });
-    router.get('/orders/client', async (req, res) => {
-	    if(req.query.phone){
-		    const result = await db.fetchByPhone('clients',req.query.phone);
-		    if (result.rows[0]) {
-			    return res.send(result.rows[0]);
-		    } else {
-			    return res.status(404).send({message: "Number not found"});
-		    }
-	    }
-    });
     router.get('/orders/:id/items', async (req, res) => {
         const orderId = req.params.id;
         const orderItems = await knex("orderItems")
@@ -178,6 +193,15 @@ const createRouter = () => {
             orderData.clientId = clientData.id;
             await db.save(clientData, 'clients');
         }
+        const cleaningTypes = await knex('cleaningTypes')
+            .select("*")
+            .then(result => {return result})
+            .catch((err) => {console.log(err)});
+        console.log(cleaningTypes);
+        // const total = orderData.orderItems.reduce(
+        //     (accumulator, orderItem) => accumulator + (orderItem.price * orderItem.qty),
+        //     0
+        // );
         const finalOrder = {
             id: orderId,
             clientId: orderData.clientId || clientId,

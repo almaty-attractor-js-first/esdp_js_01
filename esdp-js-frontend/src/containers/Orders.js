@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
-import {getOrderItems, getOrders, getTotalOrders, putUpdateOrder, updateOrders} from "../store/actions/ordersActions";
+import {getOrders, getTotalOrders, putUpdateOrder, updateOrders} from "../store/actions/ordersActions";
 import {getStatuses} from "../store/actions/statusesActions";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Link as RouterLink } from 'react-router-dom';
@@ -52,7 +52,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Orders = props => {
-  const [orders, setOrders] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -82,9 +81,6 @@ const Orders = props => {
     props.getWorkers();
   }, []);
 
-  useEffect(() => {
-    setOrders(props.orders);
-  }, [props.orders]);
 
   const {
     className,
@@ -97,6 +93,7 @@ const Orders = props => {
     staticContext,
     totalOrdersCount,
     getTotalOrdersCount,
+    clientOrders,
     ...rest
   } = props;
   const classes = useStyles();
@@ -159,7 +156,7 @@ const Orders = props => {
               </TableHead>
               <OrdersTable
                 loading={loading}
-                orders={orders}
+                orders={props.id ? props.clientOrders : props.orders}
                 user={props.user}
                 users={props.users}
                 workers={props.workers}

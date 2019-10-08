@@ -45,8 +45,6 @@ const styles = theme => ({
     width: 400,
   },
   textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
     width: 200,
   },
 });
@@ -70,9 +68,6 @@ class SignUp extends React.Component {
 
   componentDidMount() {
     this.props.getSystemRoles();
-    this.props.roles.map(role => {
-      return console.log(role.enumlabel);
-    })
   }
 
   inputChangeHandler = e => {
@@ -184,7 +179,7 @@ class SignUp extends React.Component {
               color="primary"
               className={classes.submit}
             >
-              Продолжить
+              Зарегистрировать
             </Button>
           </form>
         </div>

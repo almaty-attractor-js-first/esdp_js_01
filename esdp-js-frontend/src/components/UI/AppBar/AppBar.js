@@ -15,6 +15,7 @@ import NotificationsIcon from '@material-ui/icons/Brush';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Register from '@material-ui/icons/LockOpen';
 import Logout from '@material-ui/icons/ExitToApp';
+import { red } from '@material-ui/core/colors';
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -55,6 +56,10 @@ const useStyles = makeStyles(theme => ({
       fontSize: '20px',
       display: 'block',
     },
+  },
+  header: {
+    color: theme.palette.getContrastText(red[700]),
+    backgroundColor: red[700]
   },
 }));
 
@@ -167,7 +172,7 @@ const Header = (props) => {
 
   return (
     <div className={classes.grow}>
-      <AppBar position="fixed" style={{marginTop: '4px', paddingBottom: '4px'}}>
+      <AppBar position="fixed" style={{marginTop: '4px', paddingBottom: '4px'}} className={classes.header}>
         <Toolbar variant="dense">
           <Typography className={classes.link}
                       variant="h6" noWrap

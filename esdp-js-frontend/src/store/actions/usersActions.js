@@ -54,7 +54,7 @@ export const loginUser = userData => {
                     if (response.data) {
                         dispatch(loginUserSuccess(response.data));
                         dispatch(push("/"));
-                        dispatch(openSnack((`Привет ${response.data.firstName}!`), 'success'));
+                        dispatch(openSnack((`Привет ${response.data.firstName}!`), 'info'));
                     }
 
                 },

@@ -1,9 +1,8 @@
 import React, {Fragment, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-  clearItemsToDelete,
   getOrderItems,
-  putUpdateOrder, setItemsToDelete,
+  putUpdateOrder, setChangedOrderItems,
   setOrderItems,
   updateCurrentOrder,
   updateCurrentOrderItems
@@ -146,6 +145,14 @@ const OrderItems = props => {
     props.getStatuses();
   }, []);
 
+  const updateCurrentOrderItems = (id, items) => {
+    props.updateCurrentOrderItems(id, items);
+    setIsChanged(false);
+    const JSONString = JSON.stringify(items);
+    props.setChangedOrderItems(JSONString);
+    console.log(isChanged);
+  };
+
   const handleChange = (event, id) => {
     const currentOrder = {...props.currentOrder};
     currentOrder[event.target.name] = event.target.value;
@@ -153,7 +160,7 @@ const OrderItems = props => {
     const value = currentOrder[event.target.name];
     props.putUpdateOrder(id, {[key]: value})
         .then(() => {
-      props.updateCurrentOrder(props.match.params.id);
+          props.updateCurrentOrder(props.match.params.id);
     });
   };
 
@@ -219,9 +226,11 @@ const OrderItems = props => {
                       <TableCell align="left">Клиент</TableCell>
                       <TableCell align="left">
                         <div>
-                          <Link component={RouterLink} to={`/clients/${props.currentOrder.clientId}`}>
-                            {`${props.currentOrder.clientId}` || 'Информация отсутствует'}
-                          </Link>
+                          {props.user && props.user.role === 'admin' ?
+                              <Link component={RouterLink} to={`/clients/${props.currentOrder.clientId}`}>
+                                {`${props.currentOrder.clientId}` || 'Информация отсутствует'}
+                              </Link>
+                          : `${props.currentOrder.clientId}` || 'Информация отсутствует'}
                         </div>
                         <span>{props.currentOrder.phone}</span>
                         <div>{props.currentOrder.address}</div>
@@ -257,6 +266,7 @@ const OrderItems = props => {
                       <TableCell align="left">Статус заказа</TableCell>
                       <TableCell align="left">
                         <StatusesSelect
+                            disabled={(props.user && (props.user.role === 'admin'))}
                             statusId={props.currentOrder.statusId}
                             name='statusId'
                             changeHandler={(e) => {handleChange(e, props.currentOrder.id);}}
@@ -295,7 +305,7 @@ const OrderItems = props => {
                                 size="small"
                                 color="primary"
                                 className={classes.margin}
-                                onClick={() => props.updateCurrentOrderItems(props.match.params.id, props.currentOrderItems)}>
+                                onClick={() => updateCurrentOrderItems(props.match.params.id, props.currentOrderItems)}>
                           Сохранить
                         </Button>
                       </Fragment>
@@ -431,6 +441,7 @@ const mapDispatchToProps = dispatch => {
     getStatuses: () => dispatch(getStatuses()),
     updateCurrentOrderItems: (id, data) => dispatch(updateCurrentOrderItems(id, data)),
     setOrderItems: (order) => dispatch(setOrderItems(order)),
+    setChangedOrderItems: (JSONString) => dispatch(setChangedOrderItems(JSONString)),
     getCleaningItems: () => dispatch(getCleaningItems()),
   };
 };

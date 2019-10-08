@@ -13,6 +13,7 @@ import CleaningTypes from "./containers/CleaningTypes";
 import SavedOrder from "./containers/SavedOrder";
 import CurrentOrders from "./containers/CurrentOrders";
 import Workers from "./containers/Workers";
+import UserInfo from "./containers/UserInfo";
 
 const Routes = () => {
     return (
@@ -30,6 +31,7 @@ const Routes = () => {
             <Route exact path="/types/edit" component={CleaningTypes}/>
             <Route exact path="/clients" component={Clients}/>
             <Route exact path="/workers" component={Workers}/>
+            <Route exact path="/clients/:id" component={UserInfo}/>
         </Switch>
     )
 };

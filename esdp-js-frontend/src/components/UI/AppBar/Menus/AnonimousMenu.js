@@ -1,7 +1,8 @@
 import React, {Fragment} from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import {darken, makeStyles} from '@material-ui/core/styles';
 import Button from "@material-ui/core/Button";
 import {Link} from "react-router-dom";
+import {red} from "@material-ui/core/colors";
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -11,10 +12,11 @@ const useStyles = makeStyles(theme => ({
     display: 'none',
   },
   link: {
-    color: "#fff",
+    color: theme.palette.getContrastText(red[700]),
     '&:hover': {
       textDecoration: 'none',
-      color: '#fff'
+      color: theme.palette.getContrastText(red[700]),
+      background: darken(red[700], 0.07),
     },
   },
 
