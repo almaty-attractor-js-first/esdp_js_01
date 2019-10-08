@@ -50,6 +50,7 @@ const createRouter = () => {
                 }
                 console.log('DECODED MESSAGE', decodedMessage);
                 if (decodedMessage.type === 'STATUS_CHANGED') {
+                    console.log('STATUS_CHANGED');
                     Object
                         .values(activeConnections)
                         .forEach(client => {
@@ -88,6 +89,7 @@ const createRouter = () => {
                 }
                 console.log('DECODED MESSAGE', decodedMessage);
                 if (decodedMessage.type === 'NEW_ORDER') {
+                    console.log('NEW_ORDER');
                     Object
                         .values(activeConnections)
                         .forEach(client => {
