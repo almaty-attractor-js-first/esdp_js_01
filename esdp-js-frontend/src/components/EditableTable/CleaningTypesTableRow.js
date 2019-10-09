@@ -58,7 +58,7 @@ export default function CleaningTypesTableRow (props) {
 	const classes = useStyles();
 	return (
 		<TableRowSortable
-			id={'status' + props.index}
+			id={'type' + props.index}
 			hover
 			index={props.index}
 			role="checkbox"
@@ -104,7 +104,7 @@ export default function CleaningTypesTableRow (props) {
 					</>
 				}
 			</TableCell>
-			<TableCell align="right" className={classes.tableCell} id={'statusName' + props.index}>
+			<TableCell align="right" className={classes.tableCell} id={'typeName' + props.index}>
 				{props.row.editable ?
 					<TextField
 						name={"name"}

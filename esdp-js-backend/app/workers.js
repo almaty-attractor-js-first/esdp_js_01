@@ -11,9 +11,9 @@ const createRouter = () => {
         res.send(workers.rows);
     });
     router.get('/roles', async (req, res) => {
-        const sqlString = 'select e.enumLabel \n' +
-            ' from pg_type t, pg_enum e \n' +
-            ' where t.oid = e.enumtypid and typname = \'role\';';
+        const sqlString = 'SELECT e.enumLabel \n' +
+            ' FROM pg_type t, pg_enum e \n' +
+            ' WHERE t.oid = e.enumtypid AND typname = \'role\';';
         let roles = await db.nativeFetch(sqlString);
         res.send(roles.rows);
     });

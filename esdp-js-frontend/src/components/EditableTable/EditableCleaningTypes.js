@@ -6,6 +6,7 @@ import {TableBodySortable} from "./SortableElements";
 import EditableTableToolbar from "./EditableTableToolbar";
 import EditableTableHead from "./EditableTableHead";
 import CleaningTypesTableRow from "./CleaningTypesTableRow";
+import StatusesTableRow from "./StatusesTableRow";
 
 const headRows = [
 	{ label: 'Тянуть' },
@@ -63,7 +64,7 @@ function EditableCleaningTypes(props) {
 	return (
 		<div className={classes.root}>
 			<Paper className={classes.paper}>
-				<EditableTableToolbar handleAdd={props.handleAddNewStatus}
+				<EditableTableToolbar handleAdd={props.handleAddNewType}
 				                      heading="Чистки"
 				                      tooltipTitle='Добавить новый тип чистки'/>
 				
@@ -80,11 +81,15 @@ function EditableCleaningTypes(props) {
 							                   transitionDuration={200}
 							                   displayRowCheckbox={false}>
 								{props.cleaningTypes.map((row, index) => {
-									console.log(row);
 									return (
 										<CleaningTypesTableRow index={index}
-										                  key={index}
-										                  row={row}
+															   key={index}
+															   row={row}
+															   handleSetEditable={props.handleSetEditable}
+															   handleSubmitChanges={props.handleSubmitChanges}
+															   handleDiscardChanges={props.handleDiscardChanges}
+															   inputChangeHandler={props.inputChangeHandler}
+															   handleOnOffStatus={props.handleOnOffStatus}
 										/>
 									);
 								})}

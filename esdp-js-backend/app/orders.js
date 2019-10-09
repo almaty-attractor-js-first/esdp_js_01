@@ -35,7 +35,6 @@ const createRouter = () => {
             }
         }
     });
-
     router.get('/orders/:id', async (req, res) => {
         const orderId = req.params.id;
         const currentOrder = await knex('orders_with_status_fields')
@@ -156,7 +155,6 @@ const createRouter = () => {
             .catch((err) => {console.log(err)});
 
     });
-
     router.post('/orders', async (req, res) => {
         let orderData = req.body;
         const orderId = uuid();

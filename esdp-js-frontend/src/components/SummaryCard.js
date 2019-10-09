@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {Fragment} from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {connect} from "react-redux";
 import {
@@ -16,11 +16,12 @@ import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 
 const UserCard = props => {
+    let pricesArray = [];
     let total;
     if (props.clientOrders) {
-        total = props.clientOrders.reduce(
-            (accumulator, clientOrder) => accumulator + (clientOrder.totalPrice * props.clientOrders.length), 0
-        );
+        props.clientOrders.forEach(order => order.orderItems.forEach(item => pricesArray.push(item.qty * item.price)));
+        total = pricesArray.reduce((accumulator, item) => accumulator + item, 0);
+
     }
 
 

@@ -18,6 +18,9 @@ export const getCleaningTypes = () => {
 		axios.get("/cleaning-items").then(response => {
 			let data = response.data;
 			dispatch(setCleaningTypes(data));
+			const JSONString = JSON.stringify(data);
+			dispatch(setChangedCleaningTypes(JSONString));
+			return response;
 		},error => {
 			if (error.response && error.response.data) {
 			} else {
