@@ -7,7 +7,6 @@ import {
     UPDATE_ORDERS,
     SET_CHANGED_ORDER_ITEMS
 } from "./actionTypes";
-import store from "../configureStore";
 import {openSnack} from "./notificationsActions";
 
 const setLoading = (loading) => {
@@ -103,8 +102,6 @@ export const updateCurrentOrderItems = (id, data) => {
     return dispatch => {
         return axios.put(`/orders/${id}/items`, data)
             .then(response => {
-                let data = response.data;
-                // dispatch(setOrderItems(data));
                 return response;
         }
         ,error => {

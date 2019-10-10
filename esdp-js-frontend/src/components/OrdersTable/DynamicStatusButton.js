@@ -15,6 +15,10 @@ const DynamicStatusButton = ({statusId, order, ...props}) => {
     switch (currentStatus.name) {
         case 'new':
             text = 'Взять в работу';
+            newStatus = 'pickup';
+            break;
+        case 'pickup':
+            text = 'В работе';
             newStatus = 'taken';
             break;
         case 'taken':
@@ -35,10 +39,10 @@ const DynamicStatusButton = ({statusId, order, ...props}) => {
             break;
         case 'delivering':
             text = 'Завершить заказ';
-            newStatus = 'closed';
+            newStatus = 'completed';
             break;
         default:
-            return <p>Ошибка обработки статуса...</p>;
+            return <p>{currentStatus.name}</p>;
     }
 
     let newStatusId;

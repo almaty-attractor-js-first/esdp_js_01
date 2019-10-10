@@ -228,9 +228,9 @@ const OrderItems = props => {
                         <div>
                           {props.user && props.user.role === 'admin' ?
                               <Link component={RouterLink} to={`/clients/${props.currentOrder.clientId}`}>
-                                {`${props.currentOrder.clientId}` || 'Информация отсутствует'}
+                                {`${props.currentOrder.client_name} ${props.currentOrder.client_lastname}` || 'Информация отсутствует'}
                               </Link>
-                          : `${props.currentOrder.clientId}` || 'Информация отсутствует'}
+                          : `${props.currentOrder.client_name} ${props.currentOrder.client_lastname}` || 'Информация отсутствует'}
                         </div>
                         <span>{props.currentOrder.phone}</span>
                         <div>{props.currentOrder.address}</div>
@@ -239,13 +239,13 @@ const OrderItems = props => {
                     <TableRow>
                       <TableCell align="left">Мастер</TableCell>
                       <TableCell align="left">
-                        {props.currentOrder.clientId}
+                        {`${props.currentOrder.master_name} ${props.currentOrder.master_lastname}`}
                       </TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell align="left">Курьер</TableCell>
                       <TableCell align="left">
-                        {props.currentOrder.courierId}
+                        {`${props.currentOrder.courier_name} ${props.currentOrder.courier_lastname}`}
                       </TableCell>
                     </TableRow>
                     <TableRow>

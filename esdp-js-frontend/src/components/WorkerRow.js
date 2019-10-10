@@ -1,7 +1,6 @@
 import React, {Fragment} from 'react';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-import moment from "moment";
 import Link from "@material-ui/core/Link";
 import {Link as RouterLink} from "react-router-dom";
 import Switch from "@material-ui/core/Switch";
@@ -15,6 +14,8 @@ export default function ClientRow(props) {
                 return 'Мастер';
             case 'courier':
                 return 'Курьер';
+            default:
+                console.log("Ошибка роли")
         }
     };
     return (

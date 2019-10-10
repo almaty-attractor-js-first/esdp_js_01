@@ -180,6 +180,7 @@ const Header = (props) => {
                       to='/'>
             SHOESER
           </Typography>
+          {props.user && <Typography variant='overline' style={{marginTop: -4, lineHeight: 2.36}}>{props.user.role}</Typography>}
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             {

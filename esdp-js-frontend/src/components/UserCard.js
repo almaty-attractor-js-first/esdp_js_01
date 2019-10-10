@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {Fragment} from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {connect} from "react-redux";
 import {

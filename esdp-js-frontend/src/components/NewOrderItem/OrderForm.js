@@ -101,7 +101,7 @@ function OrderForm(props) {
                     Не выбран
                   </option>
                   {props.cleaningItems ?
-                    props.cleaningItems.map((item, index) => {
+                    props.cleaningItems.filter(type => type.status === true).map((item, index) => {
                       return (
                         <option key={index} value={item.name}>
                           {item.title}

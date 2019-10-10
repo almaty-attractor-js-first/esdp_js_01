@@ -49,10 +49,7 @@ export const getClientOrders = phone => {
 					}
 				})
 				.then(() => {
-					const user = store.getState().users.user;
-					if (!user) {
-						dispatch(push("/orders/current"))
-					}
+					dispatch(push("/orders/current"))
 				})
 				.catch(error => {
 					dispatch(queryError(error.response.data));
@@ -71,16 +68,12 @@ export const getClientOrdersById = id => {
 					dispatch(updateClientOrders(data));
 				}
 			})
-			.then(() => {
-				const user = store.getState().users.user;
-				if (!user) {
-					dispatch(push("/orders/current"))
-				}
-			})
 			.catch(error => {
-				dispatch(queryError(error.response.data));
-				let errorMessage = store.getState().clientsReducer.queryError.message;
-				dispatch(openSnack((errorMessage), 'warning'));
+				if (error.response.data) {
+					dispatch(queryError(error.response.data));
+					let errorMessage = store.getState().clientsReducer.queryError.message;
+					dispatch(openSnack((errorMessage), 'warning'));
+				}
 			})
 	}
 };

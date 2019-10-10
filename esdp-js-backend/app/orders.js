@@ -36,13 +36,33 @@ const createRouter = () => {
         }
     });
     router.get('/orders/:id', async (req, res) => {
-        const orderId = req.params.id;
-        const currentOrder = await knex('orders_with_status_fields')
-            .select("*")
-            .where("id", `${orderId}`)
-            .then(result => {return result[0]})
-            .catch((err) => {console.log(err)});
-        return res.send(currentOrder);
+        try {
+            const orderId = req.params.id;
+            const sqlString = `select
+                                   w1."firstName" as courier_name,
+                                   w1."lastName" as courier_lastName,
+                                   w1."id" as courier_id,
+                                   w2."firstName" as master_name,
+                                   w2."lastName" as master_lastName,
+                                   w2."id" as master_id,
+                                   c."firstName" as client_name,
+                                   c."lastName" as client_lastName,
+                                   c."id" as client_id,
+                                   o.*
+                             from
+                                orders_with_status_fields o
+                                left join workers w1 on o."courierId" = w1.id
+                                left join workers w2 on o."masterId" = w2.id
+                                left join clients c on o."clientId" = c.id
+                             where
+                                o.id = '41e808ac-faac-442b-b83d-2e458d78c54b'`;
+            const currentOrder = await db.nativeFetch(sqlString);
+            return res.send(currentOrder.rows[0]);
+        } catch (e) {
+            return res.status(500).send({
+                message: 'Internal error'
+            });
+        }
     });
     router.get('/orders', async (req, res) => {
         const token = req.get("Authorization");
@@ -98,8 +118,10 @@ const createRouter = () => {
                         .andWhere(function() {
                             this.whereIn('statusId', [
                                 '80659b19-1bf5-466b-8221-bce9ab456efb', // new
+                                '804f3183-a866-49e4-ad4c-c9a6e00ed5bf', // pickup
                                 'f2f2b5cd-efc9-4df3-81ec-f834795b1a36', // taken
                                 '1203a5ac-3fcd-443a-a1c5-cf9de24026c3', // done
+                                'ab91578d-693b-416f-8e77-9210b347f89a', // delivering
                             ])
                         })
                         .orderBy('createdAt', 'desc').paginate(perPage, page, false)

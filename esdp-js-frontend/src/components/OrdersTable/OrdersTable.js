@@ -2,7 +2,7 @@ import {TableBody, TableCell} from "@material-ui/core";
 import TableRow from '@material-ui/core/TableRow';
 import React, {Component} from "react";
 import config from '../../config'
-import {Redirect, withRouter} from "react-router";
+import {withRouter} from "react-router";
 import AdminControls from "./AdminControls";
 import MasterControls from "./MasterControls";
 import Tooltip from "@material-ui/core/Tooltip";

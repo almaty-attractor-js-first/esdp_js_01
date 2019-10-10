@@ -4,16 +4,13 @@ import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import {
     Card,
-    CardActions,
     CardHeader,
     CardContent,
-    Button,
     Divider,
     Table,
     TableCell,
     TableHead,
 } from '@material-ui/core';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import WorkerRow from "../components/WorkerRow";

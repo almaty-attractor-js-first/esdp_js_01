@@ -6,7 +6,6 @@ import {TableBodySortable} from "./SortableElements";
 import EditableTableToolbar from "./EditableTableToolbar";
 import EditableTableHead from "./EditableTableHead";
 import CleaningTypesTableRow from "./CleaningTypesTableRow";
-import StatusesTableRow from "./StatusesTableRow";
 
 const headRows = [
 	{ label: 'Тянуть' },
