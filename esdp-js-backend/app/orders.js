@@ -276,8 +276,8 @@ const createRouter = () => {
                 port: 465,
                 secure: true, // true for 465, false for other ports
                 auth: {
-                    user: 'shoeserkz@yandex.kz', // generated ethereal user
-                    pass: 'shoeser2019' // generated ethereal password
+                    user: 'natebevlast@yandex.kz', // generated ethereal user
+                    pass: 'Ihatemyself19' // generated ethereal password
                 }
             });
             let substrId = orderData.id.substring(1,8);
@@ -301,7 +301,7 @@ const createRouter = () => {
                        <img src="cid:${orderData.email}" alt="qr" />`;
                 let string = htmlstring+itemString+qrString;
             let info = await transporter.sendMail({
-                from: 'shoeserkz@yandex.kz', // sender address
+                from: 'natebevlast@yandex.kz', // sender address
                 to: orderData.email, // list of receivers
                 subject: "Здравствуйте, " + orderData.firstName + " ваш заказ оформлен", // Subject line
                 text: "Ваш заказ № " + orderData.id + " оформлен", // plain text body

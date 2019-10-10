@@ -89,13 +89,11 @@ export default function OrderCard({order, statuses, defaultExpanded}) {
 											`${(statuses.find(status => {return order.statusId === status.id}).title)}`
 										: null}
 									</Typography>
-									<Typography variant="subtitle1" color="textPrimary">
-										<b>Сумма заказа: </b>{`${order.totalPrice}`}
-									</Typography>
 								</CardContent>
 							</div>
 							<div className={classes.qr}>
 								<QRCode size={200} value={order.id} />
+								<Typography>Покажите QR курьеру</Typography>
 							</div>
 						</div>
 						<ExpansionPanel defaultExpanded={defaultExpanded}>
