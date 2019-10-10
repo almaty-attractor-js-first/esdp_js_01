@@ -55,7 +55,7 @@ const createRouter = () => {
                                 left join workers w2 on o."masterId" = w2.id
                                 left join clients c on o."clientId" = c.id
                              where
-                                o.id = '41e808ac-faac-442b-b83d-2e458d78c54b'`;
+                                o.id = '${orderId}'`;
             const currentOrder = await db.nativeFetch(sqlString);
             return res.send(currentOrder.rows[0]);
         } catch (e) {
